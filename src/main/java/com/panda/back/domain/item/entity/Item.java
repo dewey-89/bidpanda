@@ -2,6 +2,8 @@ package com.panda.back.domain.item.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.panda.back.domain.item.dto.ItemRequestDto;
+import com.panda.back.domain.member.entity.Member;
+import com.panda.back.domain.member.jwt.MemberDetailsImpl;
 import com.panda.back.global.entity.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -52,18 +54,18 @@ public class Item extends Timestamped {
     @ElementCollection
     private List<URL> images = new ArrayList<>();
 
-//    로그인 기능 붙인 후 주석 풀어서 확인
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "member_id", nullable = false)
-//    private Member member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
-    public Item(ItemRequestDto itemRequestDto) {
+    public Item(ItemRequestDto itemRequestDto, Member member) {
         this.title = itemRequestDto.getTitle();
         this.content = itemRequestDto.getContent();
         this.startPrice = itemRequestDto.getStartPrice();
         this.presentPrice = itemRequestDto.getStartPrice();
         this.minBidPrice = itemRequestDto.getMinBidPrice();
         this.auctionEndTime = LocalDateTime.now().plusDays(itemRequestDto.getDeadline());
+        this.member = member;
     }
 
 

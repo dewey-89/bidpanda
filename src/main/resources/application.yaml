@@ -17,8 +17,6 @@ spring:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
 
-
-
 jwt:
   secret:
     key: ${JWT_SECRET_KEY}
