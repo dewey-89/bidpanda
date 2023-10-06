@@ -24,7 +24,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     public AuthenticationFilter(TokenProvider tokenProvider,RefreshTokenRepository refreshTokenRepository){
         this.tokenProvider = tokenProvider;
         this.refreshTokenRepository = refreshTokenRepository;
-        setFilterProcessesUrl("/api/users/login");
+        setFilterProcessesUrl("/api/members/login");
     }
 
     @Override

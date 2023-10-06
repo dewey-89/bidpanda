@@ -41,4 +41,10 @@ public class ItemService {
     }
 
 
+    public ItemResponseDto getItemById(Long itemId) {
+        Item item = itemRepository.findById(itemId).orElseThrow(
+                () -> new IllegalArgumentException("해당 아이템이 없습니다.")
+        );
+        return new ItemResponseDto(item);
+    }
 }

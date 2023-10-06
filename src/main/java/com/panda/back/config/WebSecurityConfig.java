@@ -8,6 +8,7 @@ import com.panda.back.domain.member.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -100,7 +101,8 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                                 "/",// /로 시작하는 요청 모두 접근 허가
                                 "/v3/api-docs/**",//v3/api-docs/**로 시작하는 요청 모두 접근 허가
                                 "swagger-ui/**").permitAll()//swagger-ui.html 접근 허용 설정
-                        .requestMatchers("/api/users/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
+                        .requestMatchers("/api/members/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
+                        .requestMatchers(HttpMethod.GET).permitAll()
                         .anyRequest().authenticated()
         );
 
