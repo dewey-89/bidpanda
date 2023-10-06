@@ -20,11 +20,18 @@ public class ItemController {
 
     @PostMapping
     public ItemResponseDto createItem(
-            @RequestPart(value = "images",required = false) List<MultipartFile> images,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images,
             @RequestPart ItemRequestDto itemRequestDto,
             @AuthenticationPrincipal MemberDetailsImpl memberDetails) throws IOException {
         return ItemService.createItem(images, itemRequestDto, memberDetails.getMember());
     }
 
+    @GetMapping("/{itemId}")
+    public ItemResponseDto getItemById(@PathVariable Long itemId) {
+        return ItemService.getItemById(itemId);
+    }
+
 }
+
+
 
