@@ -10,6 +10,7 @@ public class BidpandaApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(BidpandaApplication.class, args);
+
     }
 
 }
