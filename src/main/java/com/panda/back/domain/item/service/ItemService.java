@@ -4,6 +4,8 @@ import com.panda.back.domain.item.dto.ItemRequestDto;
 import com.panda.back.domain.item.dto.ItemResponseDto;
 import com.panda.back.domain.item.entity.Item;
 import com.panda.back.domain.item.repository.ItemRepository;
+import com.panda.back.domain.member.entity.Member;
+import com.panda.back.domain.member.jwt.MemberDetailsImpl;
 import com.panda.back.global.S3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,9 +23,9 @@ public class ItemService {
     private final S3Uploader s3Uploader;
 
     @Transactional
-    public ItemResponseDto createItem(List<MultipartFile> images, ItemRequestDto itemRequestDto) throws IOException {
+    public ItemResponseDto createItem(List<MultipartFile> images, ItemRequestDto itemRequestDto, Member member) throws IOException {
 
-        Item item = new Item(itemRequestDto);
+        Item item = new Item(itemRequestDto, member);
         if (images.isEmpty()) {
             throw new IllegalArgumentException("이미지가 없습니다.");
         }
