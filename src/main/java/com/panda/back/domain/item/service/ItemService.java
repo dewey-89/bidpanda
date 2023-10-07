@@ -6,6 +6,7 @@ import com.panda.back.domain.item.entity.AuctionStatus;
 import com.panda.back.domain.item.entity.Item;
 import com.panda.back.domain.item.repository.ItemRepository;
 import com.panda.back.domain.member.entity.Member;
+import com.panda.back.domain.member.repository.MemberRepository;
 import com.panda.back.global.S3.S3Uploader;
 import com.panda.back.global.dto.SuccessResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +19,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ItemService {
     private final ItemRepository itemRepository;
+    private final MemberRepository memberRepository;
     private final S3Uploader s3Uploader;
 
     @Transactional
@@ -129,4 +132,14 @@ public class ItemService {
         return items.map(ItemResponseDto::new).toList();
     }
 
+    public List<ItemResponseDto> getItemsByMember(Member member) {
+
+        Member member1 = memberRepository.findAllById(member.getId());
+
+        List<Item> items = itemRepository.findAllByMember(member1);
+
+        return items.stream()
+                .map(ItemResponseDto::new)
+                .collect(Collectors.toList());
+    }
 }

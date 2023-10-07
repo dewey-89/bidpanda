@@ -45,6 +45,7 @@ public class ItemController {
         return ItemService.getItemById(itemId);
     }
 
+    @Operation(summary = "상품 수정 API")
     @PutMapping("/{itemId}")
     public ItemResponseDto UpdateItemById(@PathVariable Long itemId,
                                           @RequestPart ItemRequestDto itemRequestDto,
@@ -53,6 +54,7 @@ public class ItemController {
         return ItemService.updateItemById(itemId, itemRequestDto, images, memberDetails.getMember());
     }
 
+    @Operation(summary = "상품 삭제 API")
     @DeleteMapping("/{itemId}")
     public SuccessResponse DeleteItemById(@PathVariable Long itemId, @AuthenticationPrincipal MemberDetailsImpl memberDetails) throws IOException {
         return ItemService.deleteItemById(itemId, memberDetails.getMember());
@@ -71,6 +73,12 @@ public class ItemController {
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size){
         return ItemService.getItemsByCategory(category, page, size);
+    }
+
+    @Operation(summary = "내가 경매로 등록한 아이템 리스트 조회 API")
+    @GetMapping("/my-auction-items")
+    public List<ItemResponseDto> getItemsByMember(@AuthenticationPrincipal MemberDetailsImpl memberDetails) {
+        return ItemService.getItemsByMember(memberDetails.getMember());
     }
 
 }
