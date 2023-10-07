@@ -13,7 +13,7 @@ public class ItemResponseDto {
     private Long id;
     private String title;
     private String content;
-    private Long startPrice;
+    private Long presentPrice;
     private Long minBidPrice;
     private LocalDateTime auctionEndTime;
     private List<URL> itemImages;
@@ -23,10 +23,16 @@ public class ItemResponseDto {
         this.id = item.getId();
         this.title = item.getTitle();
         this.content = item.getContent();
-        this.startPrice = item.getStartPrice();
+        this.presentPrice = item.getPresentPrice();
         this.minBidPrice = item.getMinBidPrice();
         this.auctionEndTime = item.getAuctionEndTime();
         this.itemImages = item.getImages();
         this.auctionStatus = item.getAuctionStatus();
+    }
+
+    public static List<ItemResponseDto> listOf(List<Item> items) {
+        return items.stream()
+                .map(ItemResponseDto::new)
+                .toList();
     }
 }

@@ -11,6 +11,8 @@ import com.panda.back.global.S3.S3Uploader;
 import com.panda.back.global.dto.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,8 +45,14 @@ public class ItemService {
         return new ItemResponseDto(item);
     }
 
+    public Page<ItemResponseDto> getAllItems(int page, int size) {
+        Page<Item> items = itemRepository.findAllByOrderByModifiedAtDesc(Pageable.ofSize(size).withPage(page -1));
+        return items.map(ItemResponseDto::new);
+    }
+
 
     public ItemResponseDto getItemById(Long itemId) {
+
         Item item = itemRepository.findById(itemId).orElseThrow(
                 () -> new IllegalArgumentException("해당 상품이 없습니다.")
         );
@@ -111,5 +119,14 @@ public class ItemService {
         itemRepository.delete(item);
 
         return new SuccessResponse("삭제 성공");
+    }
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
+        return new ItemResponseDto(item);
+    }
+
+    public List<ItemResponseDto> getTopPriceItems() {
+        List<Item> items = itemRepository.findTop10ByOrderByPresentPriceDesc();
+        return ItemResponseDto.listOf(items);
     }
 }
