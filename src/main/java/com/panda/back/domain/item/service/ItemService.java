@@ -8,6 +8,8 @@ import com.panda.back.domain.member.entity.Member;
 import com.panda.back.domain.member.jwt.MemberDetailsImpl;
 import com.panda.back.global.S3.S3Uploader;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,6 +42,11 @@ public class ItemService {
         return new ItemResponseDto(item);
     }
 
+    public Page<ItemResponseDto> getAllItems(int page, int size) {
+        Page<Item> items = itemRepository.findAllByOrderByModifiedAtDesc(Pageable.ofSize(size).withPage(page -1));
+        return items.map(ItemResponseDto::new);
+    }
+
 
     public ItemResponseDto getItemById(Long itemId) {
         Item item = itemRepository.findById(itemId)
@@ -51,4 +58,5 @@ public class ItemService {
         List<Item> items = itemRepository.findTop10ByOrderByPresentPriceDesc();
         return ItemResponseDto.listOf(items);
     }
+
 }

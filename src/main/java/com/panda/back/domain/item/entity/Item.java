@@ -3,7 +3,6 @@ package com.panda.back.domain.item.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.panda.back.domain.item.dto.ItemRequestDto;
 import com.panda.back.domain.member.entity.Member;
-import com.panda.back.domain.member.jwt.MemberDetailsImpl;
 import com.panda.back.global.entity.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
