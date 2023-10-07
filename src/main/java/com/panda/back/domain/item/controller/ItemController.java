@@ -31,6 +31,11 @@ public class ItemController {
         return ItemService.getItemById(itemId);
     }
 
+    @GetMapping("/top-price")//최고가 top10 조회
+    public List<ItemResponseDto> getTopPriceItems() {
+        return ItemService.getTopPriceItems();
+    }
+
 }
 
 
