@@ -17,7 +17,7 @@ public class Member {
     private Long id;
 
     @Column(nullable = false)
-    private String memberName;
+    private String membername;
 
     @Column(nullable = false)
     private String password;
@@ -26,8 +26,27 @@ public class Member {
     private String email;
 
     @Column(nullable = false)
-    private String nickName;
+    private String nickname;
 
-    private String intro;
+    private Long kakaoId;
 
+    public Member(String membername, String password, String email, String nickname) {
+        this.membername = membername;
+        this.password = password;
+        this.email = email;
+        this.nickname = nickname;
+    }
+
+    public Member(String membername, String password, String email, Long kakaoId, String nickname) {
+        this.membername = membername;
+        this.password = password;
+        this.email = email;
+        this.kakaoId = kakaoId;
+        this.nickname = nickname;
+    }
+
+    public Member kakaoIdUpdate(Long kakaoId) {
+        this.kakaoId = kakaoId;
+        return this;
+    }
 }

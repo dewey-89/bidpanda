@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.panda.back.domain.item.entity.AuctionStatus.IN_PROGRESS;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -40,8 +42,9 @@ public class Item extends Timestamped {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime auctionEndTime;
 
-    @Column(nullable = false)
-    private final String status = "start";
+    @Column(nullable = true)
+    @Enumerated(EnumType.STRING) // Enum 값을 문자열로 저장
+    private AuctionStatus auctionStatus = IN_PROGRESS;
 
     @Column(nullable = false)
     private Long winnerId = 0L;
@@ -71,9 +74,18 @@ public class Item extends Timestamped {
         this.member = member;
     }
 
-
     public void addImages(URL imageUrl) {
         this.images.add(imageUrl);
+    }
+
+    public void update(ItemRequestDto itemRequestDto) {
+        this.title = itemRequestDto.getTitle();
+        this.content = itemRequestDto.getContent();
+        this.startPrice = itemRequestDto.getStartPrice();
+        this.presentPrice = itemRequestDto.getStartPrice();
+        this.minBidPrice = itemRequestDto.getMinBidPrice();
+        this.auctionStatus = itemRequestDto.getAuctionStatus();
+        this.auctionEndTime = LocalDateTime.now().plusDays(itemRequestDto.getDeadline());
     }
 }
 
