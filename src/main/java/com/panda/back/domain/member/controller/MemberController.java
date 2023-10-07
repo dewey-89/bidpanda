@@ -1,10 +1,14 @@
 package com.panda.back.domain.member.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.panda.back.domain.member.jwt.TokenProvider;
+import com.panda.back.domain.member.service.KakaoService;
 import com.panda.back.global.dto.BaseResponse;
 import com.panda.back.domain.member.dto.SignupRequestDto;
 import com.panda.back.global.dto.SuccessResponse;
 import com.panda.back.global.exception.ParameterValidationException;
 import com.panda.back.domain.member.service.MemberService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,13 +22,14 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/users")
+@RequestMapping("/api/members")
 public class MemberController {
     private final MemberService memberService;
+    private final KakaoService kakaoService;
 
     @GetMapping("/{membername}/exists")
     public ResponseEntity<Boolean> checkMemberNameDuplicate(@PathVariable String membername) {
-        return ResponseEntity.ok(memberService.checkMemberNameDuplicate(membername));
+        return ResponseEntity.ok(memberService.checkMembernameDuplicate(membername));
     }
 
     @GetMapping("/{email}/exists")
@@ -34,7 +39,7 @@ public class MemberController {
 
     @GetMapping("/{nickname}/exists")
     public ResponseEntity<Boolean> checkNickNameDuplicate(@PathVariable String nickname) {
-        return ResponseEntity.ok(memberService.checkNickNameDuplicate(nickname));
+        return ResponseEntity.ok(memberService.checkNicknameDuplicate(nickname));
     }
 
     @PostMapping("/signup")
@@ -46,6 +51,12 @@ public class MemberController {
         memberService.signup(requestDto);
         return ResponseEntity.ok().body(new SuccessResponse("회원 가입 완료"));
     }
+    // 카카오 로그인
+    @GetMapping("/kakao/callback")
+    public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        String token = kakaoService.kakaoLogin(code);
+        response.addHeader(TokenProvider.AUTHORIZATION_HEADER, token);
 
-
+        return "redirect:/";
+    }
 }
