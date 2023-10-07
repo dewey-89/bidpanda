@@ -6,11 +6,9 @@ import com.panda.back.domain.item.entity.AuctionStatus;
 import com.panda.back.domain.item.entity.Item;
 import com.panda.back.domain.item.repository.ItemRepository;
 import com.panda.back.domain.member.entity.Member;
-import com.panda.back.domain.member.jwt.MemberDetailsImpl;
 import com.panda.back.global.S3.S3Uploader;
 import com.panda.back.global.dto.SuccessResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -119,10 +117,6 @@ public class ItemService {
         itemRepository.delete(item);
 
         return new SuccessResponse("삭제 성공");
-    }
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
-        return new ItemResponseDto(item);
     }
 
     public List<ItemResponseDto> getTopPriceItems() {

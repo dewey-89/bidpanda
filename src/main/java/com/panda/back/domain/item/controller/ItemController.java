@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,6 +56,7 @@ public class ItemController {
     @DeleteMapping("/{itemId}")
     public SuccessResponse DeleteItemById(@PathVariable Long itemId, @AuthenticationPrincipal MemberDetailsImpl memberDetails) throws IOException {
         return ItemService.deleteItemById(itemId, memberDetails.getMember());
+    }
 
     @Operation(summary = "최고가 top10 상품 조회 API")
     @GetMapping("/top-price")//최고가 top10 조회
@@ -72,8 +72,6 @@ public class ItemController {
             @RequestParam(value = "size", defaultValue = "10") int size){
         return ItemService.getItemsByCategory(category, page, size);
     }
-
-
 
 }
 
