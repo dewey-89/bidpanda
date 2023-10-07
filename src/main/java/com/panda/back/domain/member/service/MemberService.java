@@ -15,16 +15,16 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public Boolean checkMemberNameDuplicate(String membername) {
-        return memberRepository.existsByMemberName(membername);
+    public Boolean checkMembernameDuplicate(String membername) {
+        return memberRepository.existsByMembername(membername);
     }
 
     public Boolean checkEmailDuplicate(String email) {
         return memberRepository.existsByEmail(email);
     }
 
-    public Boolean checkNickNameDuplicate(String nickname) {
-        return memberRepository.existsByNickName(nickname);
+    public Boolean checkNicknameDuplicate(String nickname) {
+        return memberRepository.existsByNickname(nickname);
     }
 
     public void signup(SignupRequestDto requestDto) {
@@ -32,7 +32,7 @@ public class MemberService {
         String membername = requestDto.getMembername();
         String password = passwordEncoder.encode(requestDto.getPassword());
 
-        Optional<Member> checkUsername = memberRepository.findByMemberName(membername);
+        Optional<Member> checkUsername = memberRepository.findByMembername(membername);
         if (checkUsername.isPresent()) {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
         }
@@ -44,12 +44,12 @@ public class MemberService {
         }
 
         String nickname = requestDto.getNickname();
-        Optional<Member> checkNickname = memberRepository.findByNickName(nickname);
+        Optional<Member> checkNickname = memberRepository.findByNickname(nickname);
         if (checkNickname.isPresent()) {
             throw new IllegalArgumentException("중복된 Nickname이 존재합니다.");
         }
 
-        Member member = Member.builder().memberName(membername).password(password).email(email).nickName(nickname).intro(requestDto.getIntro()).build();
+        Member member = new Member(membername, password, email, nickname);
         memberRepository.save(member);
     }
 }
