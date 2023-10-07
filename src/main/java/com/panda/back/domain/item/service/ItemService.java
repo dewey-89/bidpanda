@@ -129,4 +129,10 @@ public class ItemService {
         List<Item> items = itemRepository.findTop10ByOrderByPresentPriceDesc();
         return ItemResponseDto.listOf(items);
     }
+
+    public List<ItemResponseDto> getItemsByCategory(String category, int page, int size) {
+        Page<Item> items = itemRepository.findAllByCategoryOrderByModifiedAtDesc(category, Pageable.ofSize(size).withPage(page -1));
+        return items.map(ItemResponseDto::new).toList();
+    }
+
 }

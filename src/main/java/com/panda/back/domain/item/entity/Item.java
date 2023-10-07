@@ -53,6 +53,9 @@ public class Item extends Timestamped {
     private Integer bidCount = 0;
 
     @Column(nullable = false)
+    private String category;
+
+    @Column(nullable = false)
     @ElementCollection
     private List<URL> images = new ArrayList<>();
 
@@ -67,6 +70,7 @@ public class Item extends Timestamped {
         this.presentPrice = itemRequestDto.getStartPrice();
         this.minBidPrice = itemRequestDto.getMinBidPrice();
         this.auctionEndTime = LocalDateTime.now().plusDays(itemRequestDto.getDeadline());
+        this.category = itemRequestDto.getCategory();
         this.member = member;
     }
 
