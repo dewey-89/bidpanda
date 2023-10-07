@@ -10,4 +10,6 @@ import java.util.List;
 public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findTop10ByOrderByPresentPriceDesc();
     Page<Item> findAllByOrderByModifiedAtDesc(Pageable pageable);
+
+    Page<Item> findAllByCategoryOrderByModifiedAtDesc(String category, Pageable pageable);
 }

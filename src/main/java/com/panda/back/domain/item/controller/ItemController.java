@@ -50,6 +50,17 @@ public class ItemController {
         return ItemService.getTopPriceItems();
     }
 
+    @Operation(summary ="카테고리 별 상품 조회 API")
+    @GetMapping("/category/{category}")
+    public List<ItemResponseDto> getItemsByCategory(
+            @PathVariable String category,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size){
+        return ItemService.getItemsByCategory(category, page, size);
+    }
+
+
+
 }
 
 

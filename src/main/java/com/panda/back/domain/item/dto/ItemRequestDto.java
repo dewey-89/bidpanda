@@ -9,4 +9,5 @@ public class ItemRequestDto {
     private Long startPrice;
     private Long minBidPrice;
     private Integer deadline;
+    private String category;
 }
