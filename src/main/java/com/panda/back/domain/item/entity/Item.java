@@ -1,6 +1,7 @@
 package com.panda.back.domain.item.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.panda.back.domain.bid.entity.Bid;
 import com.panda.back.domain.item.dto.ItemRequestDto;
 import com.panda.back.domain.member.entity.Member;
 import com.panda.back.global.entity.Timestamped;
@@ -12,6 +13,8 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.panda.back.domain.item.entity.AuctionStatus.IN_PROGRESS;
 
 @Entity
 @Getter
@@ -40,14 +43,18 @@ public class Item extends Timestamped {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime auctionEndTime;
 
-    @Column(nullable = false)
-    private final String status = "start";
+    @Column(nullable = true)
+    @Enumerated(EnumType.STRING) // Enum 값을 문자열로 저장
+    private AuctionStatus auctionStatus = IN_PROGRESS;
 
     @Column(nullable = false)
     private Long winnerId = 0L;
 
     @Column(nullable = false)
     private Integer bidCount = 0;
+
+    @Column(nullable = false)
+    private String category;
 
     @Column(nullable = false)
     @ElementCollection
@@ -64,12 +71,32 @@ public class Item extends Timestamped {
         this.presentPrice = itemRequestDto.getStartPrice();
         this.minBidPrice = itemRequestDto.getMinBidPrice();
         this.auctionEndTime = LocalDateTime.now().plusDays(itemRequestDto.getDeadline());
+        this.category = itemRequestDto.getCategory();
         this.member = member;
     }
 
-
     public void addImages(URL imageUrl) {
         this.images.add(imageUrl);
+    }
+
+    public void update(ItemRequestDto itemRequestDto) {
+        this.title = itemRequestDto.getTitle();
+        this.content = itemRequestDto.getContent();
+        this.startPrice = itemRequestDto.getStartPrice();
+        this.presentPrice = itemRequestDto.getStartPrice();
+        this.minBidPrice = itemRequestDto.getMinBidPrice();
+        this.auctionEndTime = LocalDateTime.now().plusDays(itemRequestDto.getDeadline());
+    }
+
+    public void addBid(Bid bid) {
+        bid.setItem(this);
+        this.presentPrice = bid.getBidAmount();
+        this.winnerId = bid.getBidder().getId();
+        this.bidCount++;
+    }
+
+    public void updateAuctionStatus(AuctionStatus auctionStatus) {
+        this.auctionStatus = auctionStatus;
     }
 }
 
