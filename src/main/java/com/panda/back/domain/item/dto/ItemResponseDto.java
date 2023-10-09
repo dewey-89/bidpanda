@@ -1,5 +1,6 @@
 package com.panda.back.domain.item.dto;
 
+import com.panda.back.domain.favoriteItem.entity.FavoriteItem;
 import com.panda.back.domain.item.entity.AuctionStatus;
 import com.panda.back.domain.item.entity.Item;
 import lombok.Getter;
