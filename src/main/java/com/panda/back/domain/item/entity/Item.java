@@ -84,7 +84,6 @@ public class Item extends Timestamped {
         this.startPrice = itemRequestDto.getStartPrice();
         this.presentPrice = itemRequestDto.getStartPrice();
         this.minBidPrice = itemRequestDto.getMinBidPrice();
-        this.auctionStatus = itemRequestDto.getAuctionStatus();
         this.auctionEndTime = LocalDateTime.now().plusDays(itemRequestDto.getDeadline());
     }
 }

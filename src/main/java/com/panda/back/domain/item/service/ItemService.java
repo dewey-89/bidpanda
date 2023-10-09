@@ -142,4 +142,9 @@ public class ItemService {
                 .map(ItemResponseDto::new)
                 .collect(Collectors.toList());
     }
+
+    public List<ItemResponseDto> getItemsByKeyword(String keyword) {
+        List<Item> items = itemRepository.findAllByTitleContaining(keyword);
+        return ItemResponseDto.listOf(items);
+    }
 }
