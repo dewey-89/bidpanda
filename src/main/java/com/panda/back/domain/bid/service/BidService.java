@@ -3,6 +3,7 @@ package com.panda.back.domain.bid.service;
 import com.panda.back.domain.bid.dto.BidRequestDto;
 import com.panda.back.domain.bid.entity.Bid;
 import com.panda.back.domain.bid.repository.BidRepository;
+import com.panda.back.domain.item.dto.ItemResponseDto;
 import com.panda.back.domain.item.entity.AuctionStatus;
 import com.panda.back.domain.item.entity.Item;
 import com.panda.back.domain.item.repository.ItemRepository;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -43,5 +45,37 @@ public class BidService {
         bidRepository.save(bid);
 
         return new BaseResponse(HttpStatus.CREATED, "입찰 성공");
+    }
+
+    public List<ItemResponseDto> getMyBiddedItems(Member member) {
+        // 사용자가 입찰한 아이템 목록을 가져옵니다.
+        List<Bid> biddedItems = bidRepository.findAllByBidder(member);
+
+        // 각 아이템의 최고가를 저장할 Map을 생성합니다. (key: itemId, value: 최고가)
+        Map<Long, Long> highestBidsByItemId = new HashMap<>();
+
+        // 입찰 아이템을 순회하며 최고가를 갱신합니다.
+        for (Bid bid : biddedItems) {
+            long itemId = bid.getItem().getId();
+            long bidAmount = bid.getBidAmount();
+
+            // 해당 아이템에 대한 최고가가 없거나 현재 입찰가가 더 높을 경우 갱신합니다.
+            if (!highestBidsByItemId.containsKey(itemId) || bidAmount > highestBidsByItemId.get(itemId)) {
+                // Double 값을 Long으로 변환하여 저장합니다.
+                highestBidsByItemId.put(itemId, Double.valueOf(bidAmount).longValue());
+            }
+        }
+
+        // 각 아이템의 최고가를 기반으로 ItemResponseDto를 생성합니다.
+        List<ItemResponseDto> itemResponseDtos = new ArrayList<>();
+        for (Map.Entry<Long, Long> entry : highestBidsByItemId.entrySet()) {
+            long itemId = entry.getKey();
+            Long highestBidAmount = entry.getValue();
+            Optional<Item> item = itemRepository.findById(itemId);
+
+            ItemResponseDto itemResponseDto = new ItemResponseDto(item, highestBidAmount);
+            itemResponseDtos.add(itemResponseDto);
+        }
+        return itemResponseDtos;
     }
 }
