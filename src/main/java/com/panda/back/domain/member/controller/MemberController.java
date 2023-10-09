@@ -8,6 +8,7 @@ import com.panda.back.domain.member.dto.SignupRequestDto;
 import com.panda.back.global.dto.SuccessResponse;
 import com.panda.back.global.exception.ParameterValidationException;
 import com.panda.back.domain.member.service.MemberService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,21 +28,25 @@ public class MemberController {
     private final MemberService memberService;
     private final KakaoService kakaoService;
 
+    @Operation(summary = "아이디 중복 체크")
     @GetMapping("/{membername}/exists")
     public ResponseEntity<Boolean> checkMemberNameDuplicate(@PathVariable String membername) {
         return ResponseEntity.ok(memberService.checkMembernameDuplicate(membername));
     }
 
+    @Operation(summary = "이메일 중복 체크")
     @GetMapping("/{email}/exists")
     public ResponseEntity<Boolean> checkEmailDuplicate(@PathVariable String email) {
         return ResponseEntity.ok(memberService.checkEmailDuplicate(email));
     }
 
+    @Operation(summary = "닉네임 중복 체크")
     @GetMapping("/{nickname}/exists")
     public ResponseEntity<Boolean> checkNickNameDuplicate(@PathVariable String nickname) {
         return ResponseEntity.ok(memberService.checkNicknameDuplicate(nickname));
     }
 
+    @Operation(summary = "회원가입")
     @PostMapping("/signup")
     public ResponseEntity<BaseResponse> signup(@RequestBody @Valid SignupRequestDto requestDto, BindingResult bindingResult) {
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
@@ -52,6 +57,7 @@ public class MemberController {
         return ResponseEntity.ok().body(new SuccessResponse("회원 가입 완료"));
     }
     // 카카오 로그인
+    @Operation(summary = "카카오 로그인")
     @GetMapping("/kakao/callback")
     public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         String token = kakaoService.kakaoLogin(code);

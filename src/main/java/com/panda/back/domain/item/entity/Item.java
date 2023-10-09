@@ -94,5 +94,9 @@ public class Item extends Timestamped {
         this.winnerId = bid.getBidder().getId();
         this.bidCount++;
     }
+
+    public void updateAuctionStatus(AuctionStatus auctionStatus) {
+        this.auctionStatus = auctionStatus;
+    }
 }
 
