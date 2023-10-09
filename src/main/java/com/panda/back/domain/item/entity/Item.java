@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import static com.panda.back.domain.item.entity.AuctionStatus.IN_PROGRESS;
 
@@ -64,6 +66,9 @@ public class Item extends Timestamped {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    private List<Bid> bids = new ArrayList<>();
+
     public Item(ItemRequestDto itemRequestDto, Member member) {
         this.title = itemRequestDto.getTitle();
         this.content = itemRequestDto.getContent();
@@ -97,6 +102,14 @@ public class Item extends Timestamped {
 
     public void updateAuctionStatus(AuctionStatus auctionStatus) {
         this.auctionStatus = auctionStatus;
+    }
+
+    public Long getHighestBidAmount() {
+        // 해당 아이템의 모든 입찰 중에서 최고 입찰 가격을 찾아 반환합니다.
+        Optional<Bid> highestBid = bids.stream()
+                .max(Comparator.comparing(Bid::getBidAmount));
+
+        return highestBid.map(Bid::getBidAmount).orElse(0L);
     }
 }
 
