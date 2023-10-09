@@ -2,12 +2,18 @@ package com.panda.back.domain.favoriteItem.service;
 
 import com.panda.back.domain.favoriteItem.entity.FavoriteItem;
 import com.panda.back.domain.favoriteItem.repository.FavoriteItemRepository;
+import com.panda.back.domain.item.dto.ItemResponseDto;
 import com.panda.back.domain.item.entity.Item;
 import com.panda.back.domain.item.repository.ItemRepository;
 import com.panda.back.domain.member.entity.Member;
+import com.panda.back.domain.member.repository.MemberRepository;
 import com.panda.back.global.dto.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,5 +40,17 @@ public class FavoriteItemService {
             favoriteItemRepository.delete(favoriteItem);
             return new SuccessResponse("관심 등록 취소");
         }
+    }
+
+    public List<ItemResponseDto> getFavoriteItems(Member member) {
+        // 사용자가 찜한 아이템 목록을 가져옵니다.
+        List<FavoriteItem> favoriteItems = favoriteItemRepository.findAllByMember(member);
+
+        // ItemResponseDto 리스트로 변환합니다.
+        List<ItemResponseDto> itemResponseDtos = favoriteItems.stream()
+                .map(favoriteItem -> new ItemResponseDto(favoriteItem.getItem()))
+                .collect(Collectors.toList());
+
+        return itemResponseDtos;
     }
 }
