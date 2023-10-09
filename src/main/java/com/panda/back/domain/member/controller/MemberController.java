@@ -25,7 +25,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -97,5 +99,13 @@ public class MemberController {
         response.addHeader(TokenProvider.AUTHORIZATION_HEADER, token);
 
         return "redirect:/";
+    }
+
+    @Operation(summary = "프로필 이미지 업로드")
+    @PostMapping("/profile-image")
+    public ResponseEntity<BaseResponse> uploadProfileImage(
+            @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal MemberDetailsImpl memberDetails) throws IOException {
+        return memberService.uploadProfileImage(file, memberDetails.getMember());
     }
 }
