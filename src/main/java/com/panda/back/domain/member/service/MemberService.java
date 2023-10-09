@@ -57,11 +57,26 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+
+    public void delete(Long id) {
+        // 사용자를 ID로 검색
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        memberRepository.delete(member);
+    }
+
+      
     @Transactional
     public ResponseEntity<BaseResponse> uploadProfileImage(MultipartFile file, Member member) throws IOException {
         String url = s3Uploader.upload(file, "profile");
         member.profileImageUrlUpdate(url);
         return ResponseEntity.ok().body(new BaseResponse(HttpStatus.CREATED,  url));
-
     }
+  
+  
+    public Member findByMembername(String membername) {
+        return memberRepository.findByMembername(membername).orElseThrow(() ->
+                new IllegalArgumentException("해당 사용자 이름의 회원을 찾을 수 없습니다. 사용자 이름 : " + membername));
+    }
+      
 }

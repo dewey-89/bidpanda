@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.panda.back.domain.member.dto.EmailRequestDto;
 import com.panda.back.domain.member.dto.SignupRequestDto;
 import com.panda.back.domain.member.dto.VerifiRequestDto;
+import com.panda.back.domain.member.entity.Member;
 import com.panda.back.domain.member.jwt.MemberDetailsImpl;
 import com.panda.back.domain.member.jwt.TokenProvider;
 import com.panda.back.domain.member.service.KakaoService;
@@ -71,6 +72,23 @@ public class MemberController {
         }
         memberService.signup(requestDto);
         return ResponseEntity.ok().body(new SuccessResponse("회원 가입 완료"));
+    }
+
+    @DeleteMapping("{id}/delete")
+    public ResponseEntity<BaseResponse> delete(
+            @PathVariable Long id,
+            @AuthenticationPrincipal MemberDetailsImpl memberDetails
+    ) {
+        // 현재 로그인한 사용자의 정보를 가져옴
+        String membername = memberDetails.getUsername();
+        Member currentUser = memberService.findByMembername(membername);
+
+        // 현재 로그인한 사용자의 ID와 삭제하려는 사용자의 ID를 비교하여 권한 확인
+        if (!currentUser.getId().equals(id)) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
+        memberService.delete(id);
+        return ResponseEntity.ok().body(new SuccessResponse("회원 탈퇴 성공"));
     }
 
     // 카카오 로그인
