@@ -81,6 +81,12 @@ public class ItemController {
         return ItemService.getItemsByMember(memberDetails.getMember());
     }
 
+    @Operation(summary = "키워드 상품 검색 API")
+    @GetMapping("/search")
+    public List<ItemResponseDto> getItemsByKeyword(@RequestParam String keyword) {
+        return ItemService.getItemsByKeyword(keyword);
+    }
+
 }
 
 
