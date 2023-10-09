@@ -3,10 +3,17 @@ package com.panda.back.domain.member.service;
 import com.panda.back.domain.member.dto.SignupRequestDto;
 import com.panda.back.domain.member.entity.Member;
 import com.panda.back.domain.member.repository.MemberRepository;
+import com.panda.back.global.S3.S3Uploader;
+import com.panda.back.global.dto.BaseResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -14,6 +21,7 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final S3Uploader s3Uploader;
 
     public Boolean checkMembernameDuplicate(String membername) {
         return memberRepository.existsByMembername(membername);
@@ -47,5 +55,13 @@ public class MemberService {
 
         Member member = new Member(membername, password, email, nickname);
         memberRepository.save(member);
+    }
+
+    @Transactional
+    public ResponseEntity<BaseResponse> uploadProfileImage(MultipartFile file, Member member) throws IOException {
+        String url = s3Uploader.upload(file, "profile");
+        member.profileImageUrlUpdate(url);
+        return ResponseEntity.ok().body(new BaseResponse(HttpStatus.CREATED,  url));
+
     }
 }

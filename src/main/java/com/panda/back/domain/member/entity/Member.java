@@ -28,6 +28,9 @@ public class Member {
     @Column(nullable = false)
     private String nickname;
 
+    @Column(nullable = true)
+    private String profileImageUrl;
+
     private Long kakaoId;
 
     public Member(String membername, String password, String email, String nickname) {
@@ -47,6 +50,11 @@ public class Member {
 
     public Member kakaoIdUpdate(Long kakaoId) {
         this.kakaoId = kakaoId;
+        return this;
+    }
+
+    public Member profileImageUrlUpdate(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
         return this;
     }
 }

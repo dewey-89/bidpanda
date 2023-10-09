@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.panda.back.domain.member.dto.EmailRequestDto;
 import com.panda.back.domain.member.dto.SignupRequestDto;
 import com.panda.back.domain.member.dto.VerifiRequestDto;
+import com.panda.back.domain.member.jwt.MemberDetailsImpl;
 import com.panda.back.domain.member.jwt.TokenProvider;
 import com.panda.back.domain.member.service.KakaoService;
 import com.panda.back.domain.member.service.MailSerivce;
@@ -19,10 +20,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -77,5 +81,13 @@ public class MemberController {
         response.addHeader(TokenProvider.AUTHORIZATION_HEADER, token);
 
         return "redirect:/";
+    }
+
+    @Operation(summary = "프로필 이미지 업로드")
+    @PostMapping("/profile-image")
+    public ResponseEntity<BaseResponse> uploadProfileImage(
+            @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal MemberDetailsImpl memberDetails) throws IOException {
+        return memberService.uploadProfileImage(file, memberDetails.getMember());
     }
 }
