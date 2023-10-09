@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -76,6 +77,26 @@ public class BidService {
             ItemResponseDto itemResponseDto = new ItemResponseDto(item, highestBidAmount);
             itemResponseDtos.add(itemResponseDto);
         }
+        return itemResponseDtos;
+    }
+
+    public List<ItemResponseDto> getMyAuctionWonItems(Member member) {
+        // 사용자가 생성한 모든 아이템 가져오기
+        List<Item> userItems = itemRepository.findAllByMember(member);
+
+        // AUCTION_WON 상태인 아이템 필터링
+        List<Item> wonItems = userItems.stream()
+                .filter(item -> item.getAuctionStatus() == AuctionStatus.AUCTION_WON)
+                .toList();
+
+        // ItemResponseDto로 변환
+        List<ItemResponseDto> itemResponseDtos = new ArrayList<>();
+        for (Item item : wonItems) {
+            Long highestBidAmount = item.getHighestBidAmount(); // 최고 입찰 가격을 가져옵니다.
+            ItemResponseDto itemResponseDto = new ItemResponseDto(Optional.of(item), highestBidAmount);
+            itemResponseDtos.add(itemResponseDto);
+        }
+
         return itemResponseDtos;
     }
 }

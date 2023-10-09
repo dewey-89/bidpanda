@@ -22,4 +22,5 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @Query("SELECT i FROM Item i WHERE i.auctionEndTime < :currentTime AND i.auctionStatus = 'IN_PROGRESS'")
     List<Item> findAuctionEndTimeItems(LocalDateTime currentTime);
+
 }

@@ -49,7 +49,6 @@ public class MemberController {
     @PostMapping("/email/verify") // 이메일 인증
     public ResponseEntity<String> verifyEmail(@RequestBody @Valid VerifiRequestDto request) {
         return mailSerivce.verifyEmail(request);
-
     }
 
     @Operation(summary = "닉네임 중복 체크")
