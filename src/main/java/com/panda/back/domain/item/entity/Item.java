@@ -1,6 +1,7 @@
 package com.panda.back.domain.item.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.panda.back.domain.bid.entity.Bid;
 import com.panda.back.domain.item.dto.ItemRequestDto;
 import com.panda.back.domain.member.entity.Member;
 import com.panda.back.global.entity.Timestamped;
@@ -85,6 +86,13 @@ public class Item extends Timestamped {
         this.presentPrice = itemRequestDto.getStartPrice();
         this.minBidPrice = itemRequestDto.getMinBidPrice();
         this.auctionEndTime = LocalDateTime.now().plusDays(itemRequestDto.getDeadline());
+    }
+
+    public void addBid(Bid bid) {
+        bid.setItem(this);
+        this.presentPrice = bid.getBidAmount();
+        this.winnerId = bid.getBidder().getId();
+        this.bidCount++;
     }
 }
 
