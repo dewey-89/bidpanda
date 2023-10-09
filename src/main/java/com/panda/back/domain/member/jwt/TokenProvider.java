@@ -1,9 +1,11 @@
 package com.panda.back.domain.member.jwt;
 
+import com.panda.back.domain.member.service.RedisUtil;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,7 @@ import java.util.Date;
 
 @Slf4j(topic = "JwtUtil")
 @Component
+@RequiredArgsConstructor
 public class TokenProvider {
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String REFRESH_HEADER = "Authorization_Refresh";
@@ -26,6 +29,7 @@ public class TokenProvider {
     private String secretKey;
     private Key key;
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+    private final RedisUtil redisUtil;
 
     @PostConstruct
     public void init() {

@@ -48,4 +48,16 @@ public class MemberService {
         Member member = new Member(membername, password, email, nickname);
         memberRepository.save(member);
     }
+
+    public void delete(Long id) {
+        // 사용자를 ID로 검색
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        memberRepository.delete(member);
+    }
+
+    public Member findByMembername(String membername) {
+        return memberRepository.findByMembername(membername).orElseThrow(() ->
+                new IllegalArgumentException("해당 사용자 이름의 회원을 찾을 수 없습니다. 사용자 이름 : " + membername));
+    }
 }
