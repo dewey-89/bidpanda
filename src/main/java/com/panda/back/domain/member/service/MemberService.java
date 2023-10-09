@@ -19,10 +19,6 @@ public class MemberService {
         return memberRepository.existsByMembername(membername);
     }
 
-    public Boolean checkEmailDuplicate(String email) {
-        return memberRepository.existsByEmail(email);
-    }
-
     public Boolean checkNicknameDuplicate(String nickname) {
         return memberRepository.existsByNickname(nickname);
     }

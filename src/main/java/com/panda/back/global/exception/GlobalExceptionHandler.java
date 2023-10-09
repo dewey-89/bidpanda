@@ -1,5 +1,6 @@
 package com.panda.back.global.exception;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.panda.back.global.dto.BaseResponse;
 import com.panda.back.global.dto.ErrorResponse;
 import io.jsonwebtoken.JwtException;
@@ -9,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -46,6 +48,22 @@ public class GlobalExceptionHandler {
             UsernameNotFoundException e) {
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage()));
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponse> NotFoundExHandler(
+            NotFoundException e) {
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage()));
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(HttpClientErrorException.Unauthorized.class)
+    public ResponseEntity<ErrorResponse> UNAUTHORIZEDExHandler(
+            HttpClientErrorException.Unauthorized e) {
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse(HttpStatus.UNAUTHORIZED, e.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
