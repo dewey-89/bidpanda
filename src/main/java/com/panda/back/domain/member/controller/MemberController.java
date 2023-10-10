@@ -43,7 +43,7 @@ public class MemberController {
     private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "아이디 중복 체크")
-    @GetMapping("/{membername}/exists")
+    @GetMapping("/{membername}")
     public ResponseEntity<Boolean> checkMemberNameDuplicate(@PathVariable String membername) {
         return ResponseEntity.ok(memberService.checkMembernameDuplicate(membername));
     }

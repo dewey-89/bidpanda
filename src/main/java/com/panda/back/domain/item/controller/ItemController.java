@@ -76,7 +76,7 @@ public class ItemController {
     }
 
     @Operation(summary = "내가 경매로 등록한 아이템 리스트 조회 API")
-    @GetMapping("/my-auction-items")
+    @GetMapping("/my-items")
     public List<ItemResponseDto> getItemsByMember(@AuthenticationPrincipal MemberDetailsImpl memberDetails) {
         return ItemService.getItemsByMember(memberDetails.getMember());
     }
