@@ -68,7 +68,7 @@ public class MemberController {
     }
 
     @Operation(summary = "회원가입")
-    @PostMapping("/signup")
+    @PostMapping
     public ResponseEntity<BaseResponse> signup(@RequestBody @Valid SignupRequestDto requestDto, BindingResult bindingResult) {
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         for (FieldError e : fieldErrors) {
@@ -79,14 +79,14 @@ public class MemberController {
     }
 
     @Operation(summary = "회원정보")
-    @GetMapping("/{Id}/mypage")
-    public ResponseEntity<BaseResponse> getProfile(@RequestParam String membername) {
-        Member member = memberService.getProfile(membername);
+    @GetMapping
+    public ResponseEntity<BaseResponse> getProfile(@AuthenticationPrincipal MemberDetailsImpl memberDetails) {
+        Member member = memberService.getProfile(memberDetails.getUsername());
         return ResponseEntity.ok().body(new SuccessResponse("회원정보 조회 성공", member));
     }
 
     @Operation(summary = "회원정보 수정")
-    @PutMapping("/{Id}/mypage")
+    @PutMapping
     public ResponseEntity<BaseResponse> updateProfile(@RequestBody @Valid ProfileRequestDto requestDto, @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
         try {
             // 현재 로그인한 사용자의 정보를 가져옴
@@ -113,8 +113,8 @@ public class MemberController {
         }
     }
 
-
-    @DeleteMapping("{id}/delete")
+    @Operation(summary = "회원 탈퇴")
+    @DeleteMapping
     public ResponseEntity<BaseResponse> delete(
             @AuthenticationPrincipal MemberDetailsImpl memberDetails
     ) {
@@ -122,11 +122,7 @@ public class MemberController {
         String membername = memberDetails.getUsername();
         Member currentUser = memberService.findByMembername(membername);
 
-        // 현재 로그인한 사용자의 ID와 삭제하려는 사용자의 ID를 비교하여 권한 확인
-        if (!currentUser.getId().equals(id)) {
-            throw new IllegalArgumentException("권한이 없습니다.");
-        }
-        memberService.delete(id);
+        memberService.delete(currentUser.getId());
         return ResponseEntity.ok().body(new SuccessResponse("회원 탈퇴 성공"));
     }
 
@@ -136,7 +132,6 @@ public class MemberController {
     public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         String token = kakaoService.kakaoLogin(code);
         response.addHeader(TokenProvider.AUTHORIZATION_HEADER, token);
-
         return "redirect:/";
     }
 
