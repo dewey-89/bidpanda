@@ -24,7 +24,8 @@ public class MemberService {
     private final S3Uploader s3Uploader;
 
     public Boolean checkMembernameDuplicate(String membername) {
-        return memberRepository.existsByMembername(membername);
+        return memberRepository.existsByMembern
+        ame(membername);
     }
 
     public Boolean checkNicknameDuplicate(String nickname) {
