@@ -5,6 +5,7 @@ import com.panda.back.domain.member.entity.Member;
 import com.panda.back.domain.member.repository.MemberRepository;
 import com.panda.back.global.S3.S3Uploader;
 import com.panda.back.global.dto.BaseResponse;
+import com.panda.back.global.dto.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +24,18 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final S3Uploader s3Uploader;
 
-    public Boolean checkMembernameDuplicate(String membername) {
-        return memberRepository.existsByMembername(membername);
+    public ResponseEntity<BaseResponse> checkMembernameDuplicate(String membername) {
+        if (memberRepository.findByMembername(membername).isPresent()){
+            throw new IllegalArgumentException("이미 존재하는 아이디 입니다.");
+        }
+        return ResponseEntity.ok().body(new SuccessResponse("중복 체크 완료"));
     }
 
-    public Boolean checkNicknameDuplicate(String nickname) {
-        return memberRepository.existsByNickname(nickname);
+    public ResponseEntity<BaseResponse>  checkNicknameDuplicate(String nickname) {
+        if (memberRepository.findByNickname(nickname).isPresent()){
+            throw new IllegalArgumentException("이미 존재하는 닉네임 입니다.");
+        }
+        return ResponseEntity.ok().body(new SuccessResponse("중복 체크 완료"));
     }
 
     public void signup(SignupRequestDto requestDto) {

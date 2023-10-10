@@ -44,8 +44,8 @@ public class MemberController {
 
     @Operation(summary = "아이디 중복 체크")
     @GetMapping("/{membername}/exists")
-    public ResponseEntity<Boolean> checkMemberNameDuplicate(@PathVariable String membername) {
-        return ResponseEntity.ok(memberService.checkMembernameDuplicate(membername));
+    public ResponseEntity<BaseResponse> checkMemberNameDuplicate(@PathVariable String membername) {
+        return memberService.checkMembernameDuplicate(membername);
     }
 
     @Operation(summary = "이메일 인증")
@@ -62,9 +62,9 @@ public class MemberController {
     }
 
     @Operation(summary = "닉네임 중복 체크")
-    @GetMapping("/{nickname}/exists")
-    public ResponseEntity<Boolean> checkNickNameDuplicate(@PathVariable String nickname) {
-        return ResponseEntity.ok(memberService.checkNicknameDuplicate(nickname));
+    @GetMapping("/{nickname}")
+    public ResponseEntity<BaseResponse> checkNickNameDuplicate(@PathVariable String nickname) {
+        return memberService.checkNicknameDuplicate(nickname);
     }
 
     @Operation(summary = "회원가입")
