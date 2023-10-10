@@ -57,4 +57,12 @@ public class Member {
         this.profileImageUrl = profileImageUrl;
         return this;
     }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }
