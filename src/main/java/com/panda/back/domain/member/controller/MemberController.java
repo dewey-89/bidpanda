@@ -43,7 +43,7 @@ public class MemberController {
     private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "아이디 중복 체크")
-    @GetMapping("/{membername}/exists")
+    @GetMapping("/membername/{membername}")
     public ResponseEntity<BaseResponse> checkMemberNameDuplicate(@PathVariable String membername) {
         return memberService.checkMembernameDuplicate(membername);
     }
@@ -62,7 +62,7 @@ public class MemberController {
     }
 
     @Operation(summary = "닉네임 중복 체크")
-    @GetMapping("/{nickname}")
+    @GetMapping("/nickname/{nickname}")
     public ResponseEntity<BaseResponse> checkNickNameDuplicate(@PathVariable String nickname) {
         return memberService.checkNicknameDuplicate(nickname);
     }
@@ -116,7 +116,6 @@ public class MemberController {
 
     @DeleteMapping("{id}/delete")
     public ResponseEntity<BaseResponse> delete(
-            @PathVariable Long id,
             @AuthenticationPrincipal MemberDetailsImpl memberDetails
     ) {
         // 현재 로그인한 사용자의 정보를 가져옴
