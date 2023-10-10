@@ -65,9 +65,11 @@ public class MemberService {
         return findByMembername(membername);
     }
 
+
     public void update(Member member) {
         memberRepository.save(member);
     }
+
 
     public void delete(Long id) {
         // 사용자를 ID로 검색

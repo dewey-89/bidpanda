@@ -11,12 +11,10 @@ import com.panda.back.domain.member.jwt.TokenProvider;
 import com.panda.back.domain.member.service.KakaoService;
 import com.panda.back.domain.member.service.MailSerivce;
 import com.panda.back.domain.member.service.MemberService;
-import com.panda.back.domain.member.service.RedisUtil;
 import com.panda.back.global.dto.BaseResponse;
 import com.panda.back.global.dto.ErrorResponse;
 import com.panda.back.global.dto.SuccessResponse;
 import com.panda.back.global.exception.ParameterValidationException;
-import com.panda.back.domain.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -114,6 +112,7 @@ public class MemberController {
             return ResponseEntity.badRequest().body(new ErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage()));
         }
     }
+
 
     @DeleteMapping("{id}/delete")
     public ResponseEntity<BaseResponse> delete(
