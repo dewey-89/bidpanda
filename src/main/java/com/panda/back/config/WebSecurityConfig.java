@@ -6,6 +6,7 @@ import com.panda.back.domain.member.jwt.MemberDetailsServiceImpl;
 import com.panda.back.domain.member.jwt.TokenProvider;
 import com.panda.back.domain.member.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -46,34 +47,28 @@ public class WebSecurityConfig implements WebMvcConfigurer {
         return configuration.getAuthenticationManager();
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5173")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 허용할 HTTP method
-                .allowedHeaders("Content-Type", "X-AUTH-TOKEN", "Authorization","Authorization_Refresh", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials")
-                .allowCredentials(true) // 쿠키 인증 요청 허용
-                .maxAge(3000); // 원하는 시간만큼 pre-flight 리퀘스트를 캐싱
-    }
-
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
-        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization","Authorization_Refresh", "Cache-Control", "Content-Type"));
-        configuration.setExposedHeaders(Arrays.asList("Authorization","Authorization_Refresh"));
-        configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-
     @Bean
     public AuthenticationFilter authenticationFilter() throws Exception {
         AuthenticationFilter filter = new AuthenticationFilter(tokenProvider,refreshTokenRepository);
         filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
         return filter;
+    }
+
+    // Cors
+    @Bean
+    public CorsConfigurationSource configurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type", "Access-Control-Allow-Origin","Authorization_Refresh"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization","Authorization_Refresh"));
+        configuration.setMaxAge(1800L);
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean
@@ -85,7 +80,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         // CORS 설정
-        http.cors((cors) -> cors.configurationSource(corsConfigurationSource()));
+        http.cors((cors) -> cors.configurationSource(configurationSource()));
 
         // CSRF 설정
         http.csrf((csrf) -> csrf.disable());
@@ -97,13 +92,11 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
-                        .requestMatchers(
-                                "/",// /로 시작하는 요청 모두 접근 허가
-                                "/v3/api-docs/**",//v3/api-docs/**로 시작하는 요청 모두 접근 허가
-                                "swagger-ui/**").permitAll()//swagger-ui.html 접근 허용 설정
-                        .requestMatchers("/api/members/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
-                        .requestMatchers(HttpMethod.GET).permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
+                        .requestMatchers("/").permitAll() // 메인 페이지 요청 허가
+                        .requestMatchers("/api/members/**").permitAll() // '/api/users/'로 시작하는 요청 모두 접근 허가
+                        .requestMatchers(HttpMethod.GET).permitAll() // GET 요청 허가
+                        .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 
 
