@@ -57,6 +57,14 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    @Transactional(readOnly = true)
+    public Member getProfile(String membername) {
+        if(membername == null){
+            throw new IllegalArgumentException("사용자 이름을 입력해 주세요.");
+        }
+        return findByMembername(membername);
+    }
+
 
     public void delete(Long id) {
         // 사용자를 ID로 검색
@@ -78,5 +86,4 @@ public class MemberService {
         return memberRepository.findByMembername(membername).orElseThrow(() ->
                 new IllegalArgumentException("해당 사용자 이름의 회원을 찾을 수 없습니다. 사용자 이름 : " + membername));
     }
-      
 }

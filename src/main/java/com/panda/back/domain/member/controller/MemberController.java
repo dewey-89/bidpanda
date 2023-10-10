@@ -10,11 +10,9 @@ import com.panda.back.domain.member.jwt.TokenProvider;
 import com.panda.back.domain.member.service.KakaoService;
 import com.panda.back.domain.member.service.MailSerivce;
 import com.panda.back.domain.member.service.MemberService;
-import com.panda.back.domain.member.service.RedisUtil;
 import com.panda.back.global.dto.BaseResponse;
 import com.panda.back.global.dto.SuccessResponse;
 import com.panda.back.global.exception.ParameterValidationException;
-import com.panda.back.domain.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -45,13 +43,15 @@ public class MemberController {
         return ResponseEntity.ok(memberService.checkMembernameDuplicate(membername));
     }
 
+    @Operation(summary = "이메일 인증")
     @PostMapping("/email")
     public ResponseEntity<Void> sendEmail(@RequestBody @Valid EmailRequestDto requestDto) {
         mailSerivce.sendEmail(requestDto);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/email/verify") // 이메일 인증
+    @Operation(summary = "이메일 인증 확인")
+    @PostMapping("/email/verify")
     public ResponseEntity<String> verifyEmail(@RequestBody @Valid VerifiRequestDto request) {
         return mailSerivce.verifyEmail(request);
     }
@@ -71,6 +71,13 @@ public class MemberController {
         }
         memberService.signup(requestDto);
         return ResponseEntity.ok().body(new SuccessResponse("회원 가입 완료"));
+    }
+
+    @Operation(summary = "회원정보")
+    @GetMapping("/profile")
+    public ResponseEntity<BaseResponse> getProfile(@RequestParam String membername) {
+        Member member = memberService.getProfile(membername);
+        return ResponseEntity.ok().body(new SuccessResponse("회원정보 조회 성공", member));
     }
 
     @DeleteMapping("{id}/delete")
