@@ -13,21 +13,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/favorite")
 @RequiredArgsConstructor
 public class FavoriteItemController {
 
     private final FavoriteItemService favoriteItemService;
 
     @Operation(summary = "관심상품 등록 API")
-    @PostMapping("/favorite/{id}")
-    public SuccessResponse favoriteItem(@PathVariable Long id, @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
+    @PostMapping
+    public SuccessResponse favoriteItem(@RequestParam Long itemId, @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
             Member member = memberDetails.getMember();
-            return favoriteItemService.favoriteItem(id, member);
+            return favoriteItemService.favoriteItem(itemId, member);
     }
 
     @Operation(summary = "내가 찜한 아이템 리스트 조회 API")
-    @GetMapping("/my-favorite-items")
+    @GetMapping("/items")
     public List<ItemResponseDto> getFavoriteItems(@AuthenticationPrincipal MemberDetailsImpl memberDetails) {
         return favoriteItemService.getFavoriteItems(memberDetails.getMember());
     }

@@ -26,13 +26,13 @@ public class BidController {
     }
 
     @Operation(summary = "나의 입찰 상품 리스트 조회")
-    @GetMapping("/my-bidded-items")
+    @GetMapping
     public List<ItemResponseDto> getMyBiddedItems(@AuthenticationPrincipal MemberDetailsImpl memberDetails) {
         return bidService.getMyBiddedItems(memberDetails.getMember());
     }
 
     @Operation(summary = "나의 낙찰 상품 리스트 조회")
-    @GetMapping("/my-auction-won-items")
+    @GetMapping("/win")
     public List<ItemResponseDto> getMyAuctionWonItems(@AuthenticationPrincipal MemberDetailsImpl memberDetails) {
         return bidService.getMyAuctionWonItems(memberDetails.getMember());
     }
