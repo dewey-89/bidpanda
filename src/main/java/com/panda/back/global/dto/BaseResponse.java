@@ -14,6 +14,7 @@ public class BaseResponse<T> {
         this.httpStatus = httpStatus;
         this.message = message;
     }
+
     public BaseResponse(HttpStatus httpStatus, String message, T data) {
         this.httpStatus = httpStatus;
         this.message = message;

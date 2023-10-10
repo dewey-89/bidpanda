@@ -66,6 +66,11 @@ public class MemberService {
     }
 
 
+    public void update(Member member) {
+        memberRepository.save(member);
+    }
+
+
     public void delete(Long id) {
         // 사용자를 ID로 검색
         Member member = memberRepository.findById(id)
@@ -73,7 +78,6 @@ public class MemberService {
         memberRepository.delete(member);
     }
 
-      
     @Transactional
     public ResponseEntity<BaseResponse> uploadProfileImage(MultipartFile file, Member member) throws IOException {
         String url = s3Uploader.upload(file, "profile");
