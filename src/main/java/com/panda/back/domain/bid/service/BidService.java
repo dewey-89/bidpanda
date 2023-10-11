@@ -50,13 +50,13 @@ public class BidService {
 
     public List<ItemResponseDto> getMyBiddedItems(Member member) {
         // 사용자가 입찰한 아이템 목록을 가져옵니다.
-        List<Bid> biddedItems = bidRepository.findAllByBidder(member);
+        List<Bid> items = bidRepository.findAllByBidder(member);
 
         // 각 아이템의 최고가를 저장할 Map을 생성합니다. (key: itemId, value: 최고가)
         Map<Long, Long> highestBidsByItemId = new HashMap<>();
 
         // 입찰 아이템을 순회하며 최고가를 갱신합니다.
-        for (Bid bid : biddedItems) {
+        for (Bid bid : items) {
             long itemId = bid.getItem().getId();
             long bidAmount = bid.getBidAmount();
 

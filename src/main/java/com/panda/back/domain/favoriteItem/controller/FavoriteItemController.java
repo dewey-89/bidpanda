@@ -21,9 +21,10 @@ public class FavoriteItemController {
 
     @Operation(summary = "관심상품 등록 API")
     @PostMapping
-    public SuccessResponse favoriteItem(@RequestParam Long itemId, @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
-            Member member = memberDetails.getMember();
-            return favoriteItemService.favoriteItem(itemId, member);
+    public SuccessResponse favoriteItem(
+            @RequestParam Long itemId,
+            @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
+        return favoriteItemService.favoriteItem(itemId, memberDetails.getMember());
     }
 
     @Operation(summary = "내가 찜한 아이템 리스트 조회 API")
