@@ -38,7 +38,7 @@ public class BidService {
         if (item.getPresentPrice()>=bidRequestDto.getBidAmount()) {
             throw new IllegalArgumentException("입찰가가 현재가와 같거나 낮습니다.");
         }
-        if(bidRequestDto.getBidAmount()%item.getMinBidPrice()!=0){
+        if((bidRequestDto.getBidAmount()-item.getStartPrice())%item.getMinBidPrice()!=0){
             throw new IllegalArgumentException("최소 입찰 단위로 입찰해주세요.");
         }
         Bid bid = new Bid(item, member, bidRequestDto.getBidAmount());
