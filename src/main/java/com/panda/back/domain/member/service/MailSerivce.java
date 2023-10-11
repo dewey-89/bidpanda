@@ -55,6 +55,7 @@ public class MailSerivce {
 
 // 유효 시간(3분)동안 {email, authKey} 저장
         redisUtil.setDataExpire(email, authKey,  3 * 60 * 1L);
+
     }
 
     // 이메일 인증
@@ -64,7 +65,7 @@ public class MailSerivce {
 
         String redisAuthKey = redisUtil.getData(email);
         if (redisAuthKey == null) {
-            throw new IllegalArgumentException("인증코드를 찾을 수 없습니다.");
+            throw new IllegalArgumentException("인증코드가 만료되었습니다.");
         }
 
         if (!redisAuthKey.equals(authKey)) {

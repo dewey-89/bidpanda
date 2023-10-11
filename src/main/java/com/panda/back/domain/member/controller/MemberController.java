@@ -1,10 +1,7 @@
 package com.panda.back.domain.member.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.panda.back.domain.member.dto.EmailRequestDto;
-import com.panda.back.domain.member.dto.ProfileRequestDto;
-import com.panda.back.domain.member.dto.SignupRequestDto;
-import com.panda.back.domain.member.dto.VerifiRequestDto;
+import com.panda.back.domain.member.dto.*;
 import com.panda.back.domain.member.entity.Member;
 import com.panda.back.domain.member.jwt.MemberDetailsImpl;
 import com.panda.back.domain.member.jwt.TokenProvider;
@@ -43,8 +40,8 @@ public class MemberController {
 
     @Operation(summary = "아이디 중복 체크")
     @GetMapping("/membername/{membername}")
-    public ResponseEntity<BaseResponse> checkMemberNameDuplicate(@PathVariable String membername) {
-        return memberService.checkMembernameDuplicate(membername);
+    public ResponseEntity<BaseResponse> membernameExists(@PathVariable String membername) {
+        return memberService.membernameExists(membername);
     }
 
     @Operation(summary = "인증코드 이메일 전송")
@@ -62,54 +59,29 @@ public class MemberController {
 
     @Operation(summary = "닉네임 중복 체크")
     @GetMapping("/nickname/{nickname}")
-    public ResponseEntity<BaseResponse> checkNickNameDuplicate(@PathVariable String nickname) {
-        return memberService.checkNicknameDuplicate(nickname);
+    public ResponseEntity<BaseResponse> nicknameExists(@PathVariable String nickname) {
+        return memberService.nicknameExists(nickname);
     }
 
     @Operation(summary = "회원가입")
     @PostMapping
-    public ResponseEntity<BaseResponse> signup(@RequestBody @Valid SignupRequestDto requestDto, BindingResult bindingResult) {
-        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-        for (FieldError e : fieldErrors) {
-            throw new ParameterValidationException(e.getDefaultMessage());
-        }
-        memberService.signup(requestDto);
-        return ResponseEntity.ok().body(new SuccessResponse("회원 가입 완료"));
+    public ResponseEntity<BaseResponse> signup(
+            @RequestBody @Valid SignupRequestDto requestDto, BindingResult bindingResult) {
+        return memberService.signup(requestDto, bindingResult);
     }
 
     @Operation(summary = "회원정보")
     @GetMapping
-    public ResponseEntity<BaseResponse> getProfile(@AuthenticationPrincipal MemberDetailsImpl memberDetails) {
-        Member member = memberService.getProfile(memberDetails.getUsername());
-        return ResponseEntity.ok().body(new SuccessResponse("회원정보 조회 성공", member));
+    public ResponseEntity<ProfileResponseDto> getProfile(@AuthenticationPrincipal MemberDetailsImpl memberDetails) {
+        return memberService.getProfile(memberDetails.getUsername());
     }
 
     @Operation(summary = "회원정보 수정")
     @PutMapping
-    public ResponseEntity<BaseResponse> updateProfile(@RequestBody @Valid ProfileRequestDto requestDto, @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
-        try {
-            // 현재 로그인한 사용자의 정보를 가져옴
-            String membername = memberDetails.getUsername();
-            Member member = memberService.findByMembername(membername);
-
-            // 입력한 비밀번호를 BCryptPasswordEncoder를 사용하여 검사
-            if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
-                throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-            }
-            member.setNickname(requestDto.getNickname());
-
-            String newPassword = requestDto.getNewPassword();
-            if (newPassword != null && !newPassword.isEmpty()) {
-                member.setPassword(passwordEncoder.encode(newPassword));
-            }
-
-            // 회원 정보 저장
-            memberService.update(member);
-
-            return ResponseEntity.ok().body(new SuccessResponse("회원정보 수정 성공"));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(new ErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage()));
-        }
+    public ResponseEntity<BaseResponse> updateProfile(
+            @RequestBody @Valid ProfileRequestDto requestDto,
+            @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
+     return memberService.updateProfile(requestDto,memberDetails.getMember());
     }
 
     @Operation(summary = "회원 탈퇴")

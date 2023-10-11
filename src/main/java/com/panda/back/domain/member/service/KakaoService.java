@@ -46,7 +46,8 @@ public class KakaoService {
         // 4. JWT 토큰 반환
         String createToken = tokenProvider.createToken(kakaoUser.getMembername());
 
-        return createToken;
+        response.addHeader(TokenProvider.AUTHORIZATION_HEADER, createToken);
+        return "redirect:/";
     }
 
     private String getToken(String code) throws JsonProcessingException {
