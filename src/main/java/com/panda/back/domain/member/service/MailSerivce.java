@@ -23,13 +23,9 @@ public class MailSerivce {
     private final JavaMailSender javaMailSender;
 
     @Transactional
-    public void sendEmail(EmailRequestDto request) {
-        try {
-            if (redisUtil.getData(request.getEmail()) != null) {
-                throw new IllegalArgumentException("중복된 인증코드입니다.");
-            }
-        } catch (NullPointerException e) {
-            log.info("email : " + request.getEmail());
+    public ResponseEntity sendEmail(EmailRequestDto request) {
+        if (redisUtil.getData(request.getEmail()) != null){
+            redisUtil.deleteData(request.getEmail());
         }
         Random random = new Random();
         String authKey = String.valueOf(random.nextInt(888888) + 111111);// 범위 : 111111 ~ 999999

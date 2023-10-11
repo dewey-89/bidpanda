@@ -24,7 +24,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final S3Uploader s3Uploader;
 
-    public ResponseEntity<BaseResponse> checkMembernameDuplicate(String membername) {
+    public ResponseEntity<BaseResponse> membernameExists(String membername) {
         if (memberRepository.findByMembername(membername).isPresent()){
             throw new IllegalArgumentException("이미 존재하는 아이디 입니다.");
         }

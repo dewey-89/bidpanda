@@ -40,7 +40,6 @@ public class MemberController {
     private final MemberService memberService;
     private final KakaoService kakaoService;
     private final MailSerivce mailSerivce;
-    private final PasswordEncoder passwordEncoder;
 
     @Operation(summary = "아이디 중복 체크")
     @GetMapping("/membername/{membername}")
@@ -48,7 +47,7 @@ public class MemberController {
         return memberService.checkMembernameDuplicate(membername);
     }
 
-    @Operation(summary = "이메일 인증")
+    @Operation(summary = "인증코드 이메일 전송")
     @PostMapping("/email")
     public ResponseEntity<Void> sendEmail(@RequestBody @Valid EmailRequestDto requestDto) {
         mailSerivce.sendEmail(requestDto);
@@ -116,23 +115,16 @@ public class MemberController {
     @Operation(summary = "회원 탈퇴")
     @DeleteMapping
     public ResponseEntity<BaseResponse> delete(
-            @AuthenticationPrincipal MemberDetailsImpl memberDetails
-    ) {
-        // 현재 로그인한 사용자의 정보를 가져옴
-        String membername = memberDetails.getUsername();
-        Member currentUser = memberService.findByMembername(membername);
-
-        memberService.delete(currentUser.getId());
-        return ResponseEntity.ok().body(new SuccessResponse("회원 탈퇴 성공"));
+            @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
+        return memberService.deleteMember(memberDetails.getMember());
     }
 
     // 카카오 로그인
     @Operation(summary = "카카오 로그인")
     @GetMapping("/kakao/callback")
-    public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
-        String token = kakaoService.kakaoLogin(code);
-        response.addHeader(TokenProvider.AUTHORIZATION_HEADER, token);
-        return "redirect:/";
+    public String kakaoLogin(
+            @RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        return kakaoService.kakaoLogin(code,response);
     }
 
     @Operation(summary = "프로필 이미지 업로드")
