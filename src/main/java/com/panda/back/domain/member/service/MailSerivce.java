@@ -34,6 +34,8 @@ public class MailSerivce {
         sendAuthEmail(request.getEmail(), authKey);
         log.info("email : " + request.getEmail());
         log.info("status : " + HttpStatus.OK);
+
+        return ResponseEntity.ok().body("인증코드 전송 완료");
     }
 
     private void sendAuthEmail(String email, String authKey) {
@@ -62,6 +64,10 @@ public class MailSerivce {
     public ResponseEntity<String> verifyEmail(VerifiRequestDto request) {
         String email = request.getEmail();
         String authKey = request.getAuthKey();
+
+        if(email == null || authKey == null){
+            throw new IllegalArgumentException("이메일과 인증코드를 모두 입력해주세요.");
+        }
 
         String redisAuthKey = redisUtil.getData(email);
         if (redisAuthKey == null) {

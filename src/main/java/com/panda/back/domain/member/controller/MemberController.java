@@ -46,9 +46,8 @@ public class MemberController {
 
     @Operation(summary = "인증코드 이메일 전송")
     @PostMapping("/email")
-    public ResponseEntity<Void> sendEmail(@RequestBody @Valid EmailRequestDto requestDto) {
-        mailSerivce.sendEmail(requestDto);
-        return ResponseEntity.ok().build();
+    public ResponseEntity sendEmail(@RequestBody @Valid EmailRequestDto requestDto) {
+        return mailSerivce.sendEmail(requestDto);
     }
 
     @Operation(summary = "이메일 인증 확인")
