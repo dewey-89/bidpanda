@@ -23,13 +23,9 @@ public class MailSerivce {
     private final JavaMailSender javaMailSender;
 
     @Transactional
-    public void sendEmail(EmailRequestDto request) {
-        try {
-            if (redisUtil.getData(request.getEmail()) != null) {
-                throw new IllegalArgumentException("중복된 인증코드입니다.");
-            }
-        } catch (NullPointerException e) {
-            log.info("email : " + request.getEmail());
+    public ResponseEntity sendEmail(EmailRequestDto request) {
+        if (redisUtil.getData(request.getEmail()) != null){
+            redisUtil.deleteData(request.getEmail());
         }
         Random random = new Random();
         String authKey = String.valueOf(random.nextInt(888888) + 111111);// 범위 : 111111 ~ 999999
@@ -38,6 +34,8 @@ public class MailSerivce {
         sendAuthEmail(request.getEmail(), authKey);
         log.info("email : " + request.getEmail());
         log.info("status : " + HttpStatus.OK);
+
+        return ResponseEntity.ok().body("인증코드 전송 완료");
     }
 
     private void sendAuthEmail(String email, String authKey) {
@@ -59,6 +57,7 @@ public class MailSerivce {
 
 // 유효 시간(3분)동안 {email, authKey} 저장
         redisUtil.setDataExpire(email, authKey,  3 * 60 * 1L);
+
     }
 
     // 이메일 인증
@@ -66,9 +65,13 @@ public class MailSerivce {
         String email = request.getEmail();
         String authKey = request.getAuthKey();
 
+        if(email == null || authKey == null){
+            throw new IllegalArgumentException("이메일과 인증코드를 모두 입력해주세요.");
+        }
+
         String redisAuthKey = redisUtil.getData(email);
         if (redisAuthKey == null) {
-            throw new IllegalArgumentException("인증코드를 찾을 수 없습니다.");
+            throw new IllegalArgumentException("인증코드가 만료되었습니다.");
         }
 
         if (!redisAuthKey.equals(authKey)) {

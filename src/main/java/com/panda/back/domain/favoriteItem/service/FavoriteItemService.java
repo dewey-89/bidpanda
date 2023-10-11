@@ -22,9 +22,9 @@ public class FavoriteItemService {
     private final ItemRepository itemRepository;
     private final FavoriteItemRepository favoriteItemRepository;
 
-    public SuccessResponse favoriteItem(Long id, Member member) {
+    public SuccessResponse favoriteItem(Long itemId, Member member) {
 
-        Item item = itemRepository.findById(id).orElseThrow(
+        Item item = itemRepository.findById(itemId).orElseThrow(
                 () -> new IllegalArgumentException("유효하지 않은 아이템입니다.")
         );
 

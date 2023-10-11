@@ -1,20 +1,28 @@
 package com.panda.back.domain.member.service;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
+import com.panda.back.domain.member.dto.ProfileRequestDto;
+import com.panda.back.domain.member.dto.ProfileResponseDto;
 import com.panda.back.domain.member.dto.SignupRequestDto;
 import com.panda.back.domain.member.entity.Member;
 import com.panda.back.domain.member.repository.MemberRepository;
 import com.panda.back.global.S3.S3Uploader;
 import com.panda.back.global.dto.BaseResponse;
+import com.panda.back.global.dto.ErrorResponse;
 import com.panda.back.global.dto.SuccessResponse;
+import com.panda.back.global.exception.ParameterValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,21 +32,25 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final S3Uploader s3Uploader;
 
-    public ResponseEntity<BaseResponse> checkMembernameDuplicate(String membername) {
+    public ResponseEntity<BaseResponse> membernameExists(String membername) {
         if (memberRepository.findByMembername(membername).isPresent()){
             throw new IllegalArgumentException("이미 존재하는 아이디 입니다.");
         }
         return ResponseEntity.ok().body(new SuccessResponse("중복 체크 완료"));
     }
 
-    public ResponseEntity<BaseResponse>  checkNicknameDuplicate(String nickname) {
+    public ResponseEntity<BaseResponse> nicknameExists(String nickname) {
         if (memberRepository.findByNickname(nickname).isPresent()){
             throw new IllegalArgumentException("이미 존재하는 닉네임 입니다.");
         }
         return ResponseEntity.ok().body(new SuccessResponse("중복 체크 완료"));
     }
 
-    public void signup(SignupRequestDto requestDto) {
+    public ResponseEntity<BaseResponse> signup(SignupRequestDto requestDto, BindingResult bindingResult) {
+        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+        for (FieldError e : fieldErrors) {
+            throw new ParameterValidationException(e.getDefaultMessage());
+        }
 
         String membername = requestDto.getMembername();
         String password = passwordEncoder.encode(requestDto.getPassword());
@@ -62,27 +74,49 @@ public class MemberService {
 
         Member member = new Member(membername, password, email, nickname);
         memberRepository.save(member);
+        return ResponseEntity.ok().body(new SuccessResponse("회원 가입 완료"));
     }
 
     @Transactional(readOnly = true)
-    public Member getProfile(String membername) {
-        if(membername == null){
-            throw new IllegalArgumentException("사용자 이름을 입력해 주세요.");
+    public ResponseEntity<ProfileResponseDto> getProfile(String membername) {
+        Optional<Member> member = memberRepository.findByMembername(membername);
+        ProfileResponseDto profile = new ProfileResponseDto(member);
+        return ResponseEntity.ok().body(profile);
+    }
+
+    @Transactional
+    public ResponseEntity<BaseResponse> updateProfile(ProfileRequestDto requestDto, Member member) {
+        try {
+            // 현재 로그인한 사용자의 정보를 가져옴
+            Member myprofile = findByMembername(member.getMembername());
+
+            // 입력한 비밀번호를 BCryptPasswordEncoder를 사용하여 검사
+            if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
+                throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            }
+
+            myprofile.setNickname(requestDto.getNickname());
+
+            String newPassword = requestDto.getNewPassword();
+            if (newPassword != null && !newPassword.isEmpty()) {
+                myprofile.setPassword(passwordEncoder.encode(newPassword));
+            }
+
+            myprofile.setIntro(requestDto.getIntro());
+
+            memberRepository.save(myprofile);
+
+            return ResponseEntity.ok().body(new SuccessResponse("회원정보 수정 성공"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage()));
         }
-        return findByMembername(membername);
     }
 
-
-    public void update(Member member) {
-        memberRepository.save(member);
-    }
-
-
-    public void delete(Long id) {
-        // 사용자를 ID로 검색
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-        memberRepository.delete(member);
+    @Transactional
+    public ResponseEntity<BaseResponse> deleteMember(Member member) {
+       Member currentMember = findByMembername(member.getMembername());
+        memberRepository.delete(currentMember);
+        return ResponseEntity.ok().body(new SuccessResponse("회원 삭제 성공"));
     }
 
     @Transactional

@@ -7,6 +7,7 @@ import com.panda.back.domain.member.dto.KakaoUserInfoDto;
 import com.panda.back.domain.member.entity.Member;
 import com.panda.back.domain.member.jwt.TokenProvider;
 import com.panda.back.domain.member.repository.MemberRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -32,7 +33,7 @@ public class KakaoService {
     private final RestTemplate restTemplate;
     private final TokenProvider tokenProvider;
 
-    public String kakaoLogin(String code) throws JsonProcessingException {
+    public String kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getToken(code);
 
@@ -45,7 +46,8 @@ public class KakaoService {
         // 4. JWT 토큰 반환
         String createToken = tokenProvider.createToken(kakaoUser.getMembername());
 
-        return createToken;
+        response.addHeader(TokenProvider.AUTHORIZATION_HEADER, createToken);
+        return "redirect:/";
     }
 
     private String getToken(String code) throws JsonProcessingException {

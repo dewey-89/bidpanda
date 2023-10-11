@@ -51,7 +51,6 @@ public class ItemService {
         return items.map(ItemResponseDto::new);
     }
 
-
     public ItemResponseDto getItemById(Long itemId) {
 
         Item item = itemRepository.findById(itemId).orElseThrow(

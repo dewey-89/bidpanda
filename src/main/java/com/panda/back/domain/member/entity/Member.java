@@ -33,6 +33,8 @@ public class Member {
 
     private Long kakaoId;
 
+    private String intro = "";
+
     public Member(String membername, String password, String email, String nickname) {
         this.membername = membername;
         this.password = password;
@@ -64,5 +66,9 @@ public class Member {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public void setIntro(String intro) {
+        this.intro = intro;
     }
 }
