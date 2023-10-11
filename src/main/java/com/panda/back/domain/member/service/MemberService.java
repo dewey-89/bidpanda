@@ -90,17 +90,19 @@ public class MemberService {
             // 현재 로그인한 사용자의 정보를 가져옴
             Member myprofile = findByMembername(member.getMembername());
 
-            myprofile.setNickname(requestDto.getNickname());
-
             // 입력한 비밀번호를 BCryptPasswordEncoder를 사용하여 검사
             if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
                 throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
             }
 
+            myprofile.setNickname(requestDto.getNickname());
+
             String newPassword = requestDto.getNewPassword();
             if (newPassword != null && !newPassword.isEmpty()) {
                 myprofile.setPassword(passwordEncoder.encode(newPassword));
             }
+
+            myprofile.setIntro(requestDto.getIntro());
 
             memberRepository.save(myprofile);
 

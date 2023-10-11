@@ -18,4 +18,6 @@ public class ProfileRequestDto {
     private String password;
 
     private String newPassword;
+
+    private String intro;
 }

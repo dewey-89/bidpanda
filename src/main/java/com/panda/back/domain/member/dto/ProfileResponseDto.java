@@ -7,15 +7,13 @@ import java.util.Optional;
 
 @Getter
 public class ProfileResponseDto {
-    private String membername;
     private String nickname;
-    private String email;
     private String profileImageUrl;
+    private String intro;
 
-    public ProfileResponseDto(Optional<Member> member){
-        this.membername = member.get().getMembername();
+    public ProfileResponseDto(Optional<Member> member){;
         this.nickname = member.get().getNickname();
-        this.email = member.get().getEmail();
         this.profileImageUrl = member.get().getProfileImageUrl();
+        this.intro = member.get().getIntro();
     }
 }
