@@ -123,6 +123,7 @@ public class MemberService {
     public ResponseEntity<BaseResponse> uploadProfileImage(MultipartFile file, Member member) throws IOException {
         String url = s3Uploader.upload(file, "profile");
         member.profileImageUrlUpdate(url);
+        memberRepository.save(member);
         return ResponseEntity.ok().body(new BaseResponse(HttpStatus.CREATED,  url));
     }
   

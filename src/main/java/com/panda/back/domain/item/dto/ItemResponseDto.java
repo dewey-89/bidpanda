@@ -17,6 +17,7 @@ public class ItemResponseDto {
     private Long minBidPrice;
     private LocalDateTime auctionEndTime;
     private List<URL> itemImages;
+    private Integer bidCount;
 
     public ItemResponseDto(Item item){
         this.id = item.getId();
@@ -26,6 +27,7 @@ public class ItemResponseDto {
         this.minBidPrice = item.getMinBidPrice();
         this.auctionEndTime = item.getAuctionEndTime();
         this.itemImages = item.getImages();
+        this.bidCount = item.getBidCount();
     }
 
     public static List<ItemResponseDto> listOf(List<Item> items) {
