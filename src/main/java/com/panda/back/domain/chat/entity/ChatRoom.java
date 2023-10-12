@@ -1,4 +1,4 @@
-package com.panda.back.domain.chat.model;
+package com.panda.back.domain.chat.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

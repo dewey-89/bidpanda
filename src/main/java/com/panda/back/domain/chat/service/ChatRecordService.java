@@ -1,8 +1,8 @@
 package com.panda.back.domain.chat.service;
 
 
-import com.panda.back.domain.chat.model.ChatMessage;
-import com.panda.back.domain.chat.model.ChatRecord;
+import com.panda.back.domain.chat.entity.ChatMessage;
+import com.panda.back.domain.chat.entity.ChatRecord;
 import com.panda.back.domain.chat.repository.ChatRecordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

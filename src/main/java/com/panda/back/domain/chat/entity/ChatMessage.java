@@ -1,4 +1,4 @@
-package com.panda.back.domain.chat.model;
+package com.panda.back.domain.chat.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ChatMessage {
     public enum MessageType {
-        ENTER, TALK
+        ENTER, TALK, TEXT, MEDIA
     }
 
     private MessageType type;
@@ -20,5 +20,5 @@ public class ChatMessage {
     //보내는 사람
     private String sender;
     //내용
-    private String message;
+    private String content;
 }

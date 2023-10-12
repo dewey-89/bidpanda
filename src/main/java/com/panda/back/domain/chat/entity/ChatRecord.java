@@ -1,4 +1,4 @@
-package com.panda.back.domain.chat.model;
+package com.panda.back.domain.chat.entity;
 
 import jakarta.persistence.Id;
 import lombok.Getter;

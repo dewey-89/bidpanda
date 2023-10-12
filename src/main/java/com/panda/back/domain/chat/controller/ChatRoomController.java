@@ -1,7 +1,7 @@
 package com.panda.back.domain.chat.controller;
 
 
-import com.panda.back.domain.chat.model.ChatRoom;
+import com.panda.back.domain.chat.entity.ChatRoom;
 import com.panda.back.domain.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/chat")
 public class ChatRoomController {

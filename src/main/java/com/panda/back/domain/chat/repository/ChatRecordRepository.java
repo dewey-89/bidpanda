@@ -1,6 +1,6 @@
 package com.panda.back.domain.chat.repository;
 
-import com.panda.back.domain.chat.model.ChatRecord;
+import com.panda.back.domain.chat.entity.ChatRecord;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;

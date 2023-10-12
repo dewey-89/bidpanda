@@ -1,7 +1,7 @@
 package com.panda.back.domain.chat.service;
 
 
-import com.panda.back.domain.chat.model.ChatRoom;
+import com.panda.back.domain.chat.entity.ChatRoom;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
