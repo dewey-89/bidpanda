@@ -20,7 +20,8 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     List<Item> findAllByTitleContaining(String keyword);
 
-    @Query("SELECT i FROM Item i WHERE i.auctionEndTime < :currentTime AND i.auctionStatus = 'IN_PROGRESS'")
+    @Query("SELECT i FROM Item i WHERE i.auctionEndTime < :currentTime")
     List<Item> findAuctionEndTimeItems(LocalDateTime currentTime);
 
+    List<Item> findAllByWinnerId(Long id);
 }
