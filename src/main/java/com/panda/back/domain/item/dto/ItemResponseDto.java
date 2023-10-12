@@ -28,6 +28,7 @@ public class ItemResponseDto {
         this.minBidPrice = item.getMinBidPrice();
         this.auctionEndTime = item.getAuctionEndTime();
         this.itemImages = item.getImages();
+        this.nickname = item.getMember().getNickname();
     }
 
     public ItemResponseDto(Item item, String nickname){
