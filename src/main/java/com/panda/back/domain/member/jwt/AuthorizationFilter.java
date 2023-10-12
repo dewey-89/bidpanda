@@ -46,8 +46,9 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                 log.info("Access Token reCreate");
                 Claims info = tokenProvider.getUserInfoFromToken(refreshToken);
                 String membername = info.getSubject();
+                String nickname = info.get("nickname",String.class);
 
-                accessToken = tokenProvider.createToken(membername);
+                accessToken = tokenProvider.createToken(membername,nickname);
                 res.addHeader(TokenProvider.AUTHORIZATION_HEADER, accessToken);
                 accessToken = tokenProvider.substringToken(accessToken);
                 log.info("refreshToken 재생성");
