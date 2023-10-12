@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface BidRepository extends JpaRepository<Bid, Long> {
 
-    List<Bid> findAllByBidder(Member member);
+    @Query("SELECT DISTINCT b.item FROM Bid b WHERE b.bidder = :member")
+    List<Item> findDistinctItemByBidder(Member member);
 
 }

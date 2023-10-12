@@ -16,8 +16,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import static com.panda.back.domain.item.entity.AuctionStatus.IN_PROGRESS;
-
 @Entity
 @Getter
 @NoArgsConstructor
@@ -44,10 +42,6 @@ public class Item extends Timestamped {
     @Column(nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime auctionEndTime;
-
-    @Column(nullable = true)
-    @Enumerated(EnumType.STRING) // Enum 값을 문자열로 저장
-    private AuctionStatus auctionStatus = IN_PROGRESS;
 
     @Column(nullable = false)
     private Long winnerId = 0L;
@@ -83,6 +77,9 @@ public class Item extends Timestamped {
     public void addImages(URL imageUrl) {
         this.images.add(imageUrl);
     }
+    public void clearImages() {
+        this.images.clear();
+    }
 
     public void update(ItemRequestDto itemRequestDto) {
         this.title = itemRequestDto.getTitle();
@@ -98,18 +95,6 @@ public class Item extends Timestamped {
         this.presentPrice = bid.getBidAmount();
         this.winnerId = bid.getBidder().getId();
         this.bidCount++;
-    }
-
-    public void updateAuctionStatus(AuctionStatus auctionStatus) {
-        this.auctionStatus = auctionStatus;
-    }
-
-    public Long getHighestBidAmount() {
-        // 해당 아이템의 모든 입찰 중에서 최고 입찰 가격을 찾아 반환합니다.
-        Optional<Bid> highestBid = bids.stream()
-                .max(Comparator.comparing(Bid::getBidAmount));
-
-        return highestBid.map(Bid::getBidAmount).orElse(0L);
     }
 }
 
