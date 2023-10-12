@@ -32,16 +32,6 @@ public class ItemResponseDto {
         this.nickname = item.getMember().getNickname();
     }
 
-    public ItemResponseDto(Item item, String nickname){
-        this.id = item.getId();
-        this.title = item.getTitle();
-        this.content = item.getContent();
-        this.presentPrice = item.getPresentPrice();
-        this.minBidPrice = item.getMinBidPrice();
-        this.auctionEndTime = item.getAuctionEndTime();
-        this.itemImages = item.getImages();
-        this.nickname = nickname;
-    }
 
     public static List<ItemResponseDto> listOf(List<Item> items) {
         return items.stream()

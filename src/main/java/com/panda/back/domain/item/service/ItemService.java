@@ -55,7 +55,7 @@ public class ItemService {
         Item item = itemRepository.findById(itemId).orElseThrow(
                 () -> new IllegalArgumentException("해당 상품이 없습니다.")
         );
-        return new ItemResponseDto(item, item.getMember().getNickname());
+        return new ItemResponseDto(item);
     }
 
     @Transactional
