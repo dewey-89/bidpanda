@@ -48,12 +48,13 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult){
         String membername = ((MemberDetailsImpl) authResult.getPrincipal()).getUsername();
+        String nickname = ((MemberDetailsImpl) authResult.getPrincipal()).getMember().getNickname();
 
-        String token = tokenProvider.createToken(membername);
+        String token = tokenProvider.createToken(membername, nickname);
         response.addHeader("Authorization", token);
 
         RefreshToken refreshToken = refreshTokenRepository.findByMembername(membername).orElse(null);
-        String refresh = tokenProvider.createRefreshToken(membername);
+        String refresh = tokenProvider.createRefreshToken(membername,nickname);
         if (refreshToken == null){
             refreshToken = new RefreshToken(refresh,membername);
         } else {
