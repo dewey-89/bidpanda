@@ -127,15 +127,13 @@ public class ItemService {
     }
 
     public List<ItemResponseDto> getItemsByCategory(String category, int page, int size) {
-        Page<Item> items = itemRepository.findAllByCategoryOrderByModifiedAtDesc(category, Pageable.ofSize(size).withPage(page -1));
+        Page<Item> items = itemRepository.findAllByCategoryOrderByModifiedAtDesc(category, LocalDateTime.now(), Pageable.ofSize(size).withPage(page -1));
         return items.map(ItemResponseDto::new).toList();
     }
 
     public List<ItemResponseDto> getItemsByMember(Member member) {
 
-        Member member1 = memberRepository.findAllById(member.getId());
-
-        List<Item> items = itemRepository.findAllByMember(member1);
+        List<Item> items = itemRepository.findAllByMember(member);
 
         return items.stream()
                 .map(ItemResponseDto::new)
