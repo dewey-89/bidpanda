@@ -47,7 +47,7 @@ public class ItemService {
     }
 
     public Page<ItemResponseDto> getAllItems(int page, int size) {
-        Page<Item> items = itemRepository.findAllByOrderByModifiedAtDesc(Pageable.ofSize(size).withPage(page -1));
+        Page<Item> items = itemRepository.findAllByOrderByModifiedAtDesc(Pageable.ofSize(size).withPage(page -1), LocalDateTime.now());
         return items.map(ItemResponseDto::new);
     }
 
