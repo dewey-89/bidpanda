@@ -91,7 +91,7 @@ public class MemberController {
 
     @Operation(summary = "프로필 이미지 업로드")
     @PostMapping("/profile-image")
-    public ResponseEntity<BaseResponse> uploadProfileImage(
+    public BaseResponse uploadProfileImage(
             @RequestParam("file") MultipartFile file,
             @AuthenticationPrincipal MemberDetailsImpl memberDetails) throws IOException {
         return memberService.uploadProfileImage(file, memberDetails.getMember());

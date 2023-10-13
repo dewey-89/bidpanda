@@ -58,13 +58,13 @@ public class MailSerivce {
             e.printStackTrace();
         }
 
-// 유효 시간(3분)동안 {email, authKey} 저장
+        // 유효 시간(3분)동안 {email, authKey} 저장
         redisUtil.setDataExpire(email, authKey,  3 * 60 * 1L);
 
     }
 
     // 이메일 인증
-    public ResponseEntity<String> verifyEmail(VerifiRequestDto request) {
+    public BaseResponse<String> verifyEmail(VerifiRequestDto request) {
         String email = request.getEmail();
         String authKey = request.getAuthKey();
 
@@ -82,6 +82,6 @@ public class MailSerivce {
         }
 
         redisUtil.deleteData(email);
-        return ResponseEntity.ok().body("인증이 완료되었습니다.");
+        return BaseResponse.successMessage("인증이 완료되었습니다.");
     }
 }

@@ -32,14 +32,14 @@ public class MemberService {
 
     public BaseResponse membernameExists(String membername) {
         if (memberRepository.findByMembername(membername).isPresent()){
-            throw new IllegalArgumentException("이미 존재하는 아이디 입니다.");
+            throw new CustomException(ErrorCode.DUPLICATE_MEMBERNAME);
         }
         return BaseResponse.successMessage("중복 체크 완료");
     }
 
     public BaseResponse nicknameExists(String nickname) {
         if (memberRepository.findByNickname(nickname).isPresent()){
-            throw new IllegalArgumentException("이미 존재하는 닉네임 입니다.");
+            throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
         }
         return BaseResponse.successMessage("중복 체크 완료");
     }
@@ -67,7 +67,7 @@ public class MemberService {
         String nickname = requestDto.getNickname();
         Optional<Member> checkNickname = memberRepository.findByNickname(nickname);
         if (checkNickname.isPresent()) {
-            throw new IllegalArgumentException("중복된 Nickname이 존재합니다.");
+            throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
         }
 
         Member member = new Member(membername, password, email, nickname);
@@ -90,7 +90,7 @@ public class MemberService {
 
             // 입력한 비밀번호를 BCryptPasswordEncoder를 사용하여 검사
             if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
-                throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+                throw new CustomException(ErrorCode.NOT_MATCH_PASSWORD);
             }
 
             myprofile.setNickname(requestDto.getNickname());

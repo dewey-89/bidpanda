@@ -25,8 +25,7 @@ public class FavoriteItemService {
     public BaseResponse favoriteItem(Long itemId, Member member) {
 
         Item item = itemRepository.findById(itemId).orElseThrow(
-                () -> new IllegalArgumentException("유효하지 않은 아이템입니다.")
-        );
+                () -> new CustomException(ErrorCode.NOT_FOUND_MY_ITEM));
 
         FavoriteItem favoriteItem = favoriteItemRepository.findByMemberAndItem(member, item);
 

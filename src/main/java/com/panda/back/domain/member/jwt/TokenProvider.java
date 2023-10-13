@@ -76,7 +76,7 @@ public class TokenProvider {
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
             return tokenValue.substring(7);
         }
-        throw new JwtException("토큰이 유효하지 않습니다.");
+        throw new CustomException(ErrorCode.INVALID_JWT_TOKEN);
     }
 
     public boolean validateToken(String token) {

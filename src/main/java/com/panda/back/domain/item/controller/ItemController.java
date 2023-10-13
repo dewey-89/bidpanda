@@ -56,7 +56,7 @@ public class ItemController {
 
     @Operation(summary = "상품 삭제 API")
     @DeleteMapping("/{itemId}")
-    public SuccessResponse DeleteItemById(
+    public BaseResponse DeleteItemById(
             @PathVariable Long itemId,
             @AuthenticationPrincipal MemberDetailsImpl memberDetails) throws IOException {
         return ItemService.deleteItemById(itemId, memberDetails.getMember());
