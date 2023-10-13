@@ -6,7 +6,9 @@ import com.panda.back.domain.item.dto.ItemResponseDto;
 import com.panda.back.domain.item.entity.Item;
 import com.panda.back.domain.item.repository.ItemRepository;
 import com.panda.back.domain.member.entity.Member;
-import com.panda.back.global.dto.SuccessResponse;
+import com.panda.back.global.dto.BaseResponse;
+import com.panda.back.global.exception.CustomException;
+import com.panda.back.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,23 +22,23 @@ public class FavoriteItemService {
     private final ItemRepository itemRepository;
     private final FavoriteItemRepository favoriteItemRepository;
 
-    public SuccessResponse favoriteItem(Long itemId, Member member) {
+    public BaseResponse favoriteItem(Long itemId, Member member) {
 
         Item item = itemRepository.findById(itemId).orElseThrow(
                 () -> new IllegalArgumentException("유효하지 않은 아이템입니다.")
         );
 
-        FavoriteItem favoriteItem =favoriteItemRepository.findByMemberAndItem(member, item);
+        FavoriteItem favoriteItem = favoriteItemRepository.findByMemberAndItem(member, item);
 
-        if(favoriteItem == null) {
+        if (favoriteItem == null) {
             favoriteItem = new FavoriteItem();
             favoriteItem.setItem(item);
             favoriteItem.setMember(member);
             favoriteItemRepository.save(favoriteItem);
-            return new SuccessResponse("관심 등록 성공");
+            return BaseResponse.successMessage("관심 등록 완료");
         } else {
             favoriteItemRepository.delete(favoriteItem);
-            return new SuccessResponse("관심 등록 취소");
+            return BaseResponse.successMessage("관심 등록 취소");
         }
     }
 

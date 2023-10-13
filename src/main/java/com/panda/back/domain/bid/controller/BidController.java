@@ -17,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BidController {
     private final BidService bidService;
+
     @Operation(summary = "입찰하기")
     @PostMapping
     public BaseResponse createBid(

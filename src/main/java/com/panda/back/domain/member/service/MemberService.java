@@ -7,9 +7,8 @@ import com.panda.back.domain.member.entity.Member;
 import com.panda.back.domain.member.repository.MemberRepository;
 import com.panda.back.global.S3.S3Uploader;
 import com.panda.back.global.dto.BaseResponse;
-import com.panda.back.global.dto.ErrorResponse;
-import com.panda.back.global.dto.SuccessResponse;
-import com.panda.back.global.exception.ParameterValidationException;
+import com.panda.back.global.exception.CustomException;
+import com.panda.back.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +44,7 @@ public class MemberService {
         return ResponseEntity.ok().body(new SuccessResponse("중복 체크 완료"));
     }
 
-    public ResponseEntity<BaseResponse> signup(SignupRequestDto requestDto, BindingResult bindingResult) {
+    public ResponseEntity<BaseResponse<String>> signup(SignupRequestDto requestDto, BindingResult bindingResult) {
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         for (FieldError e : fieldErrors) {
             throw new ParameterValidationException(e.getDefaultMessage());
@@ -77,10 +76,10 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<ProfileResponseDto> getProfile(String membername) {
+    public BaseResponse<ProfileResponseDto> getProfile(String membername) {
         Optional<Member> member = memberRepository.findByMembername(membername);
         ProfileResponseDto profile = new ProfileResponseDto(member);
-        return ResponseEntity.ok().body(profile);
+        return BaseResponse.successData(profile);
     }
 
     @Transactional
@@ -123,12 +122,12 @@ public class MemberService {
         String url = s3Uploader.upload(file, "profile");
         member.profileImageUrlUpdate(url);
         memberRepository.save(member);
-        return ResponseEntity.ok().body(new BaseResponse(HttpStatus.CREATED,  url));
+        return BaseResponse.successData(url);
     }
   
   
     public Member findByMembername(String membername) {
         return memberRepository.findByMembername(membername).orElseThrow(() ->
-                new IllegalArgumentException("해당 사용자 이름의 회원을 찾을 수 없습니다. 사용자 이름 : " + membername));
+                new CustomException(ErrorCode.NOT_FOUND_MEMBER));
     }
 }

@@ -2,6 +2,9 @@ package com.panda.back.domain.member.service;
 
 import com.panda.back.domain.member.dto.EmailRequestDto;
 import com.panda.back.domain.member.dto.VerifiRequestDto;
+import com.panda.back.global.dto.BaseResponse;
+import com.panda.back.global.exception.CustomException;
+import com.panda.back.global.exception.ErrorCode;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +38,7 @@ public class MailSerivce {
         log.info("email : " + request.getEmail());
         log.info("status : " + HttpStatus.OK);
 
-        return ResponseEntity.ok().body("인증코드 전송 완료");
+        return BaseResponse.successMessage("인증코드 전송 완료");
     }
 
     private void sendAuthEmail(String email, String authKey) {
@@ -66,16 +69,16 @@ public class MailSerivce {
         String authKey = request.getAuthKey();
 
         if(email == null || authKey == null){
-            throw new IllegalArgumentException("이메일과 인증코드를 모두 입력해주세요.");
+            throw new CustomException(ErrorCode.REQUIRED_EMAIL_AND_AUTHKEY);
         }
 
         String redisAuthKey = redisUtil.getData(email);
         if (redisAuthKey == null) {
-            throw new IllegalArgumentException("인증코드가 만료되었습니다.");
+            throw new CustomException(ErrorCode.EXPIRED_AUTHKEY);
         }
 
         if (!redisAuthKey.equals(authKey)) {
-            throw new IllegalArgumentException("인증코드가 맞지 않습니다.");
+            throw new CustomException(ErrorCode.INVALID_INPUT_AUTHKEY);
         }
 
         redisUtil.deleteData(email);

@@ -37,7 +37,7 @@ public class MemberController {
 
     @Operation(summary = "인증코드 이메일 전송")
     @PostMapping("/email")
-    public ResponseEntity sendEmail(@RequestBody @Valid EmailRequestDto requestDto) {
+    public BaseResponse<String> sendEmail(@RequestBody @Valid EmailRequestDto requestDto) {
         return mailSerivce.sendEmail(requestDto);
     }
 
@@ -62,7 +62,7 @@ public class MemberController {
 
     @Operation(summary = "회원정보")
     @GetMapping
-    public ResponseEntity<ProfileResponseDto> getProfile(@AuthenticationPrincipal MemberDetailsImpl memberDetails) {
+    public BaseResponse<ProfileResponseDto> getProfile(@AuthenticationPrincipal MemberDetailsImpl memberDetails) {
         return memberService.getProfile(memberDetails.getUsername());
     }
 

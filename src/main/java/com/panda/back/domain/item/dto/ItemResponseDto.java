@@ -6,7 +6,6 @@ import lombok.Getter;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Getter
 public class ItemResponseDto {
@@ -20,7 +19,7 @@ public class ItemResponseDto {
     private Integer bidCount;
     private String nickname;
 
-    public ItemResponseDto(Item item){
+    public ItemResponseDto(Item item) {
         this.id = item.getId();
         this.title = item.getTitle();
         this.content = item.getContent();

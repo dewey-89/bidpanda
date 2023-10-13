@@ -12,6 +12,7 @@ import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findTop10ByOrderByPresentPriceDesc();
+
     @Query("SELECT i FROM Item i WHERE i.auctionEndTime > :currentTime ORDER BY i.presentPrice DESC")
     Page<Item> findAllByOrderByModifiedAtDesc(Pageable pageable, LocalDateTime currentTime);
 

@@ -6,7 +6,9 @@ import com.panda.back.domain.item.entity.Item;
 import com.panda.back.domain.item.repository.ItemRepository;
 import com.panda.back.domain.member.entity.Member;
 import com.panda.back.global.S3.S3Uploader;
-import com.panda.back.global.dto.SuccessResponse;
+import com.panda.back.global.dto.BaseResponse;
+import com.panda.back.global.exception.CustomException;
+import com.panda.back.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,7 +35,7 @@ public class ItemService {
         if (images.isEmpty()) {
             throw new IllegalArgumentException("이미지가 없습니다.");
         }
-        for(MultipartFile image : images){
+        for (MultipartFile image : images) {
             String fileName = s3Uploader.upload(image, "image");
             URL imageUrl = new URL(fileName);
             item.addImages(imageUrl);
@@ -45,7 +47,7 @@ public class ItemService {
     }
 
     public Page<ItemResponseDto> getAllItems(int page, int size) {
-        Page<Item> items = itemRepository.findAllByOrderByModifiedAtDesc(Pageable.ofSize(size).withPage(page -1), LocalDateTime.now());
+        Page<Item> items = itemRepository.findAllByOrderByModifiedAtDesc(Pageable.ofSize(size).withPage(page - 1), LocalDateTime.now());
         return items.map(ItemResponseDto::new);
     }
 
@@ -125,7 +127,7 @@ public class ItemService {
     }
 
     public List<ItemResponseDto> getItemsByCategory(String category, int page, int size) {
-        Page<Item> items = itemRepository.findAllByCategoryOrderByModifiedAtDesc(category, LocalDateTime.now(), Pageable.ofSize(size).withPage(page -1));
+        Page<Item> items = itemRepository.findAllByCategoryOrderByModifiedAtDesc(category, LocalDateTime.now(), Pageable.ofSize(size).withPage(page - 1));
         return items.map(ItemResponseDto::new).toList();
     }
 

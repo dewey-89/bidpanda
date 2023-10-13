@@ -33,17 +33,18 @@ public class BidService {
         if(item.getMember().getId().equals(member.getId())){
             throw new IllegalArgumentException("자신의 상품에는 입찰할 수 없습니다.");
         }
-        if (item.getPresentPrice()>=bidRequestDto.getBidAmount()) {
-            throw new IllegalArgumentException("입찰가가 현재가와 같거나 낮습니다.");
+        if (item.getPresentPrice() >= bidRequestDto.getBidAmount()) {
+            throw new CustomException(ErrorCode.NOT_VALID_BID_AMOUNT);
         }
-        if((bidRequestDto.getBidAmount()-item.getStartPrice())%item.getMinBidPrice()!=0){
-            throw new IllegalArgumentException("최소 입찰 단위로 입찰해주세요.");
+
+        if ((bidRequestDto.getBidAmount() - item.getStartPrice()) % item.getMinBidPrice() != 0) {
+            throw new CustomException(ErrorCode.NOT_VALID_MIN_BID_AMOUNT);
         }
         Bid bid = new Bid(item, member, bidRequestDto.getBidAmount());
         item.addBid(bid);
         bidRepository.save(bid);
 
-        return new BaseResponse(HttpStatus.CREATED, "입찰 성공");
+        return BaseResponse.successMessage("입찰에 성공하였습니다.");
     }
 
     public List<ItemResponseDto> getMyBiddedItems(Member member) {
