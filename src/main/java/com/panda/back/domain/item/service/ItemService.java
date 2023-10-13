@@ -53,7 +53,7 @@ public class ItemService {
 
     public ItemResponseDto getItemById(Long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(
-                () -> new IllegalArgumentException("해당 상품이 없습니다.")
+                () -> new CustomException(ErrorCode.NOT_FOUND_ITEM)
         );
         return new ItemResponseDto(item);
     }
@@ -72,7 +72,7 @@ public class ItemService {
 
         // item의 auctionEndTime이 현재 시간보다 이전인 경우 수정 불가능하도록 체크
         if (item.getAuctionEndTime().isAfter(LocalDateTime.now())) {
-            throw new IllegalArgumentException("경매가 진행중인 상품은 수정할 수 없습니다.");
+            throw new CustomException(ErrorCode.NOT_MODIFIED_BIDDING_ITEM);
         }
 
         // bidCount가 0이 아닌 경우 수정 불가
@@ -98,7 +98,7 @@ public class ItemService {
     @Transactional
     public SuccessResponse deleteItemById(Long itemId, Member member) throws IOException {
         Item item = itemRepository.findById(itemId).orElseThrow(
-                () -> new IllegalArgumentException("해당 상품이 없습니다.")
+                () -> new CustomException(ErrorCode.NOT_FOUND_ITEM)
         );
 
         // item의 auctionEndTime이 현재 시간보다 이전인 경우 수정 불가능하도록 체크
@@ -113,7 +113,7 @@ public class ItemService {
 
         // 멤버 아이디로 해당 item 등록글 찾기
         if (!item.getMember().getId().equals(member.getId())) {
-            throw new IllegalArgumentException("해당 상품은 자신이 등록한 상품이 아닙니다.");
+            throw new CustomException(ErrorCode.NOT_FOUND_MY_ITEM);
         }
 
         itemRepository.delete(item);

@@ -30,24 +30,24 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final S3Uploader s3Uploader;
 
-    public ResponseEntity<BaseResponse> membernameExists(String membername) {
+    public BaseResponse membernameExists(String membername) {
         if (memberRepository.findByMembername(membername).isPresent()){
             throw new IllegalArgumentException("이미 존재하는 아이디 입니다.");
         }
-        return ResponseEntity.ok().body(new SuccessResponse("중복 체크 완료"));
+        return BaseResponse.successMessage("중복 체크 완료");
     }
 
-    public ResponseEntity<BaseResponse> nicknameExists(String nickname) {
+    public BaseResponse nicknameExists(String nickname) {
         if (memberRepository.findByNickname(nickname).isPresent()){
             throw new IllegalArgumentException("이미 존재하는 닉네임 입니다.");
         }
-        return ResponseEntity.ok().body(new SuccessResponse("중복 체크 완료"));
+        return BaseResponse.successMessage("중복 체크 완료");
     }
 
     public ResponseEntity<BaseResponse<String>> signup(SignupRequestDto requestDto, BindingResult bindingResult) {
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         for (FieldError e : fieldErrors) {
-            throw new ParameterValidationException(e.getDefaultMessage());
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(BaseResponse.error(e.getDefaultMessage()));
         }
 
         String membername = requestDto.getMembername();
@@ -55,13 +55,13 @@ public class MemberService {
 
         Optional<Member> checkUsername = memberRepository.findByMembername(membername);
         if (checkUsername.isPresent()) {
-            throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
+            throw new CustomException(ErrorCode.DUPLICATE_MEMBERNAME);
         }
 
         String email = requestDto.getEmail();
         Optional<Member> checkEmail = memberRepository.findByEmail(email);
         if (checkEmail.isPresent()) {
-            throw new IllegalArgumentException("중복된 Email이 존재합니다.");
+            throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
         }
 
         String nickname = requestDto.getNickname();
@@ -72,7 +72,7 @@ public class MemberService {
 
         Member member = new Member(membername, password, email, nickname);
         memberRepository.save(member);
-        return ResponseEntity.ok().body(new SuccessResponse("회원 가입 완료"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.successMessage("회원가입이 완료되었습니다."));
     }
 
     @Transactional(readOnly = true)
@@ -83,7 +83,7 @@ public class MemberService {
     }
 
     @Transactional
-    public ResponseEntity<BaseResponse> updateProfile(ProfileRequestDto requestDto, Member member) {
+    public BaseResponse updateProfile(ProfileRequestDto requestDto, Member member) {
         try {
             // 현재 로그인한 사용자의 정보를 가져옴
             Member myprofile = findByMembername(member.getMembername());
@@ -104,21 +104,21 @@ public class MemberService {
 
             memberRepository.save(myprofile);
 
-            return ResponseEntity.ok().body(new SuccessResponse("회원정보 수정 성공"));
+            return BaseResponse.successMessage("회원정보 수정 성공");
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(new ErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage()));
+            return BaseResponse.error(e.getMessage());
         }
     }
 
     @Transactional
-    public ResponseEntity<BaseResponse> deleteMember(Member member) {
+    public BaseResponse deleteMember(Member member) {
        Member currentMember = findByMembername(member.getMembername());
         memberRepository.delete(currentMember);
-        return ResponseEntity.ok().body(new SuccessResponse("회원 삭제 성공"));
+        return BaseResponse.successMessage("회원 삭제 성공");
     }
 
     @Transactional
-    public ResponseEntity<BaseResponse> uploadProfileImage(MultipartFile file, Member member) throws IOException {
+    public BaseResponse uploadProfileImage(MultipartFile file, Member member) throws IOException {
         String url = s3Uploader.upload(file, "profile");
         member.profileImageUrlUpdate(url);
         memberRepository.save(member);

@@ -30,7 +30,6 @@ public class TokenProvider {
     private String secretKey;
     private Key key;
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-    private final RedisUtil redisUtil;
 
     @PostConstruct
     public void init() {
@@ -97,7 +96,6 @@ public class TokenProvider {
             log.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
             throw new CustomException(ErrorCode.WRONG_JWT_TOKEN);
         }
-        return false;
     }
 
     public Claims getUserInfoFromToken(String token) {

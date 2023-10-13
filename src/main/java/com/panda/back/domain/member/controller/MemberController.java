@@ -31,7 +31,7 @@ public class MemberController {
 
     @Operation(summary = "아이디 중복 체크")
     @GetMapping("/membername/{membername}")
-    public ResponseEntity<BaseResponse> membernameExists(@PathVariable String membername) {
+    public BaseResponse membernameExists(@PathVariable String membername) {
         return memberService.membernameExists(membername);
     }
 
@@ -43,19 +43,19 @@ public class MemberController {
 
     @Operation(summary = "이메일 인증 확인")
     @PostMapping("/email/verify")
-    public ResponseEntity<String> verifyEmail(@RequestBody @Valid VerifiRequestDto request) {
+    public BaseResponse<String> verifyEmail(@RequestBody @Valid VerifiRequestDto request) {
         return mailSerivce.verifyEmail(request);
     }
 
     @Operation(summary = "닉네임 중복 체크")
     @GetMapping("/nickname/{nickname}")
-    public ResponseEntity<BaseResponse> nicknameExists(@PathVariable String nickname) {
+    public BaseResponse nicknameExists(@PathVariable String nickname) {
         return memberService.nicknameExists(nickname);
     }
 
     @Operation(summary = "회원가입")
     @PostMapping
-    public ResponseEntity<BaseResponse> signup(
+    public ResponseEntity<BaseResponse<String>> signup(
             @RequestBody @Valid SignupRequestDto requestDto, BindingResult bindingResult) {
         return memberService.signup(requestDto, bindingResult);
     }
@@ -68,7 +68,7 @@ public class MemberController {
 
     @Operation(summary = "회원정보 수정")
     @PutMapping
-    public ResponseEntity<BaseResponse> updateProfile(
+    public BaseResponse updateProfile(
             @RequestBody @Valid ProfileRequestDto requestDto,
             @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
      return memberService.updateProfile(requestDto,memberDetails.getMember());
@@ -76,7 +76,7 @@ public class MemberController {
 
     @Operation(summary = "회원 탈퇴")
     @DeleteMapping
-    public ResponseEntity<BaseResponse> delete(
+    public BaseResponse delete(
             @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
         return memberService.deleteMember(memberDetails.getMember());
     }

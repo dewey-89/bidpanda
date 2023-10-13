@@ -26,7 +26,7 @@ public class MailSerivce {
     private final JavaMailSender javaMailSender;
 
     @Transactional
-    public ResponseEntity sendEmail(EmailRequestDto request) {
+    public BaseResponse<String> sendEmail(EmailRequestDto request) {
         if (redisUtil.getData(request.getEmail()) != null){
             redisUtil.deleteData(request.getEmail());
         }
