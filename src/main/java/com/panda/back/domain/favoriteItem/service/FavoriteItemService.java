@@ -6,12 +6,10 @@ import com.panda.back.domain.item.dto.ItemResponseDto;
 import com.panda.back.domain.item.entity.Item;
 import com.panda.back.domain.item.repository.ItemRepository;
 import com.panda.back.domain.member.entity.Member;
-import com.panda.back.domain.member.repository.MemberRepository;
 import com.panda.back.global.dto.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

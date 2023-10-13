@@ -28,8 +28,8 @@ public class Member {
     @Column(nullable = false)
     private String nickname;
 
-    @Column(nullable = true)
-    private String profileImageUrl;
+    @Column(nullable = false)
+    private String profileImageUrl = "https://bidpanda-bucket.s3.ap-northeast-2.amazonaws.com/defualt-image/IMG_0191.png";
 
     private Long kakaoId;
 

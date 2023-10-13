@@ -2,32 +2,23 @@ package com.panda.back.domain.member.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.panda.back.domain.member.dto.*;
-import com.panda.back.domain.member.entity.Member;
 import com.panda.back.domain.member.jwt.MemberDetailsImpl;
-import com.panda.back.domain.member.jwt.TokenProvider;
 import com.panda.back.domain.member.service.KakaoService;
 import com.panda.back.domain.member.service.MailSerivce;
 import com.panda.back.domain.member.service.MemberService;
 import com.panda.back.global.dto.BaseResponse;
-import com.panda.back.global.dto.ErrorResponse;
-import com.panda.back.global.dto.SuccessResponse;
-import com.panda.back.global.exception.ParameterValidationException;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @Slf4j

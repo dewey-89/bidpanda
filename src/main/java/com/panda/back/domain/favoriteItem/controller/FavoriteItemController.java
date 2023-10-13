@@ -2,7 +2,6 @@ package com.panda.back.domain.favoriteItem.controller;
 
 import com.panda.back.domain.favoriteItem.service.FavoriteItemService;
 import com.panda.back.domain.item.dto.ItemResponseDto;
-import com.panda.back.domain.member.entity.Member;
 import com.panda.back.domain.member.jwt.MemberDetailsImpl;
 import com.panda.back.global.dto.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;

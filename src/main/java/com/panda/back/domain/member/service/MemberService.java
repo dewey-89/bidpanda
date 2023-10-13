@@ -1,6 +1,5 @@
 package com.panda.back.domain.member.service;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
 import com.panda.back.domain.member.dto.ProfileRequestDto;
 import com.panda.back.domain.member.dto.ProfileResponseDto;
 import com.panda.back.domain.member.dto.SignupRequestDto;
