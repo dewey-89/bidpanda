@@ -149,8 +149,7 @@ public class KakaoService {
                 kakaoUser = new Member(kakaoUserInfo.getNickname(),
                         encodedPassword,
                         email,
-                        kakaoId,
-                        kakaoUser.getNickname()
+                        kakaoId
                 );
             }
 
