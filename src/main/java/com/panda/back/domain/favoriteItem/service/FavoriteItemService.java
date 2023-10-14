@@ -25,7 +25,7 @@ public class FavoriteItemService {
     public BaseResponse favoriteItem(Long itemId, Member member) {
 
         Item item = itemRepository.findById(itemId).orElseThrow(
-                () -> new CustomException(ErrorCode.NOT_FOUND_MY_ITEM));
+                () -> new CustomException(ErrorCode.NOT_FOUND_ITEM));
 
         FavoriteItem favoriteItem = favoriteItemRepository.findByMemberAndItem(member, item);
 
