@@ -52,11 +52,10 @@ public class ItemService {
     }
 
     public ItemResponseDto getItemById(Long itemId) {
-
         Item item = itemRepository.findById(itemId).orElseThrow(
                 () -> new IllegalArgumentException("해당 상품이 없습니다.")
         );
-        return new ItemResponseDto(item);
+        return new ItemResponseDto(item, item.getMember().getNickname());
     }
 
     @Transactional
