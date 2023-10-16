@@ -1,6 +1,7 @@
 package com.panda.back.domain.member.jwt;
 
-import com.panda.back.domain.member.service.RedisUtil;
+import com.panda.back.global.exception.CustomException;
+import com.panda.back.global.exception.ErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -29,7 +30,6 @@ public class TokenProvider {
     private String secretKey;
     private Key key;
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-    private final RedisUtil redisUtil;
 
     @PostConstruct
     public void init() {
@@ -38,24 +38,26 @@ public class TokenProvider {
     }
 
     // 토큰 생성
-    public String createToken(String membername) {
+    public String createToken(String membername, String nickname) {
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(membername)
+                        .claim("nickname", nickname)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                         .setIssuedAt(date)
                         .signWith(key, signatureAlgorithm)
                         .compact();
     }
 
-    public String createRefreshToken(String username) {
+    public String createRefreshToken(String username, String nickname) {
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(username) // 사용자 식별자값(ID)
+                        .claim("nickname", nickname)
                         .setExpiration(new Date(date.getTime() + RefreshTOKEN_TIME)) // 만료 시간
                         .setIssuedAt(date) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
@@ -74,7 +76,7 @@ public class TokenProvider {
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
             return tokenValue.substring(7);
         }
-        throw new JwtException("토큰이 유효하지 않습니다.");
+        throw new CustomException(ErrorCode.INVALID_JWT_TOKEN);
     }
 
     public boolean validateToken(String token) {
@@ -83,14 +85,17 @@ public class TokenProvider {
             return true;
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
             log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+            throw new CustomException(ErrorCode.INVALID_JWT_TOKEN);
         } catch (ExpiredJwtException e) {
             log.error("Expired JWT token, 만료된 JWT token 입니다.");
+            throw new CustomException(ErrorCode.EXPIRED_JWT_TOKEN);
         } catch (UnsupportedJwtException e) {
             log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
+            throw new CustomException(ErrorCode.UNSUPPORTED_JWT_TOKEN);
         } catch (IllegalArgumentException e) {
             log.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
+            throw new CustomException(ErrorCode.WRONG_JWT_TOKEN);
         }
-        return false;
     }
 
     public Claims getUserInfoFromToken(String token) {

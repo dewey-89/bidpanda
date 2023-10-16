@@ -11,5 +11,4 @@ public class BidRequestDto {
         this.itemId = itemId;
         this.bidAmount = bidAmount;
     }
-
 }

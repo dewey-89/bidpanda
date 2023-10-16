@@ -4,7 +4,7 @@ import com.panda.back.domain.item.dto.ItemRequestDto;
 import com.panda.back.domain.item.dto.ItemResponseDto;
 import com.panda.back.domain.item.service.ItemService;
 import com.panda.back.domain.member.jwt.MemberDetailsImpl;
-import com.panda.back.global.dto.SuccessResponse;
+import com.panda.back.global.dto.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -56,7 +56,7 @@ public class ItemController {
 
     @Operation(summary = "상품 삭제 API")
     @DeleteMapping("/{itemId}")
-    public SuccessResponse DeleteItemById(
+    public BaseResponse DeleteItemById(
             @PathVariable Long itemId,
             @AuthenticationPrincipal MemberDetailsImpl memberDetails) throws IOException {
         return ItemService.deleteItemById(itemId, memberDetails.getMember());
@@ -68,12 +68,12 @@ public class ItemController {
         return ItemService.getTopPriceItems();
     }
 
-    @Operation(summary ="카테고리 별 상품 조회 API")
+    @Operation(summary = "카테고리 별 상품 조회 API")
     @GetMapping("/category/{category}")
     public List<ItemResponseDto> getItemsByCategory(
             @PathVariable String category,
             @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size){
+            @RequestParam(value = "size", defaultValue = "10") int size) {
         return ItemService.getItemsByCategory(category, page, size);
     }
 

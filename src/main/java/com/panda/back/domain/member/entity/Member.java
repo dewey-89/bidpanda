@@ -28,8 +28,8 @@ public class Member {
     @Column(nullable = false)
     private String nickname;
 
-    @Column(nullable = true)
-    private String profileImageUrl;
+    @Column(nullable = false)
+    private String profileImageUrl = "https://bidpanda-bucket.s3.ap-northeast-2.amazonaws.com/defualt-image/IMG_0191.png";
 
     private Long kakaoId;
 
@@ -42,12 +42,12 @@ public class Member {
         this.nickname = nickname;
     }
 
-    public Member(String membername, String password, String email, Long kakaoId, String nickname) {
+    public Member(String membername, String password, String email, Long kakaoId) {
         this.membername = membername;
         this.password = password;
         this.email = email;
         this.kakaoId = kakaoId;
-        this.nickname = nickname;
+        this.nickname = "kakao" + kakaoId;
     }
 
     public Member kakaoIdUpdate(Long kakaoId) {

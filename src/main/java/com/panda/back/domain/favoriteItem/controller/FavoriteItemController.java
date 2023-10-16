@@ -2,9 +2,8 @@ package com.panda.back.domain.favoriteItem.controller;
 
 import com.panda.back.domain.favoriteItem.service.FavoriteItemService;
 import com.panda.back.domain.item.dto.ItemResponseDto;
-import com.panda.back.domain.member.entity.Member;
 import com.panda.back.domain.member.jwt.MemberDetailsImpl;
-import com.panda.back.global.dto.SuccessResponse;
+import com.panda.back.global.dto.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,7 +20,7 @@ public class FavoriteItemController {
 
     @Operation(summary = "관심상품 등록 API")
     @PostMapping
-    public SuccessResponse favoriteItem(
+    public BaseResponse favoriteItem(
             @RequestParam Long itemId,
             @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
         return favoriteItemService.favoriteItem(itemId, memberDetails.getMember());

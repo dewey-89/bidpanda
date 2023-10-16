@@ -6,7 +6,6 @@ import lombok.Getter;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Getter
 public class ItemResponseDto {
@@ -20,7 +19,7 @@ public class ItemResponseDto {
     private Integer bidCount;
     private String nickname;
 
-    public ItemResponseDto(Item item){
+    public ItemResponseDto(Item item) {
         this.id = item.getId();
         this.title = item.getTitle();
         this.content = item.getContent();
@@ -29,18 +28,9 @@ public class ItemResponseDto {
         this.auctionEndTime = item.getAuctionEndTime();
         this.itemImages = item.getImages();
         this.bidCount = item.getBidCount();
+        this.nickname = item.getMember().getNickname();
     }
 
-    public ItemResponseDto(Item item, String nickname){
-        this.id = item.getId();
-        this.title = item.getTitle();
-        this.content = item.getContent();
-        this.presentPrice = item.getPresentPrice();
-        this.minBidPrice = item.getMinBidPrice();
-        this.auctionEndTime = item.getAuctionEndTime();
-        this.itemImages = item.getImages();
-        this.nickname = nickname;
-    }
 
     public static List<ItemResponseDto> listOf(List<Item> items) {
         return items.stream()

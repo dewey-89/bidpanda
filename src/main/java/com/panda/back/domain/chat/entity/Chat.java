@@ -3,8 +3,6 @@ package com.panda.back.domain.chat.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 
-import java.util.UUID;
-
 @Entity
 @Getter
 @Table(name = "chat")

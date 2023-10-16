@@ -12,9 +12,7 @@ import lombok.NoArgsConstructor;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 @Getter
@@ -77,6 +75,7 @@ public class Item extends Timestamped {
     public void addImages(URL imageUrl) {
         this.images.add(imageUrl);
     }
+
     public void clearImages() {
         this.images.clear();
     }

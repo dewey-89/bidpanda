@@ -44,7 +44,7 @@ public class KakaoService {
         Member kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
 
         // 4. JWT 토큰 반환
-        String createToken = tokenProvider.createToken(kakaoUser.getMembername());
+        String createToken = tokenProvider.createToken(kakaoUser.getMembername(), kakaoUser.getNickname());
 
         response.addHeader(TokenProvider.AUTHORIZATION_HEADER, createToken);
         return "redirect:/";
@@ -149,8 +149,7 @@ public class KakaoService {
                 kakaoUser = new Member(kakaoUserInfo.getNickname(),
                         encodedPassword,
                         email,
-                        kakaoId,
-                        kakaoUser.getNickname()
+                        kakaoId
                 );
             }
 
