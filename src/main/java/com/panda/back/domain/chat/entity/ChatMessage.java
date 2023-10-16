@@ -1,28 +1,24 @@
 package com.panda.back.domain.chat.entity;
 
-import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ChatMessage {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    public enum MessageType {
+        ENTER, TALK
+    }
 
-    @Column(nullable = false)
-    private String content;
-
-//    @ManyToOne
-//    @JoinColumn(name = "chat_id")
-//    private Chat chat;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "member_id")
-//    private Member member;
-
-    @Column(name = "chat_id")
-    private Long chatId;
-
-    @Column(name = "member_id")
-    private Long memberId;
-    // timeSt
+    private MessageType type;
+    //채팅방 ID
+    private String roomId;
+    //보내는 사람
+    private String sender;
+    //내용
+    private String message;
 }
