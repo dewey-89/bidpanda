@@ -14,8 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
-public interface ItemRepository extends JpaRepository<Item, Long> {
+public interface ItemRepository extends JpaRepository<Item, Long> , ItemRepositoryCustom {
     List<Item> findTop10ByOrderByPresentPriceDesc();
 
     @Query("SELECT i FROM Item i WHERE i.auctionEndTime > :currentTime ORDER BY i.presentPrice DESC")

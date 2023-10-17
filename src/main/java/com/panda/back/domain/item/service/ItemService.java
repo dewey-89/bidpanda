@@ -2,6 +2,7 @@ package com.panda.back.domain.item.service;
 
 import com.panda.back.domain.item.dto.ItemRequestDto;
 import com.panda.back.domain.item.dto.ItemResponseDto;
+import com.panda.back.domain.item.dto.ItemSearchCondition;
 import com.panda.back.domain.item.entity.Item;
 import com.panda.back.domain.item.repository.ItemRepository;
 import com.panda.back.domain.member.entity.Member;
@@ -175,5 +176,11 @@ public class ItemService {
 
 
         }
+    }
+
+
+    public List<ItemResponseDto> querydslTest(String memberName, Long winnerId) {
+
+        return itemRepository.search(new ItemSearchCondition(memberName, winnerId));
     }
 }

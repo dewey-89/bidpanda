@@ -95,6 +95,13 @@ public class ItemController {
         ItemService.itemClosedAlarm(itemId);
     }
 
+    @Operation(summary = "동적 쿼리 테스트")
+    @GetMapping("/test")
+    public List<ItemResponseDto> test(@RequestParam String memberName,
+                                      @RequestParam Long winnerId) {
+        return ItemService.querydslTest(memberName, winnerId);
+    }
+
 }
 
 
