@@ -21,12 +21,12 @@ import java.util.List;
 public class BidChatRoomController {
     private final BidChatRoomService bidChatRoomService;
 
-    @PostMapping("")
+    @PostMapping("/room")
     public ResponseEntity<ChatRoomResDto.Open> roomOpen(
             @RequestBody BidChatRoomReqDto.Open requestDto,
             @AuthenticationPrincipal MemberDetailsImpl memberDetails
     ) {
-        log.info("{}",requestDto);
+        log.info("{}",requestDto.getItemId());
         return ResponseEntity.ok(bidChatRoomService.OpenOrCreateChatRoom(requestDto, memberDetails.getMember()));
     }
 

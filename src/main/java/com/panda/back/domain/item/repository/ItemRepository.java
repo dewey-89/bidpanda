@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,4 +28,14 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findAuctionEndTimeItems(LocalDateTime currentTime);
 
     List<Item> findAllByWinnerId(Long id);
+
+    @Query("SELECT i, chatroom FROM Item i LEFT JOIN i.bidChatRoom chatroom " +
+            "WHERE i.winnerId = :winnerId " +
+            "ORDER BY i.auctionEndTime DESC")
+    List<Item> findItemsWithChatRoomsByWinnerId(@Param("winnerId") Long winnerId);
+
+    @Query("SELECT i, chatroom FROM Item i LEFT JOIN i.bidChatRoom chatroom " +
+            "WHERE i.member = :member " +
+            "ORDER BY i.auctionEndTime DESC")
+    List<Item> findItemsWithChatRoomsByMember(@Param("member") Member member);
 }
