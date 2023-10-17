@@ -1,0 +1,9 @@
+### 1. recordId 조회
+GET http://localhost:8080/api/chat/rooms/1/messages
+
+GET http://localhost:8080/api/chat/rooms?user=
+
+### 2.query param 잘 넘어오나?
+GET http://localhost:8080/api/chat/rooms?user=seller
+
+### 3. 잘 조회되나?

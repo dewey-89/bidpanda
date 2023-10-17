@@ -31,4 +31,8 @@ public class BidChatRoom {
     @Column(name = "last_visited_at")
     private LocalDateTime lastVisitedAt;
 
+    public BidChatRoom (String recordId, Item item) {
+        this.recordId = recordId;
+        this.item = item;
+    }
 }

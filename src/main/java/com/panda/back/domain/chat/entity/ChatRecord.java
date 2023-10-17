@@ -3,7 +3,6 @@ package com.panda.back.domain.chat.entity;
 import com.panda.back.domain.chat.entity.component.Message;
 import jakarta.persistence.Id;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -12,13 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@NoArgsConstructor
 @Document(collection = "chat_records")
 public class ChatRecord {
     @Id
     private ObjectId id;
-
-    private String roomId;
 
     private List<Message> messages;
 
@@ -26,8 +22,7 @@ public class ChatRecord {
 
     private LocalDateTime lastSentAt;
 
-    public ChatRecord(String roomId) {
-        this.roomId = roomId;
+    public ChatRecord() {
         this.messages = new ArrayList<>();
         this.messageQnt = 0;
         this.lastSentAt = LocalDateTime.now();

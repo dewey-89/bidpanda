@@ -16,10 +16,10 @@ public class MessageController {
     private final SimpMessageSendingOperations sendingOperations;
     private final ChatRecordService chatRecordService;
 
-    @MessageMapping("/chat/message")
+    @MessageMapping("/chat/message") //app/chat/message
     @SendTo("/topic/chat/room")
     public void enter(ReceiveMessage message) {
-        if (MessageType.ENTER.equals(message.getType())) {
+        if (message.getType().equals(MessageType.ENTER)) {
             message.setContent(message.getSender()+"님이 입장하였습니다.");
         }else {
             //메시지 저장 로직 수행
@@ -27,4 +27,5 @@ public class MessageController {
         }
         sendingOperations.convertAndSend("/topic/chat/room/"+ message.getRecordId(), message);
     }
+
 }
