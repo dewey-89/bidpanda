@@ -1,9 +1,9 @@
 package com.panda.back.domain.chat.controller;
 
 import com.panda.back.domain.chat.dto.req.BidChatRoomReqDto;
+import com.panda.back.domain.chat.dto.res.ChatRoomInfoResDto;
 import com.panda.back.domain.chat.dto.res.ChatRoomResDto;
 import com.panda.back.domain.chat.dto.res.MessageInfo;
-import com.panda.back.domain.chat.dto.res.MyBidChatRoomListResDto;
 import com.panda.back.domain.chat.service.BidChatRoomService;
 import com.panda.back.domain.member.jwt.MemberDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,6 @@ public class BidChatRoomController {
             @RequestBody BidChatRoomReqDto.Open requestDto,
             @AuthenticationPrincipal MemberDetailsImpl memberDetails
     ) {
-        log.info("{}",requestDto.getItemId());
         return ResponseEntity.ok(bidChatRoomService.OpenOrCreateChatRoom(requestDto, memberDetails.getMember()));
     }
 
@@ -35,12 +34,10 @@ public class BidChatRoomController {
      * 채팅룸 종류별 리스트 조회
      */
     @GetMapping("/rooms")
-    public ResponseEntity<MyBidChatRoomListResDto> getCosignerBidChatRooms(
-            BidChatRoomReqDto.Get requestDto,
+    public ResponseEntity<List<ChatRoomInfoResDto>> getCosignerBidChatRooms(
             @AuthenticationPrincipal MemberDetailsImpl memberDetails
     ) {
-        log.info("{}",requestDto.getUserType());
-        return ResponseEntity.ok(bidChatRoomService.getMyChatRooms(requestDto, memberDetails.getMember()));
+        return ResponseEntity.ok(bidChatRoomService.getMyChatRooms(memberDetails.getMember()));
     }
 
     /**
