@@ -19,7 +19,7 @@ public class MessageController {
     @SendTo("/topic/chat/room")
     public void enter(ChatMessage message) {
         if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
-            message.setContent(message.getSender()+"님이 입장하였습니다.");
+            message.setMessage(message.getSender()+"님이 입장하였습니다.");
         }else {
             //메시지 저장 로직 수행
             chatRecordService.recordMessage(message);

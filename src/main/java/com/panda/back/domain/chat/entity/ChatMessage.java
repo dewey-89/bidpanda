@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ChatMessage {
     public enum MessageType {
-        ENTER, TALK, TEXT, MEDIA
+        ENTER, TALK
     }
 
     private MessageType type;
@@ -20,5 +20,5 @@ public class ChatMessage {
     //보내는 사람
     private String sender;
     //내용
-    private String content;
+    private String message;
 }
