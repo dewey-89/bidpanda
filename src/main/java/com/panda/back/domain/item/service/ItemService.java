@@ -55,7 +55,7 @@ public class ItemService {
         Item item = itemRepository.findById(itemId).orElseThrow(
                 () -> new CustomException(ErrorCode.NOT_FOUND_ITEM)
         );
-        return new ItemResponseDto(item);
+        return new ItemResponseDto(item, item.getMember().getNickname());
     }
 
     @Transactional

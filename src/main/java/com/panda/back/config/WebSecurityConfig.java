@@ -25,6 +25,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.net.Socket;
 import java.util.Arrays;
 
 @Configuration
@@ -96,6 +97,8 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers("/").permitAll() // 메인 페이지 요청 허가
                         .requestMatchers("/api/members/**").permitAll() // '/api/members/'로 시작하는 요청 모두 접근 허가
                         .requestMatchers(HttpMethod.POST,"/api/members/email").permitAll() // '/api/members/email' POST 요청 허가
+                        .requestMatchers("/ws/**").permitAll() // socket 연결 요청
+                        .requestMatchers("/chat/**").permitAll() // chatroom 허가
                         .requestMatchers(HttpMethod.GET).permitAll() // GET 요청 허가
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
