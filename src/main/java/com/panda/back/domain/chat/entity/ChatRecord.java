@@ -1,5 +1,6 @@
 package com.panda.back.domain.chat.entity;
 
+import com.panda.back.domain.chat.entity.component.Message;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,7 @@ public class ChatRecord {
 
     private String roomId;
 
-    private List<ChatMessage> messages;
+    private List<Message> messages;
 
     private Integer messageQnt;
 
@@ -32,7 +33,7 @@ public class ChatRecord {
         this.lastSentAt = LocalDateTime.now();
     }
 
-    public void recordMessage(ChatMessage message) {
+    public void recordMessage(Message message) {
         this.messages.add(message);
         this.messageQnt += 1;
         this.lastSentAt = LocalDateTime.now();

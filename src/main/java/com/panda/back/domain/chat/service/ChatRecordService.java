@@ -1,8 +1,9 @@
 package com.panda.back.domain.chat.service;
 
 
-import com.panda.back.domain.chat.entity.ChatMessage;
+import com.panda.back.domain.chat.dto.ReceiveMessage;
 import com.panda.back.domain.chat.entity.ChatRecord;
+import com.panda.back.domain.chat.entity.component.Message;
 import com.panda.back.domain.chat.repository.ChatRecordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,19 +17,16 @@ public class ChatRecordService {
     private final ChatRecordRepository chatRecordRepository;
 
     @Transactional
-    public void recordMessage(ChatMessage message) {
-        ChatRecord chatRecord;
-
-        Optional<ChatRecord> recordRoom = chatRecordRepository
-                .findChatRecordByRoomIdEquals(message.getRoomId());
-
-        if (recordRoom.isEmpty()) {
-            chatRecord = chatRecordRepository.insert(new ChatRecord(message.getRoomId()));
-        }else {
-            chatRecord = recordRoom.get();
-        }
-        chatRecord.recordMessage(message);
-        chatRecordRepository.save(chatRecord);
+    public void recordMessage(ReceiveMessage message) {
+        chatRecordRepository.findChatRecordByRoomIdEquals(message.getRecordId())
+                .ifPresentOrElse((record) -> {
+                    record.recordMessage(new Message(message));
+                    chatRecordRepository.save(record);
+                }, () -> {
+                    ChatRecord chatRecord = chatRecordRepository
+                            .insert(new ChatRecord(message.getRecordId()));
+                    chatRecord.recordMessage(new Message(message));
+                });
     }
 
 }
