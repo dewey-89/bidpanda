@@ -10,19 +10,17 @@ import lombok.NoArgsConstructor;
 public class BidChatRoomReqDto {
     @Getter
     public static class Get{
+        @Schema(name = "user", type = "String", nullable = false, description = "")
         private String user;
-        @Schema(hidden = true)
-        private UserType userType;
-
         public Get(String user) {
             this.user = user;
-            this.userType = UserType.valueOf(user);
         }
     }
 
     @Getter
     @NoArgsConstructor
     public static class Open {
+        @Schema(type = "Number", nullable = false, description = "아이템 아이디", example="1")
         @JsonProperty("item_id")
         private Long itemId;
         public Open(Long itemId) {

@@ -1,10 +1,9 @@
 package com.panda.back.domain.chat.service;
 
 import com.panda.back.domain.chat.dto.req.BidChatRoomReqDto;
-import com.panda.back.domain.chat.dto.res.ChatRoomInfo;
+import com.panda.back.domain.chat.dto.res.ChatRoomInfoResDto;
 import com.panda.back.domain.chat.dto.res.ChatRoomResDto;
 import com.panda.back.domain.chat.dto.res.MessageInfo;
-import com.panda.back.domain.chat.dto.res.MyBidChatRoomListResDto;
 import com.panda.back.domain.chat.entity.BidChatRoom;
 import com.panda.back.domain.chat.entity.ChatRecord;
 import com.panda.back.domain.chat.repository.BidChatRoomRepository;
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 
 @Service
@@ -28,17 +28,15 @@ public class BidChatRoomService {
     private final BidChatRoomRepository bidChatRoomRepository;
     private final ChatRecordRepository chatRecordRepository;
     private final ItemRepository itemRepository;
-    public MyBidChatRoomListResDto getMyChatRooms(BidChatRoomReqDto.Get requestDto, Member member) {
-        List<Item> result = null;
-        switch (requestDto.getUserType()) {
-            case seller -> {
-                result = itemRepository.findItemsWithChatRoomsByMember(member);
-            }
-            case winner -> {
-                result = itemRepository.findItemsWithChatRoomsByWinnerId(member.getId());
-            }
-        }
-        return new MyBidChatRoomListResDto(result, requestDto.getUserType());
+    public List<ChatRoomInfoResDto> getMyChatRooms(Member member) {
+        List<Item> joined = Stream.concat(
+                itemRepository.findItemsWithChatRoomsByMember(member).stream(),
+                itemRepository.findItemsWithChatRoomsByWinnerId(member.getId()).stream()
+        ).toList();
+
+        return joined.stream()
+                .map(item -> new ChatRoomInfoResDto(item, member))
+                .toList();
     }
 
     @Transactional
