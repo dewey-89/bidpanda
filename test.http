@@ -7,3 +7,39 @@ GET http://localhost:8080/api/chat/rooms?user=
 GET http://localhost:8080/api/chat/rooms?user=seller
 
 ### 3. 잘 조회되나?
+POST http://localhost:8080/api/members
+Content-Type: application/json
+
+{
+  "membername" :  "hyelin12345",
+  "nickname" : "혜린혜린",
+  "password" : "Hyelin12345",
+  "email" : "he9596@naver.com"
+}
+
+
+### 로그인 ^^
+POST http://localhost:8080/api/members/login
+Content-Type: application/json
+
+{
+  "membername" : "Hyelin1234",
+  "password" : "Hyelin1234"
+}
+
+### 이제 BidChatRoom 조회 11번 유저
+GET http://localhost:8080/api/chat/rooms?user=seller
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoeWVsaW4xMjM0Iiwibmlja25hbWUiOiJIeWVsaW4xMjM0IiwiZXhwIjoxNjk3NTI5MzIwLCJpYXQiOjE2OTc1MjU3MjB9.b6cOTMVxtEj5nrN_AygiEClg3vngi9ZFxLd3pqrapmI
+
+### POST 요청
+POST http://localhost:8080/api/chat/room
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoeWVsaW4xMjM0Iiwibmlja25hbWUiOiJIeWVsaW4xMjM0IiwiZXhwIjoxNjk3NTI5MzIwLCJpYXQiOjE2OTc1MjU3MjB9.b6cOTMVxtEj5nrN_AygiEClg3vngi9ZFxLd3pqrapmI
+
+{
+  "item_id" : 18
+}
+
+### Messages 11번 유저
+GET http://localhost:8080/api/chat/rooms/652e359b1d57be05ee823591/messages
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoeWVsaW4xMjM0Iiwibmlja25hbWUiOiJIeWVsaW4xMjM0IiwiZXhwIjoxNjk3NTI5MzIwLCJpYXQiOjE2OTc1MjU3MjB9.b6cOTMVxtEj5nrN_AygiEClg3vngi9ZFxLd3pqrapmI

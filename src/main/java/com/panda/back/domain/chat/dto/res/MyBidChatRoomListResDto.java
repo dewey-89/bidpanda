@@ -1,25 +1,32 @@
 package com.panda.back.domain.chat.dto.res;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
+import com.panda.back.domain.chat.type.UserType;
+import com.panda.back.domain.item.entity.Item;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Getter
-@Builder
 public class MyBidChatRoomListResDto {
-    @JsonProperty("my")
-    public MyInfo myInfo;
-    public static class MyInfo {
-        private String nickname;
-        public MyInfo(String nickname) {
-            this.nickname = nickname;
-        }
-    }
-
     public List<ChatRoomInfo> opened;
+
     @JsonProperty("not-opened")
     public List<ChatRoomInfo> notOpened;
+
+    public MyBidChatRoomListResDto(List<Item> items, UserType userType) {
+        this.opened = new ArrayList<>();
+        this.notOpened = new ArrayList<>();
+        for(Item item : items) {
+            if (Objects.nonNull(item.getBidChatRoom())) {
+                opened.add(new ChatRoomInfo(item, userType));
+            } else {
+                notOpened.add(new ChatRoomInfo(item, userType));
+            }
+        }
+    }
 
 }

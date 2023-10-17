@@ -2,6 +2,7 @@ package com.panda.back.domain.item.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.panda.back.domain.bid.entity.Bid;
+import com.panda.back.domain.chat.entity.BidChatRoom;
 import com.panda.back.domain.item.dto.ItemRequestDto;
 import com.panda.back.domain.member.entity.Member;
 import com.panda.back.global.entity.Timestamped;
@@ -57,6 +58,9 @@ public class Item extends Timestamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    @OneToOne(mappedBy = "item",fetch = FetchType.LAZY)
+    private BidChatRoom bidChatRoom;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     private List<Bid> bids = new ArrayList<>();

@@ -1,15 +1,16 @@
 package com.panda.back.domain.chat.dto.res;
 
-import lombok.Builder;
+import com.panda.back.domain.chat.type.UserType;
 import lombok.Getter;
 
 public class ChatRoomResDto {
     @Getter
-    @Builder
     public static class Open {
         private String recordId;
-        public Open(String recordId) {
+        private String myRole;
+        public Open(String recordId, UserType userType) {
             this.recordId = recordId;
+            this.myRole = userType.name();
         }
     }
 }
