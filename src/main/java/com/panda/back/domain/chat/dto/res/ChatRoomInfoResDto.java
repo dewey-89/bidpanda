@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.panda.back.domain.chat.type.UserType;
 import com.panda.back.domain.item.entity.Item;
 import com.panda.back.domain.member.entity.Member;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
