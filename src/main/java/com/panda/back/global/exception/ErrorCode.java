@@ -32,11 +32,10 @@ public enum ErrorCode {
 
     CLOSED_BIDDING_ITEM(HttpStatus.GONE, "경매가 종료된 상품입니다."),
 
-    REQUIRED_EMAIL_AND_AUTHKEY(HttpStatus.UNPROCESSABLE_ENTITY, "이메일과 인증키를 모두 입력해주세요");
+    REQUIRED_EMAIL_AND_AUTHKEY(HttpStatus.UNPROCESSABLE_ENTITY, "이메일과 인증키를 모두 입력해주세요"),
 
-
-
-
+    UNAUTHORIZED_BID_CHAT_MEMBER(HttpStatus.UNAUTHORIZED, "채팅 참여 권한이 없습니다."),
+    INVALID_CHATROOM(HttpStatus.NOT_FOUND, "채팅방 기록이 없습니다");
 
     private final HttpStatus httpStatus;
     private final String message;
