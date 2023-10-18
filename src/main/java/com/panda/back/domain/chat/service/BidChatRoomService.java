@@ -15,6 +15,7 @@ import com.panda.back.domain.member.entity.Member;
 import com.panda.back.global.exception.CustomException;
 import com.panda.back.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,7 +67,7 @@ public class BidChatRoomService {
     }
 
     public List<MessageInfo> getRoomMessages(String recordId, Member member) {
-        ChatRecord chatRecord = chatRecordRepository.findById(recordId)
+        ChatRecord chatRecord = chatRecordRepository.findById(new ObjectId(recordId))
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_CHATROOM));
 
         return chatRecord.getMessages().stream().map(MessageInfo::new).toList();
