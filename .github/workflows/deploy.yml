@@ -64,13 +64,17 @@ jobs:
       - name: Copy Jar
         run: cp ./build/libs/*.jar ./deploy/
 
+      # check files
+      - name: check files
+        run: ls -al ./deploy
+
       # bidpanda.jar로 파일명 변경
       - name: change name to bidpanda.jar
         run: mv ./deploy/*.jar ./deploy/bidpanda.jar
 
       # jar file 권한 755 부여
       - name: chmode 755
-        run: sudo chmod 755 ./deploy/*.jar
+        run: sudo chmod 755 ./deploy/bidpanda.jar
 
       #appspec 파일 copy
       - name : Copy appspec.yml
