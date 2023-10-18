@@ -30,9 +30,9 @@ public class MessageController {
         if (message.getType().equals(MessageType.ENTER)) {
             sendingOperations.convertAndSend("/topic/chat/room/" + message.getRecordId(), SendMessage.from(message));
         } else {
+            sendingOperations.convertAndSend("/topic/chat/room/" + message.getRecordId(), SendMessage.from(message));
             //메시지 저장 로직 수행
             chatRecordService.recordMessage(message);
-            sendingOperations.convertAndSend("/topic/chat/room/" + message.getRecordId(), SendMessage.from(message));
         }
     }
 

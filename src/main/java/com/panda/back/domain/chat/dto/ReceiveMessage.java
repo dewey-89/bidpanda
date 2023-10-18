@@ -7,7 +7,8 @@ import lombok.*;
 /**
  * Client -> Server로 받는 메시지
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReceiveMessage {
@@ -23,12 +24,13 @@ public class ReceiveMessage {
     // only MessageType.ENTER
     @JsonProperty("nickname")
     private String nickname;
+
     @JsonProperty("profileImage")
     private String profileURL;
 
     @Override
     public String toString() {
-        return String.format("%s %s", type.name(), sender);
+        return String.format("%s\n%s\n%s\n%s", type.name(), sender, content, this.recordId);
     }
 
 
