@@ -25,13 +25,12 @@ public class ReceiveMessage {
     @JsonProperty("nickname")
     private String nickname;
 
-    @JsonProperty("profileImage")
-    private String profileURL;
+    @JsonProperty("profileURL")
+    private String profileUrl;
 
     @Override
     public String toString() {
         return String.format("%s\n%s\n%s\n%s", type.name(), sender, content, this.recordId);
     }
-
 
 }

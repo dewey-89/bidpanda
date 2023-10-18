@@ -15,9 +15,9 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SendMessage {
     private MessageType type;
-    private String sender;
     private LocalDateTime sentAt;
 
+    private String sender;
     private String content;
 
     //only MessageType.ENTER
@@ -37,12 +37,12 @@ public class SendMessage {
         switch (message.getType()) {
             case ENTER -> {
                 toClients.sender = message.getNickname();
-                toClients.profileUrl = message.getProfileURL();
+                toClients.profileUrl = message.getProfileUrl();
 //                message.setContent(message.getSender() + "님이 입장하였습니다.");
             }
             case TEXT -> {
-                toClients.content = message.getContent();
                 toClients.sender = message.getSender();
+                toClients.content = message.getContent();
             }
             case MEDIA -> {
                 toClients.sender = message.getSender();

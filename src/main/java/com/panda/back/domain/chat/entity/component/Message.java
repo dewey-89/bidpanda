@@ -2,12 +2,18 @@ package com.panda.back.domain.chat.entity.component;
 
 import com.panda.back.domain.chat.dto.ReceiveMessage;
 import com.panda.back.domain.chat.type.MessageType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 
 @Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Message {
     // 메시지 인덱스
     private Integer idx;

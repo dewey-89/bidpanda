@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ChatRecordRepository extends MongoRepository<ChatRecord, ObjectId> {
+public interface ChatRecordRepository extends MongoRepository<ChatRecord, String> {
 }

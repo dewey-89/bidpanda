@@ -31,7 +31,6 @@ public class BidChatRoomService {
     private final BidChatRoomRepository bidChatRoomRepository;
     private final ChatRecordRepository chatRecordRepository;
     private final ItemRepository itemRepository;
-    private final MongoTemplate mongoTemplate;
     public List<ChatRoomInfoResDto> getMyChatRooms(Member member) {
         List<Item> joined = Stream.concat(
                 itemRepository.findItemsWithChatRoomsByMember(member).stream(),
@@ -70,10 +69,9 @@ public class BidChatRoomService {
     }
 
     public List<MessageInfo> getRoomMessages(String recordId, Member member) {
-        ChatRecord chatRecord = mongoTemplate.findById(new ObjectId(recordId), ChatRecord.class);
-        if (!Objects.nonNull(chatRecord)) {
-            throw new CustomException(ErrorCode.INVALID_CHATROOM);
-        }
+        ChatRecord chatRecord = chatRecordRepository.findById(recordId)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_CHATROOM));
+
         return chatRecord.getMessages().stream().map(MessageInfo::new).toList();
     }
 }
