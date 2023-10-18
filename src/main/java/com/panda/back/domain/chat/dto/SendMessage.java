@@ -6,6 +6,7 @@ import com.panda.back.domain.chat.type.MessageType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Slf4j
 public class SendMessage {
     private MessageType type;
     private LocalDateTime sentAt;
@@ -38,17 +40,21 @@ public class SendMessage {
             case ENTER -> {
                 toClients.sender = message.getNickname();
                 toClients.profileUrl = message.getProfileUrl();
+                log.info("enter");
 //                message.setContent(message.getSender() + "님이 입장하였습니다.");
             }
             case TEXT -> {
                 toClients.sender = message.getSender();
                 toClients.content = message.getContent();
+                log.info("text");
             }
             case MEDIA -> {
                 toClients.sender = message.getSender();
                 toClients.imageUrl = message.getContent();
+                log.info("media");
             }
         }
+        log.info("this is message : {}", toClients.toString());
         return toClients;
     }
 }
