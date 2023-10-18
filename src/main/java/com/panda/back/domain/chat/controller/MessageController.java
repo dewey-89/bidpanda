@@ -32,7 +32,7 @@ public class MessageController {
         } else {
             sendingOperations.convertAndSend("/topic/chat/room/" + message.getRecordId(), SendMessage.from(message));
             //메시지 저장 로직 수행
-//            chatRecordService.recordMessage(message);
+            chatRecordService.recordMessage(message);
         }
     }
 
