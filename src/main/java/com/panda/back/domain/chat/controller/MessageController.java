@@ -28,12 +28,11 @@ public class MessageController {
     public void enter(ReceiveMessage message) {
         log.info("{}", message.toString());
         if (message.getType().equals(MessageType.ENTER)) {
-            message.setContent(message.getSender() + "님이 입장하였습니다.");
-            sendingOperations.convertAndSend("/topic/chat/room/" + message.getRecordId(), new SendMessage(message));
+            sendingOperations.convertAndSend("/topic/chat/room/" + message.getRecordId(), SendMessage.from(message));
         } else {
             //메시지 저장 로직 수행
             chatRecordService.recordMessage(message);
-            sendingOperations.convertAndSend("/topic/chat/room/" + message.getRecordId(), new SendMessage(message));
+            sendingOperations.convertAndSend("/topic/chat/room/" + message.getRecordId(), SendMessage.from(message));
         }
     }
 

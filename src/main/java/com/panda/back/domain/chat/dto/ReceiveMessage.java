@@ -20,8 +20,16 @@ public class ReceiveMessage {
 
     private String content;
 
+    // only MessageType.ENTER
+    @JsonProperty("nickname")
+    private String nickname;
+    @JsonProperty("profileImage")
+    private String profileURL;
+
     @Override
     public String toString() {
-        return String.format("%s %s %s %s", type.name(), recordId, sender, content);
+        return String.format("%s %s", type.name(), sender);
     }
+
+
 }

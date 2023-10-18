@@ -19,7 +19,7 @@ public class ChatRecordService {
     public void recordMessage(ReceiveMessage message) {
         chatRecordRepository.findById(message.getRecordId())
                 .ifPresent(chatRecord -> {
-                    chatRecord.recordMessage(new Message(message));
+                    chatRecord.recordMessage(new Message(message, chatRecord.getMessageQnt()));
                 });
     }
 

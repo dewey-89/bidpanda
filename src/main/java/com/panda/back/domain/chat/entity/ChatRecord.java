@@ -29,8 +29,8 @@ public class ChatRecord {
     }
 
     public void recordMessage(Message message) {
-        this.messages.add(message);
         this.messageQnt += 1;
+        this.messages.add(message);
         this.lastSentAt = LocalDateTime.now();
     }
 }

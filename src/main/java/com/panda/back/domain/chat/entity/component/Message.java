@@ -20,7 +20,8 @@ public class Message {
 
     private LocalDateTime sentAt;
 
-    public Message(ReceiveMessage receiveMessage) {
+    public Message(ReceiveMessage receiveMessage, Integer idx) {
+        this.idx = idx + 1;
         this.type = receiveMessage.getType();
         this.sender = receiveMessage.getSender();
         this.content = receiveMessage.getContent();
