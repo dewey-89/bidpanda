@@ -5,6 +5,7 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class ChatRecord {
     @Id
     private ObjectId id;
 
+    @Field(name = "messages")
     private List<Message> messages;
 
     private Integer messageQnt;

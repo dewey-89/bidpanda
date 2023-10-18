@@ -16,10 +16,12 @@ import com.panda.back.global.exception.CustomException;
 import com.panda.back.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 
@@ -29,6 +31,7 @@ public class BidChatRoomService {
     private final BidChatRoomRepository bidChatRoomRepository;
     private final ChatRecordRepository chatRecordRepository;
     private final ItemRepository itemRepository;
+    private final MongoTemplate mongoTemplate;
     public List<ChatRoomInfoResDto> getMyChatRooms(Member member) {
         List<Item> joined = Stream.concat(
                 itemRepository.findItemsWithChatRoomsByMember(member).stream(),
@@ -67,9 +70,10 @@ public class BidChatRoomService {
     }
 
     public List<MessageInfo> getRoomMessages(String recordId, Member member) {
-        ChatRecord chatRecord = chatRecordRepository.findById(new ObjectId(recordId))
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_CHATROOM));
-
+        ChatRecord chatRecord = mongoTemplate.findById(new ObjectId(recordId), ChatRecord.class);
+        if (!Objects.nonNull(chatRecord)) {
+            throw new CustomException(ErrorCode.INVALID_CHATROOM);
+        }
         return chatRecord.getMessages().stream().map(MessageInfo::new).toList();
     }
 }
