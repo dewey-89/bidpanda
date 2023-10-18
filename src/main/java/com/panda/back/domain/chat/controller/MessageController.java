@@ -11,8 +11,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @Async
@@ -25,10 +23,10 @@ public class MessageController {
     @MessageMapping("/chat/message") // ws://~/app/chat/message
     public void enter(@Payload ReceiveMessage message) {
         log.info("{}", message.toString());
+        sendingOperations.convertAndSend("/topic/chat/room/" + message.getRecordId(), SendMessage.from(message));
         switch (message.getType()) {
             case TEXT, MEDIA -> chatRecordService.recordMessage(message);
         }
-        sendingOperations.convertAndSend("/topic/chat/room/" + message.getRecordId(), SendMessage.from(message));
     }
 
 }
