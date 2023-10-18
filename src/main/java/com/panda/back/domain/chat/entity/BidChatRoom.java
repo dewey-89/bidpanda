@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Table(name = "bid_chat_room")
 public class BidChatRoom {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -31,4 +31,8 @@ public class BidChatRoom {
     @Column(name = "last_visited_at")
     private LocalDateTime lastVisitedAt;
 
+    public BidChatRoom (String recordId, Item item) {
+        this.recordId = recordId;
+        this.item = item;
+    }
 }
