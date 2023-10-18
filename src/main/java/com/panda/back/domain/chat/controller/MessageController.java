@@ -8,6 +8,7 @@ import com.panda.back.domain.chat.type.MessageType;
 import com.panda.back.domain.member.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class MessageController {
 
     private final SimpMessageSendingOperations sendingOperations;
@@ -24,6 +26,7 @@ public class MessageController {
 
     @MessageMapping("/chat/message") // ws://~/app/chat/message
     public void enter(ReceiveMessage message) {
+        log.info("{}", message.toString());
         if (message.getType().equals(MessageType.ENTER)) {
             message.setContent(message.getSender() + "님이 입장하였습니다.");
             sendingOperations.convertAndSend("/topic/chat/room/" + message.getRecordId(), new SendMessage(message));

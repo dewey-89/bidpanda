@@ -16,8 +16,6 @@ public class Message {
 
     private String sender;
 
-    private Long senderId;
-
     private String content;
 
     private LocalDateTime sentAt;
@@ -25,7 +23,6 @@ public class Message {
     public Message(ReceiveMessage receiveMessage) {
         this.type = receiveMessage.getType();
         this.sender = receiveMessage.getSender();
-        this.senderId = receiveMessage.getSenderId();
         this.content = receiveMessage.getContent();
         this.sentAt = LocalDateTime.now();
     }
