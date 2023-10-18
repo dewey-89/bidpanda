@@ -27,13 +27,10 @@ public class MessageController {
     @MessageMapping("/chat/message") // ws://~/app/chat/message
     public void enter(ReceiveMessage message) {
         log.info("{}", message.toString());
-        if (message.getType().equals(MessageType.ENTER)) {
-            sendingOperations.convertAndSend("/topic/chat/room/" + message.getRecordId(), SendMessage.from(message));
-        } else {
-            sendingOperations.convertAndSend("/topic/chat/room/" + message.getRecordId(), SendMessage.from(message));
-            //메시지 저장 로직 수행
-            chatRecordService.recordMessage(message);
+        switch (message.getType()) {
+            case TEXT, MEDIA -> chatRecordService.recordMessage(message);
         }
+        sendingOperations.convertAndSend("/topic/chat/room/" + message.getRecordId(), SendMessage.from(message));
     }
 
 }
