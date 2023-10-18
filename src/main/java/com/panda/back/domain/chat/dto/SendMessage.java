@@ -41,8 +41,8 @@ public class SendMessage {
 //                message.setContent(message.getSender() + "님이 입장하였습니다.");
             }
             case TEXT -> {
+                toClients.content = message.getContent();
                 toClients.sender = message.getSender();
-                toClients.content = toClients.getContent();
             }
             case MEDIA -> {
                 toClients.sender = message.getSender();
