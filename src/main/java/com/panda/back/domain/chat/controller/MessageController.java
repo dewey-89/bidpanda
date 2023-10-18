@@ -12,13 +12,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@Slf4j
 @RequiredArgsConstructor
+@Async
+@Slf4j
 public class MessageController {
 
     private final SimpMessageSendingOperations sendingOperations;
