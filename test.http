@@ -28,13 +28,13 @@ Content-Type: application/json
 }
 
 ### 이제 BidChatRoom 조회 11번 유저
-GET http://localhost:8080/api/chat/rooms?user=seller
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoeWVsaW4xMjM0Iiwibmlja25hbWUiOiJIeWVsaW4xMjM0IiwiZXhwIjoxNjk3NTI5MzIwLCJpYXQiOjE2OTc1MjU3MjB9.b6cOTMVxtEj5nrN_AygiEClg3vngi9ZFxLd3pqrapmI
+GET http://localhost:8080/api/chat/rooms
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoeWVsaW4xMjM0Iiwibmlja25hbWUiOiJIeWVsaW4xMjM0IiwiZXhwIjoxNjk3NTQzMjEzLCJpYXQiOjE2OTc1Mzk2MTN9.j5uFblSMhzEtzqkLZRQhN6hWKbeFhErwXwG9Jz5sIWQ
 
 ### POST 요청
 POST http://localhost:8080/api/chat/room
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoeWVsaW4xMjM0Iiwibmlja25hbWUiOiJIeWVsaW4xMjM0IiwiZXhwIjoxNjk3NTI5MzIwLCJpYXQiOjE2OTc1MjU3MjB9.b6cOTMVxtEj5nrN_AygiEClg3vngi9ZFxLd3pqrapmI
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoeWVsaW4xMjM0Iiwibmlja25hbWUiOiJIeWVsaW4xMjM0IiwiZXhwIjoxNjk3NTQzMjEzLCJpYXQiOjE2OTc1Mzk2MTN9.j5uFblSMhzEtzqkLZRQhN6hWKbeFhErwXwG9Jz5sIWQ
 
 {
   "item_id" : 18
@@ -42,4 +42,4 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoeWVsaW4xMjM0Iiwibmlja25hb
 
 ### Messages 11번 유저
 GET http://localhost:8080/api/chat/rooms/652e359b1d57be05ee823591/messages
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoeWVsaW4xMjM0Iiwibmlja25hbWUiOiJIeWVsaW4xMjM0IiwiZXhwIjoxNjk3NTI5MzIwLCJpYXQiOjE2OTc1MjU3MjB9.b6cOTMVxtEj5nrN_AygiEClg3vngi9ZFxLd3pqrapmI
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoeWVsaW4xMjM0Iiwibmlja25hbWUiOiJIeWVsaW4xMjM0IiwiZXhwIjoxNjk3NTQzMjEzLCJpYXQiOjE2OTc1Mzk2MTN9.j5uFblSMhzEtzqkLZRQhN6hWKbeFhErwXwG9Jz5sIWQ

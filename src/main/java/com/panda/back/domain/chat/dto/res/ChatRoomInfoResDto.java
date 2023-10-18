@@ -23,12 +23,12 @@ public class ChatRoomInfoResDto {
         this.title = item.getTitle();
         this.itemId = item.getId();
         this.recordId = Objects.nonNull(item.getBidChatRoom())? item.getBidChatRoom().getRecordId() : "";
+
         if (item.getWinnerId().equals(member.getId())){
             this.partner = member.getNickname();
         }
         if (item.getMember().getId().equals(member.getId())) {
             this.partner = item.getWinnerId().toString();
         }
-
     }
 }
