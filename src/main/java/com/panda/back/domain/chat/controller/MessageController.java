@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 public class MessageController {
     private final ChatRecordService chatRecordService;
     @SubscribeMapping("/topic/chat/room/{recordId}")
+    @SendTo("/topic/chat/room/{recordId}")
     public SendMessage subscribeChatRoom(
             @DestinationVariable("recordId") String recordId
     ) {
