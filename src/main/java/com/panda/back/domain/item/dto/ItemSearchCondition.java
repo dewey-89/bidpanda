@@ -4,11 +4,14 @@ import lombok.Data;
 
 @Data
 public class ItemSearchCondition {
-    private String membername;
-    private Long winnerId;
+    private Boolean auctionIng;
+    private String keyword;
+    private String category;
 
-    public ItemSearchCondition(String memberName, Long winnerId) {
-        this.membername = memberName;
-        this.winnerId = winnerId;
+
+    public ItemSearchCondition(Boolean auctionIng, String keyword, String category) {
+        this.auctionIng = auctionIng;
+        this.keyword = keyword;
+        this.category = category;
     }
 }

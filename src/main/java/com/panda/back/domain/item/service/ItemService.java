@@ -179,8 +179,12 @@ public class ItemService {
     }
 
 
-    public List<ItemResponseDto> querydslTest(String memberName, Long winnerId) {
+    public List<ItemResponseDto> querydslTest(Boolean auctionIng, String keyword, String category) {
 
-        return itemRepository.search(new ItemSearchCondition(memberName, winnerId));
+        return itemRepository.search(new ItemSearchCondition(auctionIng, keyword, category));
+    }
+
+    public Page<ItemResponseDto> searchPagingItems(Boolean auctionIng, String keyword, String category, int page, int size) {
+        return itemRepository.searchItems(new ItemSearchCondition(auctionIng, keyword, category), Pageable.ofSize(size).withPage(page - 1));
     }
 }

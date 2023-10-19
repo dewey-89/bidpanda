@@ -97,10 +97,23 @@ public class ItemController {
 
     @Operation(summary = "동적 쿼리 테스트")
     @GetMapping("/test")
-    public List<ItemResponseDto> test(@RequestParam(required = false) String memberName,
-                                      @RequestParam(required = false) Long winnerId) {
-        return ItemService.querydslTest(memberName, winnerId);
+    public List<ItemResponseDto> searchItems(@RequestParam(required = false) Boolean auctionIng,
+                                             @RequestParam(required = false) String keyword,
+                                             @RequestParam(required = false) String category) {
+        return ItemService.querydslTest(auctionIng, keyword, category);
     }
+
+    @Operation(summary = "동적 쿼리 테스트")
+    @GetMapping("/testpageing")
+    public Page<ItemResponseDto> searchPagingItems(@RequestParam(required = false) Boolean auctionIng,
+                                                   @RequestParam(required = false) String keyword,
+                                                   @RequestParam(required = false) String category,
+                                                   @RequestParam(value = "page", defaultValue = "1") int page,
+                                                   @RequestParam(value = "size", defaultValue = "10") int size) {
+        return ItemService.searchPagingItems(auctionIng, keyword, category, page, size);
+    }
+
+
 
 }
 
