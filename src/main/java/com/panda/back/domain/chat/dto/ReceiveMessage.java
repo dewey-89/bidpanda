@@ -11,6 +11,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class ReceiveMessage {
     private MessageType type;
 
@@ -27,10 +28,5 @@ public class ReceiveMessage {
 
     @JsonProperty("profileURL")
     private String profileUrl;
-
-    @Override
-    public String toString() {
-        return String.format("%s\n%s\n%s\n%s", type.name(), sender, content, this.recordId);
-    }
 
 }

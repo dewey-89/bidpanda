@@ -23,7 +23,7 @@ public class ChatRecordService {
                     chatRecord.recordMessage(new Message(message, chatRecord.getMessageQnt()));
                     chatRecordRepository.save(chatRecord);
                 });
-        log.info("{} 채팅방 저장 완료" , message.getRecordId());
+        log.info("저장 완료 {}" , message);
     }
 
 }
