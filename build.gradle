@@ -50,10 +50,13 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     // chat관련
-    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket:3.0.4'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+jar {
+    enabled = false
 }
