@@ -2,48 +2,61 @@ package com.panda.back.domain.chat.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.panda.back.domain.chat.dto.res.MessageInfo;
-import com.panda.back.domain.chat.entity.component.Message;
 import com.panda.back.domain.chat.type.MessageType;
-import com.panda.back.domain.member.entity.Member;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-/**
- * Server -> Client로 전달되는 메시지
- */
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@ToString
 public class SendMessage {
     private MessageType type;
+    private LocalDateTime sentAt;
 
+    private String sender;
+    private String content;
+
+    //only MessageType.ENTER
     @JsonProperty("profileURL")
     private String profileUrl;
 
-    private String sender;
-    private LocalDateTime sentAt;
-    private String content;
-
-    private List<MessageInfo> history;
-    public SendMessage(Member member, ReceiveMessage message) {
-        this.type = message.getType();
-        this.sender = message.getSender();
-        this.sentAt = LocalDateTime.now();
-        if(message.getType() == MessageType.ENTER) {
-            this.profileUrl = member.getProfileImageUrl();
-        }
-    }
+    @JsonProperty("imageURL")
+    private String imageUrl;
 
     public SendMessage(ReceiveMessage message) {
         this.type = message.getType();
-        this.sender = message.getSender();
         this.sentAt = LocalDateTime.now();
-        this.content = message.getContent();
+    }
+
+    public SendMessage(MessageType messageType, String memberEnter) {
+        this.type = messageType;
+        this.sentAt = LocalDateTime.now();
+        this.content = memberEnter;
+        this.sender = memberEnter;
+        this.profileUrl = memberEnter;
+    }
+
+    public static SendMessage from(ReceiveMessage message){
+        SendMessage toClients = new SendMessage(message);
+        switch (message.getType()) {
+            case ENTER -> {
+                toClients.setSender(message.getNickname());
+                toClients.setProfileUrl(message.getProfileUrl());
+            }
+            case TEXT -> {
+                toClients.setSender(message.getSender());
+                toClients.setContent(message.getContent());
+            }
+            case MEDIA -> {
+                toClients.setSender(message.getSender());
+                toClients.setImageUrl(message.getContent());
+            }
+        }
+        return toClients;
     }
 }
