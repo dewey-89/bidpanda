@@ -14,14 +14,8 @@ import lombok.*;
 @ToString
 public class ReceiveMessage {
     private MessageType type;
-
-    @JsonProperty("record_id")
-    private String recordId;
-
     private String sender;
-
     private String content;
-
     // only MessageType.ENTER
     @JsonProperty("nickname")
     private String nickname;

@@ -14,16 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class ChatRecordService {
     private final ChatRecordRepository chatRecordRepository;
-    @Transactional
-    public void recordMessage(ReceiveMessage message) {
 
-        log.info("{} 저장 시도", message.getRecordId());
-        chatRecordRepository.findById(message.getRecordId())
+    @Transactional
+    public void recordMessage(String recordId, ReceiveMessage message) {
+        chatRecordRepository.findById(recordId)
                 .ifPresent(chatRecord -> {
                     chatRecord.recordMessage(new Message(message, chatRecord.getMessageQnt()));
                     chatRecordRepository.save(chatRecord);
                 });
-        log.info("저장 완료 {}" , message);
     }
-
 }

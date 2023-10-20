@@ -21,24 +21,21 @@ public class MessageController {
     public SendMessage subscribeChatRoom(
             @DestinationVariable("recordId") String recordId
     ) {
-        log.info("record Id is {}", recordId);
-        log.info("someone inter chatroom id: {}", recordId);
+        log.info("record_id : {}", recordId);
         return new SendMessage(MessageType.ENTER, "member Enter");
     }
 
     @MessageMapping("/chat/message/{recordId}")
     @SendTo("/topic/chat/room/{recordId}")
-    public SendMessage pubMessage(
+    public SendMessage publishChatMessage(
             @Headers MessageHeaders headers,
             @DestinationVariable("recordId") String recordId,
             @Payload ReceiveMessage message
     ) {
-//        log.info("record_id : {}", recordId);
         log.info("headers {}",headers);
-//        log.info("id {}", headers.getId());
-//        simpMessageTemplate.convertAndSend("/topic/chat/room/" + message.getRecordId(), SendMessage.from(message));
+        log.info("record_id is {}", recordId);
         switch (message.getType()) {
-            case TEXT, MEDIA -> chatRecordService.recordMessage(message);
+            case TEXT, MEDIA -> chatRecordService.recordMessage(recordId, message);
         }
         return SendMessage.from(message);
     }

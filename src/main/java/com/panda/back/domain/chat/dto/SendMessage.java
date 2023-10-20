@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Slf4j
 @ToString
 public class SendMessage {
     private MessageType type;
@@ -58,7 +57,6 @@ public class SendMessage {
                 toClients.setImageUrl(message.getContent());
             }
         }
-        log.info("this is s -> c : {}", toClients);
         return toClients;
     }
 }

@@ -14,7 +14,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/ws/chat") // WebSocket 또는 SockJS Client가 웹소켓 핸드셰이크 커넥션을 생성할 경로이다.
                 .setAllowedOriginPatterns("*") // front origin cors (일단 localhost로)
                 .withSockJS();
-    }
+    } // socket + STOMP (socket protocol)
 
     /**
      * /app 경로로 시작하는 STOMP 메시지의 destination 헤더는 @Controller 객체의 @MessageMapping 메서드로 라우팅 된다.
@@ -26,5 +26,5 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.setApplicationDestinationPrefixes("/app");
         config.enableSimpleBroker("/topic", "/queue"); // topic -> 메시지 쌓는 곳
-    }
+    } // ws://djfksldf/app/chat/message/{recordId}
 }
