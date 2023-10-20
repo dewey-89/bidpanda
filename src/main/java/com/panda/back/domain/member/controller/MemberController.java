@@ -96,4 +96,11 @@ public class MemberController {
             @AuthenticationPrincipal MemberDetailsImpl memberDetails) throws IOException {
         return memberService.uploadProfileImage(file, memberDetails.getMember());
     }
+
+
+    @Operation(hidden = true)
+    @GetMapping("/ping")
+    public String ping() {
+        return "pong";
+    }
 }
