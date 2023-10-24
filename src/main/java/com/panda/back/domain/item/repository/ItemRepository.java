@@ -31,11 +31,13 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @Query("SELECT i, chatroom FROM Item i LEFT JOIN i.bidChatRoom chatroom " +
             "WHERE i.winnerId = :winnerId " +
+            "AND i.auctionEndTime <= :now " +
             "ORDER BY i.auctionEndTime DESC")
-    List<Item> findItemsWithChatRoomsByWinnerId(@Param("winnerId") Long winnerId);
+    List<Item> findItemsWithChatRoomsByWinnerIdAndAuctionEndTimeBefore(@Param("winnerId") Long winnerId, @Param("now")LocalDateTime now);
 
     @Query("SELECT i, chatroom FROM Item i LEFT JOIN i.bidChatRoom chatroom " +
             "WHERE i.member = :member " +
+            "AND i.auctionEndTime <= :now " +
             "ORDER BY i.auctionEndTime DESC")
-    List<Item> findItemsWithChatRoomsByMember(@Param("member") Member member);
+    List<Item> findItemsWithChatRoomsByMemberAndAuctionEndTimeBefore(@Param("member") Member member, @Param("now")LocalDateTime now);
 }
