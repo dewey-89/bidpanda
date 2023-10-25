@@ -17,8 +17,5 @@ public class Notification {
     @Column(nullable = false)
     private boolean isRead;
 
-//    @Column(nullable = false)
-//    @Enumerated(value = EnumType.STRING)
-//    private Enum notificationType;
 
 }
