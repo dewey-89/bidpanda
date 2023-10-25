@@ -23,8 +23,17 @@ POST http://localhost:8080/api/members/login
 Content-Type: application/json
 
 {
-  "membername" : "Hyelin1234",
-  "password" : "Hyelin1234"
+"membername" : "hyelin12345",
+"password" : "Hyelin12345"
+}
+
+### 로그인 ^^
+POST http://localhost:8080/api/members/login
+Content-Type: application/json
+
+{
+  "membername" : "test0004",
+  "password" : "Test0004"
 }
 
 ### 이제 BidChatRoom 조회 11번 유저

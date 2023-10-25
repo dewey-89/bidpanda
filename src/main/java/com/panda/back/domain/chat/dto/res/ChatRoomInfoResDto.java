@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
 import java.util.Objects;
 
 @Getter
@@ -18,17 +19,22 @@ public class ChatRoomInfoResDto {
     private Long itemId;
     private String recordId;
     private String partner; // 반대 입장 사람의 닉네임
+    private String partnerProfileUrl; // 반대 입장 사람의 프로필
 
-    public ChatRoomInfoResDto(Item item, Member member) {
+    // 내가 seller
+    public ChatRoomInfoResDto(Item item, Member member, Member partner) {
         this.title = item.getTitle();
         this.itemId = item.getId();
         this.recordId = Objects.nonNull(item.getBidChatRoom())? item.getBidChatRoom().getRecordId() : "";
-
-        if (item.getWinnerId().equals(member.getId())){
-            this.partner = member.getNickname();
-        }
-        if (item.getMember().getId().equals(member.getId())) {
-            this.partner = item.getWinnerId().toString();
-        }
+        this.partner = partner.getNickname();
+        this.partnerProfileUrl = partner.getProfileImageUrl();
+    }
+    // 내가 winner
+    public ChatRoomInfoResDto(Item item, Member seller) {
+        this.title = item.getTitle();
+        this.itemId = item.getId();
+        this.recordId = Objects.nonNull(item.getBidChatRoom())? item.getBidChatRoom().getRecordId() : "";
+        this.partner = seller.getNickname();
+        this.partnerProfileUrl =  seller.getProfileImageUrl();
     }
 }
