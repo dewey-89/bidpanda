@@ -20,6 +20,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -32,9 +34,10 @@ public class BidChatRoomService {
     private final ChatRecordRepository chatRecordRepository;
     private final ItemRepository itemRepository;
     public List<ChatRoomInfoResDto> getMyChatRooms(Member member) {
+        LocalDateTime now = LocalDateTime.now();
         List<Item> joined = Stream.concat(
-                itemRepository.findItemsWithChatRoomsByMember(member).stream(),
-                itemRepository.findItemsWithChatRoomsByWinnerId(member.getId()).stream()
+                itemRepository.findItemsWithChatRoomsByMemberAndAuctionEndTimeBefore(member, now).stream(),
+                itemRepository.findItemsWithChatRoomsByWinnerIdAndAuctionEndTimeBefore(member.getId(), now).stream()
         ).toList();
 
         return joined.stream()
