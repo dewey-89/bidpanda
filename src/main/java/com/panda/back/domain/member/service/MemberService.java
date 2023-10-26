@@ -1,5 +1,6 @@
 package com.panda.back.domain.member.service;
 
+import com.panda.back.domain.member.dto.PasswordRequestDto;
 import com.panda.back.domain.member.dto.ProfileRequestDto;
 import com.panda.back.domain.member.dto.ProfileResponseDto;
 import com.panda.back.domain.member.dto.SignupRequestDto;
@@ -87,24 +88,30 @@ public class MemberService {
         try {
             // 현재 로그인한 사용자의 정보를 가져옴
             Member myprofile = findByMembername(member.getMembername());
+            myprofile.setNickname(requestDto.getNickname());
+            myprofile.setIntro(requestDto.getIntro());
+            memberRepository.save(myprofile);
+            return BaseResponse.successMessage("회원정보 수정 성공");
+        } catch (IllegalArgumentException e) {
+            return BaseResponse.error(e.getMessage());
+        }
+    }
+
+    @Transactional
+    public BaseResponse updatePassword(PasswordRequestDto requestDto, Member member){
+        try {
+            Member myprofile = findByMembername(member.getMembername());
 
             // 입력한 비밀번호를 BCryptPasswordEncoder를 사용하여 검사
             if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
                 throw new CustomException(ErrorCode.NOT_MATCH_PASSWORD);
             }
-
-            myprofile.setNickname(requestDto.getNickname());
-
-            String newPassword = requestDto.getNewPassword();
+            String newPassword = requestDto.getNewpassword();
             if (newPassword != null && !newPassword.isEmpty()) {
                 myprofile.setPassword(passwordEncoder.encode(newPassword));
             }
-
-            myprofile.setIntro(requestDto.getIntro());
-
             memberRepository.save(myprofile);
-
-            return BaseResponse.successMessage("회원정보 수정 성공");
+            return BaseResponse.successMessage("비밀번호 수정 성공");
         } catch (IllegalArgumentException e) {
             return BaseResponse.error(e.getMessage());
         }
