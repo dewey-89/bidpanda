@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Message {
-    // 메시지 인덱스
     private Integer idx;
 
     private MessageType type;

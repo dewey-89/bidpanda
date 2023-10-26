@@ -1,8 +1,11 @@
 package com.panda.back.domain.chat.service;
 
 
+import com.panda.back.domain.chat.dto.ChatParticipants;
 import com.panda.back.domain.chat.dto.ReceiveMessage;
+import com.panda.back.domain.chat.entity.BidChatRoom;
 import com.panda.back.domain.chat.entity.component.Message;
+import com.panda.back.domain.chat.repository.BidChatRoomRepository;
 import com.panda.back.domain.chat.repository.ChatRecordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class ChatRecordService {
+    private final BidChatRoomRepository bidChatRoomRepository;
     private final ChatRecordRepository chatRecordRepository;
 
     @Transactional
@@ -23,4 +27,5 @@ public class ChatRecordService {
                     chatRecordRepository.save(chatRecord);
                 });
     }
+
 }
