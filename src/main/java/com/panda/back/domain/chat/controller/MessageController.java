@@ -17,8 +17,8 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 @Slf4j
 public class MessageController {
-    private final ChatRecordService chatRecordService;
     private final BidChatRoomService bidChatRoomService;
+    private final ChatRecordService chatRecordService;
     @SubscribeMapping("/topic/chat/room/{recordId}")
     @SendTo("/topic/chat/room/{recordId}")
     public SendMessage subscribeChatRoom(
@@ -36,8 +36,6 @@ public class MessageController {
             @Payload ReceiveMessage message
     ) {
         log.info("headers {}",headers);
-        log.info("record_id is {}", recordId);
-
         switch (message.getType()) {
             case ENTER -> {
                 ChatParticipants participants = bidChatRoomService.getChatParticipants(recordId);
