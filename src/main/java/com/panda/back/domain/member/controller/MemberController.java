@@ -74,6 +74,14 @@ public class MemberController {
      return memberService.updateProfile(requestDto,memberDetails.getMember());
     }
 
+    @Operation(summary = "비밀번호 수정")
+    @PutMapping("/update-password")
+    public BaseResponse updatePassword(
+            @RequestBody PasswordRequestDto requestDto,
+            @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
+        return memberService.updatePassword(requestDto, memberDetails.getMember());
+    }
+
     @Operation(summary = "회원 탈퇴")
     @DeleteMapping
     public BaseResponse delete(
