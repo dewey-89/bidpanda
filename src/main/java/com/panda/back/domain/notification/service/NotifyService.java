@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -31,7 +32,7 @@ public class NotifyService {
 
         // (1-5) 503 에러를 방지하기 위한 더미 이벤트 전송
         String eventId = makeTimeIncludeId(membername);
-        sendNotification(emitter, eventId, emitterId, "EventStream Created. [userEmail=" + membername + "]");
+        sendNotification(emitter, eventId, emitterId, "EventStream Created. [membername=" + membername + "]");
 
         // (1-6) 클라이언트가 미수신한 Event 목록이 존재할 경우 전송하여 Event 유실을 예방
         if (hasLostData(lastEventId)) {
@@ -73,7 +74,7 @@ public class NotifyService {
     public void send(Member receiver, NotificationType notificationType, String content) {
         Notification notification = notificationRepository.save(createNotification(receiver, notificationType, content));
 
-        String receiverId = String.valueOf(receiver.getId());
+        String receiverId = String.valueOf(receiver.getMembername());
         String eventId = receiverId + "_" + System.currentTimeMillis();
         Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByMemberId(receiverId);
         emitters.forEach(
@@ -91,5 +92,10 @@ public class NotifyService {
                 .content(content)
                 .isRead(false)
                 .build();
+    }
+
+    public List<NotificationResponseDto> getNotifications(Member member) {
+      List<Notification> notificationList = notificationRepository.findAllByReceiver(member);
+        return NotificationResponseDto.createList(notificationList);
     }
 }

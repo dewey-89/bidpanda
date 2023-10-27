@@ -31,6 +31,7 @@ public enum ErrorCode {
     NOT_VALID_MIN_BID_AMOUNT(HttpStatus.NOT_ACCEPTABLE, "최소 입찰 단위로 입찰해주세요."),
 
     CLOSED_BIDDING_ITEM(HttpStatus.GONE, "경매가 종료된 상품입니다."),
+    IS_NOT_CLOSED_BIDDING_ITEM(HttpStatus.GONE, "경매가 종료되지 않은 상품입니다."),
 
     REQUIRED_EMAIL_AND_AUTHKEY(HttpStatus.UNPROCESSABLE_ENTITY, "이메일과 인증키를 모두 입력해주세요"),
 

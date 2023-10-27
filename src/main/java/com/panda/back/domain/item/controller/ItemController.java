@@ -89,6 +89,12 @@ public class ItemController {
         return ItemService.getItemsByKeyword(keyword);
     }
 
+    @Operation(summary = "경매 종료 API")
+    @GetMapping("/{itemId}/close-alarm")
+    public void itemClosedAlarm(@PathVariable Long itemId) {
+        ItemService.itemClosedAlarm(itemId);
+    }
+
 }
 
 
