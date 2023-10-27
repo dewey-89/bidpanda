@@ -9,7 +9,8 @@ import java.util.Optional;
 
 @Repository
 public interface BidChatRoomRepository extends JpaRepository<BidChatRoom, Long> {
-
     Optional<BidChatRoom> findBidChatRoomByItem(Item item);
+    
+    Optional<BidChatRoom> findBidChatRoomByRecordId(String recordId);
 
 }

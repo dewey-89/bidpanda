@@ -28,6 +28,8 @@ public class SendMessage {
     @JsonProperty("imageURL")
     private String imageUrl;
 
+    private ChatParticipants participants;
+
     public SendMessage(ReceiveMessage message) {
         this.type = message.getType();
         this.sentAt = LocalDateTime.now();
@@ -42,21 +44,29 @@ public class SendMessage {
     }
 
     public static SendMessage from(ReceiveMessage message){
-        SendMessage toClients = new SendMessage(message);
+        SendMessage toClient = new SendMessage(message);
         switch (message.getType()) {
             case ENTER -> {
-                toClients.setSender(message.getNickname());
-                toClients.setProfileUrl(message.getProfileUrl());
+                toClient.setSender(message.getNickname());
+                toClient.setProfileUrl(message.getProfileUrl());
             }
             case TEXT -> {
-                toClients.setSender(message.getSender());
-                toClients.setContent(message.getContent());
+                toClient.setSender(message.getSender());
+                toClient.setContent(message.getContent());
             }
             case MEDIA -> {
-                toClients.setSender(message.getSender());
-                toClients.setImageUrl(message.getContent());
+                toClient.setSender(message.getSender());
+                toClient.setImageUrl(message.getContent());
             }
         }
-        return toClients;
+        return toClient;
+    }
+
+    public static SendMessage from(ReceiveMessage message, ChatParticipants chatParticipants) {
+        SendMessage toClient = new SendMessage(message);
+        toClient.setSender(message.getNickname());
+        toClient.setProfileUrl(message.getProfileUrl());
+        toClient.setParticipants(chatParticipants);
+        return toClient;
     }
 }

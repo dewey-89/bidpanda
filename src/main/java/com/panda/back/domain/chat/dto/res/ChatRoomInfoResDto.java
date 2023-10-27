@@ -17,6 +17,7 @@ import java.util.Objects;
 public class ChatRoomInfoResDto {
     private String title;
     private Long itemId;
+    private String item_image;
     private String recordId;
     private String partner; // 반대 입장 사람의 닉네임
     private String partnerProfileUrl; // 반대 입장 사람의 프로필
@@ -25,6 +26,7 @@ public class ChatRoomInfoResDto {
     public ChatRoomInfoResDto(Item item, Member member, Member partner) {
         this.title = item.getTitle();
         this.itemId = item.getId();
+        this.item_image = item.getImages().get(0).toString();
         this.recordId = Objects.nonNull(item.getBidChatRoom())? item.getBidChatRoom().getRecordId() : "";
         this.partner = partner.getNickname();
         this.partnerProfileUrl = partner.getProfileImageUrl();
@@ -33,6 +35,7 @@ public class ChatRoomInfoResDto {
     public ChatRoomInfoResDto(Item item, Member seller) {
         this.title = item.getTitle();
         this.itemId = item.getId();
+        this.item_image = item.getImages().get(0).toString();
         this.recordId = Objects.nonNull(item.getBidChatRoom())? item.getBidChatRoom().getRecordId() : "";
         this.partner = seller.getNickname();
         this.partnerProfileUrl =  seller.getProfileImageUrl();

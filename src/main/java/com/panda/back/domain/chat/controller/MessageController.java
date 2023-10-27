@@ -1,7 +1,9 @@
 package com.panda.back.domain.chat.controller;
 
+import com.panda.back.domain.chat.dto.ChatParticipants;
 import com.panda.back.domain.chat.dto.ReceiveMessage;
 import com.panda.back.domain.chat.dto.SendMessage;
+import com.panda.back.domain.chat.service.BidChatRoomService;
 import com.panda.back.domain.chat.service.ChatRecordService;
 import com.panda.back.domain.chat.type.MessageType;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 @Slf4j
 public class MessageController {
+    private final BidChatRoomService bidChatRoomService;
     private final ChatRecordService chatRecordService;
     @SubscribeMapping("/topic/chat/room/{recordId}")
     @SendTo("/topic/chat/room/{recordId}")
@@ -33,8 +36,11 @@ public class MessageController {
             @Payload ReceiveMessage message
     ) {
         log.info("headers {}",headers);
-        log.info("record_id is {}", recordId);
         switch (message.getType()) {
+            case ENTER -> {
+                ChatParticipants participants = bidChatRoomService.getChatParticipants(recordId);
+                return SendMessage.from(message, participants);
+            }
             case TEXT, MEDIA -> chatRecordService.recordMessage(recordId, message);
         }
         return SendMessage.from(message);
