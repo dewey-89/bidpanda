@@ -5,6 +5,9 @@ import com.panda.back.domain.item.dto.ItemResponseDto;
 import com.panda.back.domain.item.entity.Item;
 import com.panda.back.domain.item.repository.ItemRepository;
 import com.panda.back.domain.member.entity.Member;
+import com.panda.back.domain.member.repository.MemberRepository;
+import com.panda.back.domain.notification.entity.NotificationType;
+import com.panda.back.domain.notification.service.NotifyService;
 import com.panda.back.global.S3.S3Uploader;
 import com.panda.back.global.dto.BaseResponse;
 import com.panda.back.global.exception.CustomException;
@@ -20,6 +23,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +31,8 @@ import java.util.stream.Collectors;
 public class ItemService {
     private final ItemRepository itemRepository;
     private final S3Uploader s3Uploader;
+    private final NotifyService notifyService;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public ItemResponseDto createItem(List<MultipartFile> images, ItemRequestDto itemRequestDto, Member member) throws IOException {
@@ -143,5 +149,31 @@ public class ItemService {
     public List<ItemResponseDto> getItemsByKeyword(String keyword) {
         List<Item> items = itemRepository.findAllByTitleContaining(keyword);
         return ItemResponseDto.listOf(items);
+    }
+
+    public void closeAuctionAndDeclareWinner(Long itemId) {
+        Item item = itemRepository.findById(itemId).orElseThrow(
+                () -> new CustomException(ErrorCode.NOT_FOUND_ITEM)
+        );
+
+        if (item.getAuctionEndTime().isAfter(LocalDateTime.now())) {
+            throw new CustomException(ErrorCode.IS_NOT_CLOSED_BIDDING_ITEM);
+        }
+
+        if (item.getBidCount() == 0) {
+            // 입찰이 없는 경우 판매자에게 유찰 알림
+            notifyService.send(item.getMember(), NotificationType.BID,"당신의 "+item.getTitle()+" 상품이 유찰되었습니다.");
+
+        } else {
+
+            // 낙찰자에게 낙찰 알림
+            Optional<Member> winner = memberRepository.findById(item.getWinnerId());
+            notifyService.send(winner.get(),NotificationType.BID,item.getTitle()+"낙찰에 성공하셨습니다");
+
+            // 판매자에게 본인의 상품 낙찰 알림
+            notifyService.send(item.getMember(),NotificationType.BID,"당신의 "+item.getTitle()+" 상품이 낙찰되었습니다.");
+
+
+        }
     }
 }
