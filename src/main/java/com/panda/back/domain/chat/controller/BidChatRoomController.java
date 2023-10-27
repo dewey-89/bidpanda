@@ -1,6 +1,7 @@
 package com.panda.back.domain.chat.controller;
 
 import com.panda.back.domain.chat.dto.req.BidChatRoomReqDto;
+import com.panda.back.domain.chat.dto.res.ChatHistoryResDto;
 import com.panda.back.domain.chat.dto.res.ChatRoomInfoResDto;
 import com.panda.back.domain.chat.dto.res.ChatRoomResDto;
 import com.panda.back.domain.chat.dto.res.MessageInfo;
@@ -51,11 +52,13 @@ public class BidChatRoomController {
             description = "recordId로 채팅 이력을 전송합니다."
     )
     @GetMapping("/rooms/{recordId}/messages")
-    public ResponseEntity<List<MessageInfo>> getChatMessages(
+    public ResponseEntity<ChatHistoryResDto> getChatMessages(
             @PathVariable String recordId,
             @AuthenticationPrincipal MemberDetailsImpl memberDetails
     ) {
+        List<MessageInfo> history = bidChatRoomService.getRoomMessages(recordId, memberDetails.getMember());
+        String partnerUrl = bidChatRoomService.getPartnerProfileUrl(recordId, memberDetails.getMember());
         return ResponseEntity.ok()
-                .body(bidChatRoomService.getRoomMessages(recordId, memberDetails.getMember()));
+                .body(new ChatHistoryResDto(history, partnerUrl));
     }
 }
