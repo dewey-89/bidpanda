@@ -25,7 +25,7 @@ public class NotificationController {
     @GetMapping(value = "/subscribe", produces = "text/event-stream")
     public SseEmitter sseConnect(@AuthenticationPrincipal MemberDetailsImpl memberDetails,
                                  @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
-        return notifyService.subscribeAlarm(memberDetails.getMember().getNickname(), lastEventId);
+        return notifyService.subscribeAlarm(memberDetails.getUsername(), lastEventId);
     }
 
     @GetMapping
