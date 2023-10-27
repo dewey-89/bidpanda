@@ -28,8 +28,6 @@ public class SendMessage {
     @JsonProperty("imageURL")
     private String imageUrl;
 
-    private ChatParticipants participants;
-
     public SendMessage(ReceiveMessage message) {
         this.type = message.getType();
         this.sentAt = LocalDateTime.now();
@@ -59,14 +57,6 @@ public class SendMessage {
                 toClient.setImageUrl(message.getContent());
             }
         }
-        return toClient;
-    }
-
-    public static SendMessage from(ReceiveMessage message, ChatParticipants chatParticipants) {
-        SendMessage toClient = new SendMessage(message);
-        toClient.setSender(message.getNickname());
-        toClient.setProfileUrl(message.getProfileUrl());
-        toClient.setParticipants(chatParticipants);
         return toClient;
     }
 }

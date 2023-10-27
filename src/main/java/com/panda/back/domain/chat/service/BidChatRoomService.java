@@ -1,6 +1,5 @@
 package com.panda.back.domain.chat.service;
 
-import com.panda.back.domain.chat.dto.ChatParticipants;
 import com.panda.back.domain.chat.dto.req.BidChatRoomReqDto;
 import com.panda.back.domain.chat.dto.res.ChatRoomInfoResDto;
 import com.panda.back.domain.chat.dto.res.ChatRoomResDto;
@@ -94,14 +93,18 @@ public class BidChatRoomService {
         return chatRecord.getMessages().stream().map(MessageInfo::new).toList();
     }
 
-    public ChatParticipants getChatParticipants(String recordId) {
+    public String getPartnerProfileUrl(String recordId, Member member) {
         Item item = itemRepository.findByBidChatRoom_RecordId(recordId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ITEM));
+        UserType myType = item.getWinnerId().equals(member.getId())? UserType.winner : UserType.seller;
 
-        Member winner = memberRepository.findById(item.getWinnerId())
+        if (myType == UserType.winner) { // i am winner
+            return item.getMember().getProfileImageUrl();
+        }
+        // i am seller
+        Member partner = memberRepository.findById(item.getWinnerId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
-        Member seller = item.getMember();
 
-        return new ChatParticipants(seller, winner);
+        return partner.getProfileImageUrl();
     }
 }

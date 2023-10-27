@@ -1,6 +1,5 @@
 package com.panda.back.domain.chat.controller;
 
-import com.panda.back.domain.chat.dto.ChatParticipants;
 import com.panda.back.domain.chat.dto.ReceiveMessage;
 import com.panda.back.domain.chat.dto.SendMessage;
 import com.panda.back.domain.chat.service.BidChatRoomService;
@@ -37,10 +36,6 @@ public class MessageController {
     ) {
         log.info("headers {}",headers);
         switch (message.getType()) {
-            case ENTER -> {
-                ChatParticipants participants = bidChatRoomService.getChatParticipants(recordId);
-                return SendMessage.from(message, participants);
-            }
             case TEXT, MEDIA -> chatRecordService.recordMessage(recordId, message);
         }
         return SendMessage.from(message);
