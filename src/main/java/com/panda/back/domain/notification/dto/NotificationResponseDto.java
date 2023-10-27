@@ -5,6 +5,8 @@ import com.panda.back.domain.notification.entity.NotificationType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 public class NotificationResponseDto {
@@ -30,4 +32,9 @@ public class NotificationResponseDto {
         );
     }
 
+    public static List<NotificationResponseDto> createList(List<Notification> notificationList) {
+        return notificationList.stream()
+                .map(NotificationResponseDto::create)
+                .toList();
+    }
 }

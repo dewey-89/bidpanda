@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -91,5 +92,10 @@ public class NotifyService {
                 .content(content)
                 .isRead(false)
                 .build();
+    }
+
+    public List<NotificationResponseDto> getNotifications(Member member) {
+      List<Notification> notificationList = notificationRepository.findAllByReceiver(member);
+        return NotificationResponseDto.createList(notificationList);
     }
 }
