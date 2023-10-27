@@ -7,6 +7,9 @@ import com.panda.back.domain.item.dto.ItemResponseDto;
 import com.panda.back.domain.item.entity.Item;
 import com.panda.back.domain.item.repository.ItemRepository;
 import com.panda.back.domain.member.entity.Member;
+import com.panda.back.domain.member.repository.MemberRepository;
+import com.panda.back.domain.notification.entity.NotificationType;
+import com.panda.back.domain.notification.service.NotifyService;
 import com.panda.back.global.dto.BaseResponse;
 import com.panda.back.global.exception.CustomException;
 import com.panda.back.global.exception.ErrorCode;
@@ -16,12 +19,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class BidService {
     private final BidRepository bidRepository;
     private final ItemRepository itemRepository;
+    private final NotifyService notifyService;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public BaseResponse createBid(BidRequestDto bidRequestDto, Member member) {
@@ -42,6 +48,13 @@ public class BidService {
             throw new CustomException(ErrorCode.NOT_VALID_MIN_BID_AMOUNT);
         }
         Bid bid = new Bid(item, member, bidRequestDto.getBidAmount());
+
+        // 전 입찰자에게 알림메시지 주기.
+        if(item.getBidCount()!=0) {
+            Member previousBidder = memberRepository.findById(item.getWinnerId()).orElseThrow(
+                    () -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
+            notifyService.send(previousBidder, NotificationType.BID, item.getTitle() + "에 " + member.getNickname() + "님이 더 높은 가격으로 입찰을 하였습니다.");
+        }
         item.addBid(bid);
         bidRepository.save(bid);
 
