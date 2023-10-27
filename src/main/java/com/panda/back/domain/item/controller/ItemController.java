@@ -4,7 +4,6 @@ import com.panda.back.domain.item.dto.ItemRequestDto;
 import com.panda.back.domain.item.dto.ItemResponseDto;
 import com.panda.back.domain.item.service.ItemService;
 import com.panda.back.domain.member.jwt.MemberDetailsImpl;
-import com.panda.back.domain.notification.service.NotifyService;
 import com.panda.back.global.dto.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -90,9 +89,10 @@ public class ItemController {
         return ItemService.getItemsByKeyword(keyword);
     }
 
-    @GetMapping("/{itemId}/closeAuction")
-    public void closeAuctionAndDeclareWinner(@PathVariable Long itemId) {
-        ItemService.closeAuctionAndDeclareWinner(itemId);
+    @Operation(summary = "경매 종료 API")
+    @GetMapping("/{itemId}/close-alarm")
+    public void itemClosedAlarm(@PathVariable Long itemId) {
+        ItemService.itemClosedAlarm(itemId);
     }
 
 }

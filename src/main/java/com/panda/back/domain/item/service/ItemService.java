@@ -151,7 +151,7 @@ public class ItemService {
         return ItemResponseDto.listOf(items);
     }
 
-    public void closeAuctionAndDeclareWinner(Long itemId) {
+    public void itemClosedAlarm(Long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(
                 () -> new CustomException(ErrorCode.NOT_FOUND_ITEM)
         );
