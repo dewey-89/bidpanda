@@ -8,10 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
@@ -34,5 +31,12 @@ public class NotificationController {
     @GetMapping
     public List<NotificationResponseDto> getNotifications(@AuthenticationPrincipal MemberDetailsImpl memberDetails) {
         return notifyService.getNotifications(memberDetails.getMember());
+    }
+
+    @Operation(summary = "단일 알림 조회 API")
+    @PutMapping("/read-notification/{notificationId}")
+    public void readNotification(@AuthenticationPrincipal MemberDetailsImpl memberDetails,
+                                 @PathVariable Long notificationId) {
+        notifyService.readNotification(memberDetails.getMember());
     }
 }
