@@ -2,7 +2,6 @@ package com.panda.back.domain.notification.controller;
 
 import com.panda.back.domain.member.jwt.MemberDetailsImpl;
 import com.panda.back.domain.notification.dto.NotificationResponseDto;
-import com.panda.back.domain.notification.entity.Notification;
 import com.panda.back.domain.notification.service.NotifyService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +36,6 @@ public class NotificationController {
     @PutMapping("/read-notification/{notificationId}")
     public void readNotification(@AuthenticationPrincipal MemberDetailsImpl memberDetails,
                                  @PathVariable Long notificationId) {
-        notifyService.readNotification(memberDetails.getMember());
+        return notifyService.readNotification(memberDetails.getMember(), notificationId);
     }
 }

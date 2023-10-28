@@ -35,6 +35,7 @@ public enum ErrorCode {
 
     REQUIRED_EMAIL_AND_AUTHKEY(HttpStatus.UNPROCESSABLE_ENTITY, "이메일과 인증키를 모두 입력해주세요"),
 
+    UNAUTHORIZED_READ_NOTIFICATION(HttpStatus.UNAUTHORIZED, "알림 조회 권한이 없습니다."),
     UNAUTHORIZED_BID_CHAT_MEMBER(HttpStatus.UNAUTHORIZED, "채팅 참여 권한이 없습니다."),
     INVALID_CHATROOM(HttpStatus.NOT_FOUND, "채팅방 기록이 없습니다");
 
