@@ -42,4 +42,8 @@ public class Notification extends Timestamped {
         this.content = content;
         this.isRead = isRead;
     }
+
+    public void setIsRead(boolean isRead) {
+        this.isRead = isRead;
+    }
 }

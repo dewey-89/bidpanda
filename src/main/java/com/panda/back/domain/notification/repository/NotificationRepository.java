@@ -1,7 +1,6 @@
 package com.panda.back.domain.notification.repository;
 
 import com.panda.back.domain.member.entity.Member;
-import com.panda.back.domain.notification.dto.NotificationResponseDto;
 import com.panda.back.domain.notification.entity.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
 

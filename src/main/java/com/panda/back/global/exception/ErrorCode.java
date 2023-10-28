@@ -11,6 +11,7 @@ public enum ErrorCode {
     NOT_FOUND_IMAGE(HttpStatus.NOT_FOUND, "적어도 1개 이상의 이미지를 추가해주세요."),
     NOT_FOUND_ITEM(HttpStatus.NOT_FOUND, "해당 상품이 존재하지 않습니다."),
     NOT_FOUND_MY_ITEM(HttpStatus.NOT_FOUND, "본인이 등록한 상품이 아닙니다."),
+    NOT_FOUND_NOTIFICATION(HttpStatus.NOT_FOUND, "알림이 존재하지 않습니다."),
 
     DUPLICATE_MEMBERNAME(HttpStatus.CONFLICT, "이미 존재하는 아이디입니다."),
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),
@@ -35,6 +36,7 @@ public enum ErrorCode {
 
     REQUIRED_EMAIL_AND_AUTHKEY(HttpStatus.UNPROCESSABLE_ENTITY, "이메일과 인증키를 모두 입력해주세요"),
 
+    UNAUTHORIZED_READ_NOTIFICATION(HttpStatus.UNAUTHORIZED, "알림 조회 권한이 없습니다."),
     UNAUTHORIZED_BID_CHAT_MEMBER(HttpStatus.UNAUTHORIZED, "채팅 참여 권한이 없습니다."),
     INVALID_CHATROOM(HttpStatus.NOT_FOUND, "채팅방 기록이 없습니다");
 
