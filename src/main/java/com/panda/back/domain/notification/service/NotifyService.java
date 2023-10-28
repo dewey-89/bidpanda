@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NotifyService {
@@ -97,5 +98,18 @@ public class NotifyService {
     public List<NotificationResponseDto> getNotifications(Member member) {
       List<Notification> notificationList = notificationRepository.findAllByReceiver(member);
         return NotificationResponseDto.createList(notificationList);
+    }
+
+    public NotificationResponseDto readNotification(Member member, Long notificationId) {
+        Notification notification = notificationRepository.findById(notificationId).orElseThrow(
+                () -> new CustomException(ErrorCode.NOT_FOUND_NOTIFICATION));
+
+        if(!notification.getReceiver().getId().equals(member.getId())) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED_READ_NOTIFICATION);
+        }
+
+        notification.setIsRead(true);
+        notificationRepository.save(notification);
+        return NotificationResponseDto.create(notification);
     }
 }
