@@ -6,7 +6,10 @@ import com.panda.back.domain.notification.entity.Notification;
 import com.panda.back.domain.notification.entity.NotificationType;
 import com.panda.back.domain.notification.repository.EmitterRepository;
 import com.panda.back.domain.notification.repository.NotificationRepository;
+import com.panda.back.global.exception.CustomException;
+import com.panda.back.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 

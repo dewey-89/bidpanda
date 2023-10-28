@@ -34,7 +34,7 @@ public class NotificationController {
 
     @Operation(summary = "단일 알림 조회 API")
     @PutMapping("/read-notification/{notificationId}")
-    public void readNotification(@AuthenticationPrincipal MemberDetailsImpl memberDetails,
+    public NotificationResponseDto readNotification(@AuthenticationPrincipal MemberDetailsImpl memberDetails,
                                  @PathVariable Long notificationId) {
         return notifyService.readNotification(memberDetails.getMember(), notificationId);
     }

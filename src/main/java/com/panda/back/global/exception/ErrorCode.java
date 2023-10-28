@@ -11,6 +11,7 @@ public enum ErrorCode {
     NOT_FOUND_IMAGE(HttpStatus.NOT_FOUND, "적어도 1개 이상의 이미지를 추가해주세요."),
     NOT_FOUND_ITEM(HttpStatus.NOT_FOUND, "해당 상품이 존재하지 않습니다."),
     NOT_FOUND_MY_ITEM(HttpStatus.NOT_FOUND, "본인이 등록한 상품이 아닙니다."),
+    NOT_FOUND_NOTIFICATION(HttpStatus.NOT_FOUND, "알림이 존재하지 않습니다."),
 
     DUPLICATE_MEMBERNAME(HttpStatus.CONFLICT, "이미 존재하는 아이디입니다."),
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),
