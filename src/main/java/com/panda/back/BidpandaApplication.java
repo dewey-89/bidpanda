@@ -6,7 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@OpenAPIDefinition(servers = {@Server(url = "https://bidpanda.dewey-89.com",description = "Default Server URL")})
+@OpenAPIDefinition(servers = {@Server(url = "https://bidpanda-server.dewey-89.com",description = "Default Server URL")})
 @EnableJpaAuditing
 @SpringBootApplication
 public class BidpandaApplication {
