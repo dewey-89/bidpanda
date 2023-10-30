@@ -13,7 +13,7 @@ public interface EmitterRepository {
 
     Map<String, Object> findAllEventCacheStartWithByMemberId(String memberId);
 
-    void deleteById(String id);
+//    void deleteById(String id);
 
     void deleteAllEmitterStartWithId(String memberId);
 

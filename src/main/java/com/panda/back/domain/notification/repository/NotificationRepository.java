@@ -14,6 +14,4 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     List<Notification> findAllByIsReadAndCreatedAtBefore(Boolean isRead, LocalDateTime dateTime);
 
-    void deleteAllByIsReadAndCreatedAtBefore(Boolean isRead, LocalDateTime dateTime);
-
 }

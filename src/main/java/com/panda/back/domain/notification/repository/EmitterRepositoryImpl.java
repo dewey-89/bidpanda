@@ -33,16 +33,16 @@ public class EmitterRepositoryImpl implements EmitterRepository{
     }
 
     @Override
-    public Map<String, Object> findAllEventCacheStartWithByMemberId(String memberId) { // 해당 회원과 관련된 모든 이벤트를 찾음
+    public Map<String, Object> findAllEventCacheStartWithByMemberId(String memberId) { // 해당 회원과 관련된 모든 이벤트캐시를 찾음
         return eventCache.entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith(memberId))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    @Override
-    public void deleteById(String id) {
-        emitters.remove(id);
-    }
+//    @Override
+//    public void deleteById(String id) {
+//        emitters.remove(id);
+//    }
 
     @Override
     public void deleteAllEmitterStartWithId(String memberId) {  // 해당 회원과 관련된 모든 emitter를 지움
@@ -50,6 +50,7 @@ public class EmitterRepositoryImpl implements EmitterRepository{
                 (key, emitter) -> {
                     if (key.startsWith(memberId)) {
                         emitters.remove(key);
+                        deleteAllEventCacheStartWithId(memberId);
                     }
                 }
         );
@@ -59,9 +60,7 @@ public class EmitterRepositoryImpl implements EmitterRepository{
     public void deleteAllEventCacheStartWithId(String memberId) {  // 해당 회원과 관련된 모든 이벤트를 지움
         eventCache.forEach(
                 (key, emitter) -> {
-                    if (key.startsWith(memberId)) {
-                        eventCache.remove(key);
-                    }
+                    if (key.startsWith(memberId)) { eventCache.remove(key); }
                 }
         );
     }

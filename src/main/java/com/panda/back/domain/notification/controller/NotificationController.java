@@ -4,6 +4,7 @@ import com.panda.back.domain.member.jwt.MemberDetailsImpl;
 import com.panda.back.domain.notification.dto.NotificationResponseDto;
 import com.panda.back.domain.notification.service.NotifyService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,8 +24,9 @@ public class NotificationController {
     @Operation(summary = "사용자 SSE 연결 API")
     @GetMapping(value = "/subscribe", produces = "text/event-stream")
     public SseEmitter sseConnect(@AuthenticationPrincipal MemberDetailsImpl memberDetails,
-                                 @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
-        return notifyService.subscribeAlarm(memberDetails.getUsername(), lastEventId);
+                                 @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId,
+                                 HttpServletResponse response) {
+        return notifyService.subscribeAlarm(memberDetails.getUsername(), lastEventId, response);
     }
 
     @Operation(summary = "사용자 알림 조회 API")
