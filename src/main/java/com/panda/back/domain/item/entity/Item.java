@@ -57,6 +57,7 @@ public class Item extends Timestamped {
     private Member member;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "winner_id", nullable = true)
     private Member winner;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)

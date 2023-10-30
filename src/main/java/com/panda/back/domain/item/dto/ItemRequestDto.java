@@ -11,3 +11,13 @@ public class ItemRequestDto {
     private Integer deadline;
     private String category;
 }
+/**
+  {
+      "title" : "사첼백",
+      "content" : "일상에서 편리하게 사용 가능",
+      "tartPrice" : 50000,
+      "inBidPrice" : 1000,
+      "deadline" : 1,
+      "category" : "패션"
+  }
+ */

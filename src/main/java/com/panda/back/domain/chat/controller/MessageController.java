@@ -2,14 +2,9 @@ package com.panda.back.domain.chat.controller;
 
 import com.panda.back.domain.chat.dto.ReceiveMessage;
 import com.panda.back.domain.chat.dto.SendMessage;
-import com.panda.back.domain.chat.event.ChatAlarmEvent;
 import com.panda.back.domain.chat.event.ChatAlarmPublisher;
 import com.panda.back.domain.chat.service.ChatRecordService;
 import com.panda.back.domain.chat.type.MessageType;
-import com.panda.back.domain.item.entity.Item;
-import com.panda.back.domain.member.entity.Member;
-import com.panda.back.global.exception.CustomException;
-import com.panda.back.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.MessageHeaders;
@@ -42,9 +37,10 @@ public class MessageController {
         switch (message.getType()) {
             case TEXT, MEDIA -> chatRecordService.recordMessage(recordId, message);
         }
+//        TODO : OutBoundChannel 로직으로 이동
         int chatMemberCount = chatRecordService.checkParticipantsCount(recordId);
         if (chatMemberCount < 2) {
-            chatAlarmPublisher.publishChatAlarm(recordId, headers, message);
+            chatAlarmPublisher.publishChatAlarm(recordId, message);
         }
         return SendMessage.from(message);
     }

@@ -1,8 +1,8 @@
 package com.panda.back.domain.chat.service;
 
-import com.panda.back.domain.chat.dto.req.BidChatRoomReqDto;
+import com.panda.back.domain.chat.dto.req.BidChatRoomOpenReqDto;
 import com.panda.back.domain.chat.dto.res.ChatRoomInfoResDto;
-import com.panda.back.domain.chat.dto.res.ChatRoomResDto;
+import com.panda.back.domain.chat.dto.res.OpenChatRoomResDto;
 import com.panda.back.domain.chat.dto.res.MessageInfo;
 import com.panda.back.domain.chat.entity.BidChatRoom;
 import com.panda.back.domain.chat.entity.ChatRecord;
@@ -49,7 +49,7 @@ public class BidChatRoomService {
     }
 
     @Transactional
-    public ChatRoomResDto OpenOrCreateChatRoom(BidChatRoomReqDto.Open requestDto, Member member) {
+    public OpenChatRoomResDto openChatRoom(BidChatRoomOpenReqDto requestDto, Member member) {
         Item bidItem = itemRepository.findById(requestDto.getItemId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ITEM));
 
@@ -68,7 +68,7 @@ public class BidChatRoomService {
                     ChatRecord chatRecord  = chatRecordRepository.save(new ChatRecord());
                     return bidChatRoomRepository.save(new BidChatRoom(chatRecord.getId().toString() ,bidItem));
                 });
-        return new ChatRoomResDto(bidChatRoom.getRecordId(), userType);
+        return new OpenChatRoomResDto(bidChatRoom.getRecordId(), userType);
     }
 
     public List<MessageInfo> getRoomMessages(String recordId, Member member) {

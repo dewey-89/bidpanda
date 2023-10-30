@@ -38,5 +38,4 @@ public class ChatRoomInfoResDto {
             this.partnerProfileUrl = bidChatRoom.getItem().getMember().getProfileImageUrl();
         }
     }
-    // 이거 push 하셔도 될 것 같아요 //
 }

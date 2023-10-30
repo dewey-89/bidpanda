@@ -35,11 +35,8 @@ public class ChatRecordService {
                     chatRecordRepository.save(chatRecord);
                 });
     }
-
     public int checkParticipantsCount(String recordId) {
         Set<String> keys = chatClientRepository.findKeysByRecordId(recordId);
-        int size = keys.size();
-        return size;
+        return keys.size();
     }
-
 }

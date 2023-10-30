@@ -12,6 +12,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayInputStream;
 import java.util.Objects;
 
 /**
@@ -35,8 +36,11 @@ public class ChatOutboundInterceptor implements ChannelInterceptor {
             String destination = message.getHeaders().get("simpDestination").toString();
             String recordId = destinationUtil.getRecordIdFromDestination(destination);
             String sessionId = message.getHeaders().get("simpSessionId").toString();
+            log.info("{} : {} : {}" , destination, recordId, sessionId);
+            byte[] payload = (byte[]) message.getPayload();
+            log.info("payload : {}", new String(payload));
 
-
+            log.info("channel : {}" , channel.getClass().getTypeName());
         }
     }
 }

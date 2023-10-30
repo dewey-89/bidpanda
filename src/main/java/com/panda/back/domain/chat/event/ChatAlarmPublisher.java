@@ -13,8 +13,10 @@ import com.panda.back.global.exception.CustomException;
 import com.panda.back.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
@@ -22,22 +24,18 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class ChatAlarmPublisher {
     private final ApplicationEventPublisher publisher;
-    private final MemberRepository memberRepository;
-    private final ItemRepository itemRepository;
     private final BidChatRoomRepository bidChatRoomRepository;
-    public void publishChatAlarm(String recordId, MessageHeaders stompHeaders, ReceiveMessage receiveMessage) {
+
+    @Transactional
+    public void publishChatAlarm(String recordId, ReceiveMessage receiveMessage) {
         BidChatRoom bidChatRoom = bidChatRoomRepository.findBidChatRoomByRecordId(recordId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_CHATROOM));
 
-        String myNickname = receiveMessage.getNickname();
+        String senderNick = receiveMessage.getSender();
+        Member receiver = senderNick.equals(bidChatRoom.getItem().getMember().getNickname()) ?
+                bidChatRoom.getItem().getWinner():
+                bidChatRoom.getItem().getMember();
 
-        Long receiverId = myNickname.equals(bidChatRoom.getItem().getWinner().getNickname()) ?
-                bidChatRoom.getItem().getMember().getId() :
-                bidChatRoom.getItem().getWinner().getId();
-
-        Member receiver = memberRepository.findById(receiverId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
-
-        publisher.publishEvent(new ChatAlarmEvent(myNickname,receiver,  bidChatRoom.getItem().getTitle(),receiveMessage));
+        publisher.publishEvent(new ChatAlarmEvent(senderNick, receiver, bidChatRoom.getItem().getTitle(), receiveMessage));
     }
 }

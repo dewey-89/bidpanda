@@ -1,7 +1,6 @@
 package com.panda.back.domain.chat.event;
 
 import com.panda.back.domain.chat.dto.ReceiveMessage;
-import com.panda.back.domain.item.entity.Item;
 import com.panda.back.domain.member.entity.Member;
 import lombok.Getter;
 
