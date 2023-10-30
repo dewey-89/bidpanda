@@ -28,7 +28,7 @@ public class BidChatRoomController {
     @Operation(summary = "record_id 받아오기, 채팅방 오픈하기",
             description = "item_id를 입력해서 새로 채팅방을 오픈하고 혹은 기존에 있던 recordId를 가져옵니다.")
     @PostMapping("/room")
-    public ResponseEntity<ChatRoomResDto.Open> roomOpen(
+    public ResponseEntity<ChatRoomResDto> roomOpen(
             @RequestBody BidChatRoomReqDto.Open requestDto,
             @AuthenticationPrincipal MemberDetailsImpl memberDetails
     ) {

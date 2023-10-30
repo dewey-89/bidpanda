@@ -168,8 +168,8 @@ public class ItemService {
         } else {
 
             // 낙찰자에게 낙찰 알림
-            Optional<Member> winner = memberRepository.findById(item.getWinnerId());
-            notifyService.send(winner.get(),NotificationType.BID,item.getTitle()+"낙찰에 성공하셨습니다");
+            Member winner = item.getWinner();
+            notifyService.send(winner, NotificationType.BID,item.getTitle()+"낙찰에 성공하셨습니다");
 
             // 판매자에게 본인의 상품 낙찰 알림
             notifyService.send(item.getMember(),NotificationType.BID,"당신의 "+item.getTitle()+" 상품이 낙찰되었습니다.");

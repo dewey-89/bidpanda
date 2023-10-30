@@ -43,9 +43,6 @@ public class Item extends Timestamped {
     private LocalDateTime auctionEndTime;
 
     @Column(nullable = false)
-    private Long winnerId = 0L;
-
-    @Column(nullable = false)
     private Integer bidCount = 0;
 
     @Column(nullable = false)
@@ -59,8 +56,8 @@ public class Item extends Timestamped {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @OneToOne(mappedBy = "item",fetch = FetchType.LAZY)
-    private BidChatRoom bidChatRoom;
+    @OneToOne(fetch = FetchType.LAZY)
+    private Member winner;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     private List<Bid> bids = new ArrayList<>();
@@ -96,7 +93,7 @@ public class Item extends Timestamped {
     public void addBid(Bid bid) {
         bid.setItem(this);
         this.presentPrice = bid.getBidAmount();
-        this.winnerId = bid.getBidder().getId();
+        this.winner = bid.getBidder();
         this.bidCount++;
     }
 }

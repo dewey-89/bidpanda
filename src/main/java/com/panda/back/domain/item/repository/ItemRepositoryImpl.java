@@ -3,9 +3,8 @@ package com.panda.back.domain.item.repository;
 import com.panda.back.domain.item.dto.ItemResponseDto;
 import com.panda.back.domain.item.dto.ItemSearchCondition;
 import com.panda.back.domain.item.dto.QItemResponseDto;
-import com.panda.back.domain.member.entity.QMember;
+import com.panda.back.domain.member.entity.Member;
 import com.querydsl.core.QueryResults;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -70,8 +69,8 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
         return membername != null ? item.member.membername.eq(membername) : null;
     }
 
-    private BooleanExpression winnerIdEq(Long winnerId) {
-        return winnerId != null ? item.winnerId.eq(winnerId) : null;
+    private BooleanExpression winnerEq(Member winner) {
+        return winner != null ? item.winner.eq(winner) : null;
     }
 
     private BooleanExpression auctionIng(Boolean auctionIng) {
