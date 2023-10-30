@@ -10,10 +10,13 @@ import com.panda.back.global.exception.CustomException;
 import com.panda.back.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -114,5 +117,11 @@ public class NotifyService {
         notification.setIsRead(true);
         notificationRepository.save(notification);
         return NotificationResponseDto.create(notification);
+    }
+
+    public void deleteReadNotificationsOlderThan(Duration duration) {
+        LocalDateTime threshold = LocalDateTime.now().minus(duration);
+        List<Notification> notificationsToDelete = notificationRepository.findAllByIsReadAndCreatedAtBefore(true, threshold);
+        notificationRepository.deleteAll(notificationsToDelete);
     }
 }

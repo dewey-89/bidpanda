@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.time.Duration;
 import java.util.List;
 
 @RestController
@@ -38,4 +39,10 @@ public class NotificationController {
                                  @PathVariable Long notificationId) {
         return notifyService.readNotification(memberDetails.getMember(), notificationId);
     }
+
+//    @Operation(summary = "읽은 알림 삭제 API")
+//    @DeleteMapping("/delete-read-notifications")
+//    public void deleteReadNotifications() {
+//        notifyService.scheduleDeleteReadNotifications();
+//    }
 }
