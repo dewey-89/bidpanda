@@ -26,13 +26,9 @@ public class ChatAlarmPublisher {
     private final ItemRepository itemRepository;
     private final BidChatRoomRepository bidChatRoomRepository;
     public void publishChatAlarm(String recordId, MessageHeaders stompHeaders, ReceiveMessage receiveMessage) {
-//        Item item = itemRepository.findByBidChatRoom_RecordId(recordId)
-//                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
         BidChatRoom bidChatRoom = bidChatRoomRepository.findBidChatRoomByRecordId(recordId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
 
-//        Member me =  memberRepository.findByNickname(receiveMessage.getSender())
-//                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
         String myNickname = receiveMessage.getNickname();
 
         Long receiverId = myNickname.equals(bidChatRoom.getItem().getWinner().getNickname()) ?
@@ -44,5 +40,4 @@ public class ChatAlarmPublisher {
 
         publisher.publishEvent(new ChatAlarmEvent(myNickname,receiver,  bidChatRoom.getItem().getTitle(),receiveMessage));
     }
-
 }

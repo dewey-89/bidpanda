@@ -36,7 +36,6 @@ public class ChatOutboundInterceptor implements ChannelInterceptor {
             String recordId = destinationUtil.getRecordIdFromDestination(destination);
             String sessionId = message.getHeaders().get("simpSessionId").toString();
 
-            // message 저장....
 
         }
     }

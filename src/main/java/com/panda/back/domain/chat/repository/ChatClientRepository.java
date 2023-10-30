@@ -39,11 +39,6 @@ public class ChatClientRepository {
         return redisTemplate.keys(keyword);
     }
 
-    public String getValueByKey(String sessionId, String recordId){
-        String key = generateKey(sessionId,recordId);
-        Object value = redisTemplate.opsForValue().get(key);
-        return value.toString();
-    }
 
     private String findKeyword(String sessionId) {
         return String.format("chat:%s:*", sessionId);

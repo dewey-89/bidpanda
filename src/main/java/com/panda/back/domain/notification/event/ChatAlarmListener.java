@@ -15,8 +15,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
-
-@Slf4j
 @Component
 @EnableAsync
 @RequiredArgsConstructor
@@ -31,7 +29,5 @@ public class ChatAlarmListener {
             default -> content = String.format("%s : %-10s... ", chatAlarmEvent.getSender(), chatAlarmEvent.getReceiveMessage().getContent());
         }
         notifyService.send(chatAlarmEvent.getReceiver(), NotificationType.CHAT, content);
-        log.info("alarm : {}", content);
     }
-
 }
