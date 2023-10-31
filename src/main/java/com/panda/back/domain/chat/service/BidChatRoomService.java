@@ -14,11 +14,13 @@ import com.panda.back.domain.item.repository.ItemRepository;
 import com.panda.back.domain.member.entity.Member;
 import com.panda.back.global.exception.CustomException;
 import com.panda.back.global.exception.ErrorCode;
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -31,19 +33,10 @@ public class BidChatRoomService {
     private final ItemRepository itemRepository;
     public List<ChatRoomInfoResDto> getMyChatRooms(Member member) {
         LocalDateTime now = LocalDateTime.now();
-
-        List<BidChatRoom> meSeller = bidChatRoomRepository.findBidChatRoomsByItem_MemberAndItem_AuctionEndTimeBefore(member, now);
-        List<BidChatRoom> meWinner = bidChatRoomRepository.findBidChatRoomsByItem_WinnerAndItem_AuctionEndTimeBefore(member, now);
-
+        List<ChatRoomInfoResDto> meSeller = bidChatRoomRepository.getChatRoomsMeSeller(member, now);
+        List<ChatRoomInfoResDto> meWinner = bidChatRoomRepository.getChatRoomsMeWinner(member, now);
         return Stream
                 .concat(meSeller.stream(), meWinner.stream())
-                .map(bidChatRoom-> {
-                    if (bidChatRoom.getItem().getMember().getId().equals(member.getId())) { // 내가 seller
-                        return new ChatRoomInfoResDto(bidChatRoom, UserType.seller);
-                    }else { // 내가 winner
-                        return new ChatRoomInfoResDto(bidChatRoom, UserType.winner);
-                    }
-                })
                 .toList();
     }
 

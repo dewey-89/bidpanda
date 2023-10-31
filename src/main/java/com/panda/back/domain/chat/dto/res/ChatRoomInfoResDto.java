@@ -3,13 +3,14 @@ package com.panda.back.domain.chat.dto.res;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.panda.back.domain.chat.entity.BidChatRoom;
 import com.panda.back.domain.chat.type.UserType;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import com.panda.back.domain.item.entity.Item;
+import lombok.*;
 
-@Slf4j
-@Getter
+import java.util.Optional;
+
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChatRoomInfoResDto {
     private String title;
@@ -19,23 +20,17 @@ public class ChatRoomInfoResDto {
     private String partner; // 반대 입장 사람의 닉네임
     private String partnerProfileUrl; // 반대 입장 사람의 프로필
 
-
-    public ChatRoomInfoResDto(BidChatRoom bidChatRoom, UserType userType) {
-        log.info("userType: {}", userType);
+    public ChatRoomInfoResDto(Optional<BidChatRoom> bidChatRoom, Item item, UserType userType) {
+        this.title = item.getTitle();
+        this.itemId = item.getId();
+        this.item_image = item.getImages().get(0).toString();
+        this.recordId = bidChatRoom.map(chatRoom -> chatRoom.getId().toString()).orElse("");
         if(userType.equals(UserType.seller)){// 내가 seller
-            this.title = bidChatRoom.getItem().getTitle();
-            this.itemId = bidChatRoom.getItem().getId();
-            this.item_image = bidChatRoom.getItem().getImages().get(0).toString();
-            this.recordId = bidChatRoom.getId().toString();
-            this.partner = bidChatRoom.getItem().getWinner().getNickname();
-            this.partnerProfileUrl = bidChatRoom.getItem().getWinner().getProfileImageUrl();
+            this.partner = item.getWinner().getNickname();
+            this.partnerProfileUrl = item.getWinner().getProfileImageUrl();
         }else {// 내가 winner
-            this.title = bidChatRoom.getItem().getTitle();
-            this.itemId = bidChatRoom.getItem().getId();
-            this.item_image = bidChatRoom.getItem().getImages().get(0).toString();
-            this.recordId = bidChatRoom.getId().toString();
-            this.partner = bidChatRoom.getItem().getMember().getNickname();
-            this.partnerProfileUrl = bidChatRoom.getItem().getMember().getProfileImageUrl();
+            this.partner = item.getMember().getNickname();
+            this.partnerProfileUrl = item.getMember().getProfileImageUrl();
         }
     }
 }
