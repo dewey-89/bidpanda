@@ -51,8 +51,16 @@ public class BidService {
 
         // 전 입찰자에게 알림메시지 주기.
         if(item.getBidCount()!=0) {
-            Member previousBidder = item.getWinner();
-            notifyService.send(previousBidder, NotificationType.BID, item.getTitle() + "에 " + member.getNickname() + "님이 더 높은 가격으로 입찰을 하였습니다.");
+            Member previousBidder = memberRepository.findById(item.getWinnerId()).orElseThrow(
+                    () -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
+
+            // 전 입찰자에게 보내는 알림메시지
+            String content = item.getTitle() + "에 " + member.getNickname() + "님이 더 높은 가격으로 입찰을 하였습니다.";
+
+            // 해당 상품으로 이동하는 url
+            String url = "https://bid-panda-frontend.vercel.app/items/detail/" + String.valueOf(item.getId());
+
+            notifyService.send(previousBidder, NotificationType.BID, content, url);
         }
         item.addBid(bid);
         bidRepository.save(bid);

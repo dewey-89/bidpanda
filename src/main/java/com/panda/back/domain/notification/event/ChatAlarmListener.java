@@ -19,6 +19,10 @@ public class ChatAlarmListener {
             case ENTER -> content = String.format("%s님께서 %s 채팅을 시작하셨습니다", chatAlarmEvent.getSender() , chatAlarmEvent.getItemTitle());
             default -> content = String.format("%s : %-10s... ", chatAlarmEvent.getSender(), chatAlarmEvent.getMessage().getContent());
         }
-        notifyService.send(chatAlarmEvent.getReceiver(), NotificationType.CHAT, content);
+
+        String url = "https://bid-panda-frontend.vercel.app/chattingList/" + chatAlarmEvent.getReceiver().getNickname();
+        notifyService.send(chatAlarmEvent.getReceiver(), NotificationType.CHAT, content, url);
+        log.info("alarm : {}", content);
+
     }
 }
