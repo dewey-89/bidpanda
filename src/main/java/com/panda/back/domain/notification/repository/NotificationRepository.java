@@ -11,7 +11,5 @@ import java.util.List;
 // 알림의 생성, 조회, 수정, 삭제 등
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
     List<Notification> findAllByReceiver(Member member);
-
     List<Notification> findAllByIsReadAndCreatedAtBefore(Boolean isRead, LocalDateTime dateTime);
-
 }
