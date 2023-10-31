@@ -1,9 +1,7 @@
 package com.panda.back.domain.item.controller;
 
 import com.panda.back.domain.item.dto.ItemRequestDto;
-import com.panda.back.domain.item.dto.ItemResDto;
 import com.panda.back.domain.item.dto.ItemResponseDto;
-import com.panda.back.domain.item.dto.QItemResDto;
 import com.panda.back.domain.item.service.ItemService;
 import com.panda.back.domain.member.jwt.MemberDetailsImpl;
 import com.panda.back.global.dto.BaseResponse;
@@ -97,24 +95,27 @@ public class ItemController {
         ItemService.itemClosedAlarm(itemId);
     }
 
-    @Operation(summary = "동적 쿼리 테스트")
-    @GetMapping("/test")
-    public List<ItemResDto> searchItems(@RequestParam(required = false) Boolean auctionIng,
-                                        @RequestParam(required = false) String keyword,
-                                        @RequestParam(required = false) String category) {
-        return ItemService.querydslTest(auctionIng, keyword, category);
+    @Operation(summary = "개인페이지 : 등록상품, 낙찰상품 조회 API")
+    @GetMapping("/private-search")
+    public Page<ItemResponseDto> searchItems(@AuthenticationPrincipal MemberDetailsImpl memberDetails,
+                                             @RequestParam(required = false) Boolean myItems,
+                                             @RequestParam(required = false) Boolean myWinItems,
+                                             @RequestParam(value = "page", defaultValue = "1") int page,
+                                             @RequestParam(value = "size", defaultValue = "10") int size) {
+        return ItemService.querydslTest(memberDetails.getMember().getId(), myItems, myWinItems, page, size);
     }
 
-    @Operation(summary = "동적 쿼리 테스트")
-    @GetMapping("/testpageing")
+    @Operation(summary = "공용페이지 : 상품 검색 API", description = "경매진행여부, 키워드, 카테고리, 가격순, 최신순 조건 검색 가능")
+    @GetMapping("/public-search")
     public Page<ItemResponseDto> searchPagingItems(@RequestParam(required = false) Boolean auctionIng,
                                                    @RequestParam(required = false) String keyword,
                                                    @RequestParam(required = false) String category,
+                                                   @RequestParam(required = false) Boolean orderByPrice,
+                                                   @RequestParam(required = false) Boolean orderByLatest,
                                                    @RequestParam(value = "page", defaultValue = "1") int page,
                                                    @RequestParam(value = "size", defaultValue = "10") int size) {
-        return ItemService.searchPagingItems(auctionIng, keyword, category, page, size);
+        return ItemService.searchPagingItems(auctionIng, keyword, category, orderByPrice, orderByLatest, page, size);
     }
-
 
 
 }

@@ -177,12 +177,11 @@ public class ItemService {
     }
 
 
-    public List<ItemResDto> querydslTest(Boolean auctionIng, String keyword, String category) {
-
-        return itemRepository.search(new ItemSearchCondition(auctionIng, keyword, category));
+    public Page<ItemResponseDto> querydslTest(Long memberId, Boolean myItems, Boolean myWinItems, int page, int size) {
+        return itemRepository.search(new ItemSearchForMemberCondition(memberId, myItems, myWinItems), Pageable.ofSize(size).withPage(page - 1));
     }
 
-    public Page<ItemResponseDto> searchPagingItems(Boolean auctionIng, String keyword, String category, int page, int size) {
-        return itemRepository.searchItems(new ItemSearchCondition(auctionIng, keyword, category), Pageable.ofSize(size).withPage(page - 1));
+    public Page<ItemResponseDto> searchPagingItems(Boolean auctionIng, String keyword, String category,Boolean orderByPrice, Boolean orderByLatest, int page, int size) {
+        return itemRepository.searchItems(new ItemSearchCondition(auctionIng, keyword, category,orderByPrice,orderByLatest), Pageable.ofSize(size).withPage(page - 1));
     }
 }

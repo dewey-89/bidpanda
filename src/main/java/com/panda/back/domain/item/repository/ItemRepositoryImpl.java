@@ -1,8 +1,11 @@
 package com.panda.back.domain.item.repository;
 
-import com.panda.back.domain.item.dto.*;
-import com.panda.back.domain.member.entity.Member;
+import com.panda.back.domain.item.dto.ItemResponseDto;
+import com.panda.back.domain.item.dto.ItemSearchCondition;
+import com.panda.back.domain.item.dto.ItemSearchForMemberCondition;
+import com.panda.back.domain.item.dto.QItemResponseDto;
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -23,24 +26,21 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
     }
 
     @Override
-    public List<ItemResDto> search(ItemSearchCondition condition) {
-        return queryFactory
-                .select(new QItemResDto(
-                        item.id,
-                        item.title,
-                        item.content,
-                        item.presentPrice,
-                        item.minBidPrice,
-                        item.auctionEndTime,
-                        item.images,
-                        item.bidCount,
-                        item.member.membername))
+    public Page<ItemResponseDto> search(ItemSearchForMemberCondition condition, Pageable pageable) {
+        QueryResults<ItemResponseDto> results = queryFactory
+                .select(new QItemResponseDto(item))
                 .from(item)
-                .where( auctionIng(condition.getAuctionIng()),
-                        keywordEq(condition.getKeyword()),
-                        categoryEq(condition.getCategory()))
+                .where(memberEq(condition.getMemberId(), condition.getMyItems()),
+                        winnerEq(condition.getMemberId(), condition.getMyWinItems()))
                 .orderBy(item.modifiedAt.desc())
-                .fetch();
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        List<ItemResponseDto> content = results.getResults();
+        long total = results.getTotal();
+
+        return new PageImpl<>(content, pageable, total);
     }
 
     @Override
@@ -51,7 +51,8 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
                 .where(auctionIng(condition.getAuctionIng()),
                         keywordEq(condition.getKeyword()),
                         categoryEq(condition.getCategory()))
-                .orderBy(item.modifiedAt.desc())
+                .orderBy(orderByLatest(condition.getOrderByLatest()),
+                        orderByPrice(condition.getOrderByPrice()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
@@ -63,6 +64,15 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
 
     }
 
+    private OrderSpecifier<?> orderByLatest(Boolean orderByLatest) {
+        return orderByLatest != null && orderByLatest ? item.modifiedAt.desc() : item.modifiedAt.asc();
+    }
+
+    private OrderSpecifier<?> orderByPrice(Boolean orderByPrice) {
+        return orderByPrice != null && orderByPrice ? item.presentPrice.desc() : item.presentPrice.asc();
+    }
+
+
     private BooleanExpression categoryEq(String category) {
         return category != null ? item.category.eq(category) : null;
     }
@@ -72,23 +82,24 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
     }
 
 
-    private BooleanExpression membernameEq(String membername) {
-        return membername != null ? item.member.membername.eq(membername) : null;
+    private BooleanExpression memberEq(Long memberId, Boolean myItems) {
+        return myItems != null ? item.member.id.eq(memberId) : null;
     }
 
-    private BooleanExpression winnerEq(Member winner) {
-        return winner != null ? item.winner.eq(winner) : null;
+    private BooleanExpression winnerEq(Long memberId, Boolean myWinItems) {
+        return myWinItems != null ? item.winner.id.eq(memberId) : null;
     }
 
     private BooleanExpression auctionIng(Boolean auctionIng) {
-        if(auctionIng == null) { return null;}
-        if(auctionIng) {
+        if (auctionIng == null) {
+            return null;
+        }
+        if (auctionIng) {
             return item.auctionEndTime.after(LocalDateTime.now());
         } else {
             return item.auctionEndTime.before(LocalDateTime.now());
         }
     }
-
 
 
 }
