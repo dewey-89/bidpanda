@@ -30,6 +30,7 @@ public enum ErrorCode {
 
     NOT_VALID_BID_AMOUNT(HttpStatus.NOT_ACCEPTABLE,"입찰가가 현재가와 같거나 낮습니다."),
     NOT_VALID_MIN_BID_AMOUNT(HttpStatus.NOT_ACCEPTABLE, "최소 입찰 단위로 입찰해주세요."),
+    NOT_VALID_URL(HttpStatus.NOT_ACCEPTABLE, "허용할 수 없는 URL 입니다."),
 
     CLOSED_BIDDING_ITEM(HttpStatus.GONE, "경매가 종료된 상품입니다."),
     IS_NOT_CLOSED_BIDDING_ITEM(HttpStatus.GONE, "경매가 종료되지 않은 상품입니다."),
@@ -38,6 +39,7 @@ public enum ErrorCode {
 
     UNAUTHORIZED_READ_NOTIFICATION(HttpStatus.UNAUTHORIZED, "알림 조회 권한이 없습니다."),
     UNAUTHORIZED_BID_CHAT_MEMBER(HttpStatus.UNAUTHORIZED, "채팅 참여 권한이 없습니다."),
+    NOT_FOUND_CHATROOM(HttpStatus.NOT_FOUND, "채팅방을 찾을 수 없습니다."),
     INVALID_CHATROOM(HttpStatus.NOT_FOUND, "채팅방 기록이 없습니다");
 
     private final HttpStatus httpStatus;

@@ -23,23 +23,31 @@ public class Notification extends Timestamped {
     @Column(nullable = false)
     private String content;
 
+    @Embedded
+    private RelatedUrl url;
+    //관련 링크 - 클릭 시 이동해야할 링크
+
     @Column(nullable = false)
     private Boolean isRead;
+    // 읽었는지에 대한 여부
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private NotificationType notificationType;
+    // 알림종류
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member receiver;
+    // 회원정보
 
     @Builder
-    public Notification(Member receiver, NotificationType notificationType, String content, Boolean isRead) {
+    public Notification(Member receiver, NotificationType notificationType, String content, String url, Boolean isRead) {
         this.receiver = receiver;
         this.notificationType = notificationType;
         this.content = content;
+        this.url = new RelatedUrl(url);
         this.isRead = isRead;
     }
 

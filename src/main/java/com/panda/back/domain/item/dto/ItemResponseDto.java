@@ -1,6 +1,7 @@
 package com.panda.back.domain.item.dto;
 
 import com.panda.back.domain.item.entity.Item;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 
 import java.net.URL;
@@ -15,10 +16,11 @@ public class ItemResponseDto {
     private Long presentPrice;
     private Long minBidPrice;
     private LocalDateTime auctionEndTime;
-    private List<URL> itemImages;
+    private List<String> itemImages;
     private Integer bidCount;
     private String nickname;
 
+    @QueryProjection
     public ItemResponseDto(Item item) {
         this.id = item.getId();
         this.title = item.getTitle();
