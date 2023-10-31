@@ -73,8 +73,8 @@ public class Item extends Timestamped {
         this.member = member;
     }
 
-    public void addImages(String imageUrl) {
-        this.images.add(imageUrl);
+    public void addImages(List<String> imageUrls) {
+        this.images.addAll(imageUrls);
     }
 
     public void clearImages() {

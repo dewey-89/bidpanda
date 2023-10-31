@@ -12,6 +12,7 @@ import com.panda.back.global.dto.BaseResponse;
 import com.panda.back.global.exception.CustomException;
 import com.panda.back.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,17 +22,18 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ItemService {
     private final ItemRepository itemRepository;
     private final S3Uploader s3Uploader;
     private final NotifyService notifyService;
-    private final MemberRepository memberRepository;
 
     @Transactional
     public ItemResponseDto createItem(List<MultipartFile> images, ItemRequestDto itemRequestDto, Member member) throws IOException {
@@ -40,11 +42,13 @@ public class ItemService {
         if (images.isEmpty()) {
             throw new CustomException(ErrorCode.NOT_FOUND_IMAGE);
         }
+
+        List<String> imageUrls = new ArrayList<>();
         for (MultipartFile image : images) {
             String imageUrl = s3Uploader.upload(image, "image");
-//            URL imageUrl = new URL(fileName);
-            item.addImages(imageUrl);
+            imageUrls.add(imageUrl);
         }
+        item.addImages(imageUrls);
 
         itemRepository.save(item);
 
@@ -86,12 +90,22 @@ public class ItemService {
         }
 
         if (images != null && !images.isEmpty()) {
-            item.clearImages();
-            for (MultipartFile image : images) {
-                String imageUrl = s3Uploader.upload(image, "image");
-//                URL imageUrl = new URL(fileName);
-                item.addImages(imageUrl);
+            // 기존 이미지 파일 S3에서 삭제
+            List<String> oldImageUrls = item.getImages();
+            for (String oldImageUrl : oldImageUrls) {
+                String fileName = oldImageUrl.substring(oldImageUrl.lastIndexOf("com") + 4);
+                s3Uploader.deleteFile(fileName);
             }
+
+            // 새로운 이미지 업로드
+            List<String> newImageUrls = new ArrayList<>();
+            for (MultipartFile image : images) {
+                String newImageUrl = s3Uploader.upload(image, "image");
+                newImageUrls.add(newImageUrl);
+            }
+
+            item.clearImages();
+            item.addImages(newImageUrls);
         }
 
         item.update(itemRequestDto);
@@ -119,6 +133,13 @@ public class ItemService {
         // 멤버 아이디로 해당 item 등록글 찾기
         if (!item.getMember().getId().equals(member.getId())) {
             throw new CustomException(ErrorCode.NOT_FOUND_MY_ITEM);
+        }
+
+        // 기존 이미지 파일 S3에서 삭제
+        List<String> imageUrls = item.getImages();
+        for (String imageUrl : imageUrls) {
+            String fileName = imageUrl.substring(imageUrl.lastIndexOf("com") + 4);
+            s3Uploader.deleteFile(fileName);
         }
 
         itemRepository.delete(item);
@@ -178,7 +199,8 @@ public class ItemService {
 
 
     public Page<ItemResponseDto> querydslTest(Long memberId, Boolean myItems, Boolean myWinItems, int page, int size) {
-        return itemRepository.search(new ItemSearchForMemberCondition(memberId, myItems, myWinItems), Pageable.ofSize(size).withPage(page - 1));
+        return itemRepository.search(new ItemSearchForMemberCondition(
+                memberId, myItems, myWinItems), Pageable.ofSize(size).withPage(page - 1));
     }
 
     public Page<ItemResponseDto> searchPagingItems(Boolean auctionIng, String keyword, String category,Boolean orderByPrice, Boolean orderByLatest, int page, int size) {
