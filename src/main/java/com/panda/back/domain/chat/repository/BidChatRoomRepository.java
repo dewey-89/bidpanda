@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface BidChatRoomRepository extends JpaRepository<BidChatRoom, Long> {
+public interface BidChatRoomRepository extends JpaRepository<BidChatRoom, Long>, BidChatRoomRepositoryCustom {
     Optional<BidChatRoom> findBidChatRoomByItem(Item item);
     
     Optional<BidChatRoom> findBidChatRoomById(Long id);
