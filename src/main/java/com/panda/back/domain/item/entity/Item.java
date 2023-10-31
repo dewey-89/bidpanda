@@ -11,7 +11,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -71,6 +73,14 @@ public class Item extends Timestamped {
         this.auctionEndTime = LocalDateTime.now().plusDays(itemRequestDto.getDeadline());
         this.category = itemRequestDto.getCategory();
         this.member = member;
+    }
+
+    public Set<String> getBidderProfileImageUrls() {
+        Set<String> bidderProfileImageUrls = new HashSet<>();
+        for (Bid bid : bids) {
+            bidderProfileImageUrls.add(bid.getBidder().getProfileImageUrl());
+        }
+        return bidderProfileImageUrls;
     }
 
     public void addImages(List<String> imageUrls) {

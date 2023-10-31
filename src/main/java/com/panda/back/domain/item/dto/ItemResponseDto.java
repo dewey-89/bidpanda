@@ -4,9 +4,9 @@ import com.panda.back.domain.item.entity.Item;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 public class ItemResponseDto {
@@ -19,6 +19,7 @@ public class ItemResponseDto {
     private List<String> itemImages;
     private Integer bidCount;
     private String nickname;
+    private Set<String> bidderProfileImageUrls;
 
     @QueryProjection
     public ItemResponseDto(Item item) {
@@ -31,6 +32,7 @@ public class ItemResponseDto {
         this.itemImages = item.getImages();
         this.bidCount = item.getBidCount();
         this.nickname = item.getMember().getNickname();
+        this.bidderProfileImageUrls = item.getBidderProfileImageUrls();
     }
 
 
