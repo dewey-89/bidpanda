@@ -51,7 +51,7 @@ public class BidService {
 
         // 전 입찰자에게 알림메시지 주기.
         if(item.getBidCount()!=0) {
-            Member previousBidder = memberRepository.findById(item.getWinnerId()).orElseThrow(
+            Member previousBidder = memberRepository.findById(item.getWinner().getId()).orElseThrow(
                     () -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
 
             // 전 입찰자에게 보내는 알림메시지

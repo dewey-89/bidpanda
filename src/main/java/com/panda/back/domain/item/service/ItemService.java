@@ -34,6 +34,7 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final S3Uploader s3Uploader;
     private final NotifyService notifyService;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public ItemResponseDto createItem(List<MultipartFile> images, ItemRequestDto itemRequestDto, Member member) throws IOException {
@@ -193,7 +194,7 @@ public class ItemService {
             // 낙찰자에게 낙찰 알림
             String content = item.getTitle()+" 낙찰에 성공하셨습니다.";
 
-            Optional<Member> winner = memberRepository.findById(item.getWinnerId());
+            Optional<Member> winner = memberRepository.findById(item.getWinner().getId());
             notifyService.send(winner.get(),NotificationType.BID, content, url);
 
             // 판매자에게 본인의 상품 낙찰 알림
