@@ -1,7 +1,9 @@
 package com.panda.back.domain.item.controller;
 
 import com.panda.back.domain.item.dto.ItemRequestDto;
+import com.panda.back.domain.item.dto.ItemResDto;
 import com.panda.back.domain.item.dto.ItemResponseDto;
+import com.panda.back.domain.item.dto.QItemResDto;
 import com.panda.back.domain.item.service.ItemService;
 import com.panda.back.domain.member.jwt.MemberDetailsImpl;
 import com.panda.back.global.dto.BaseResponse;
@@ -97,9 +99,9 @@ public class ItemController {
 
     @Operation(summary = "동적 쿼리 테스트")
     @GetMapping("/test")
-    public List<ItemResponseDto> searchItems(@RequestParam(required = false) Boolean auctionIng,
-                                             @RequestParam(required = false) String keyword,
-                                             @RequestParam(required = false) String category) {
+    public List<ItemResDto> searchItems(@RequestParam(required = false) Boolean auctionIng,
+                                        @RequestParam(required = false) String keyword,
+                                        @RequestParam(required = false) String category) {
         return ItemService.querydslTest(auctionIng, keyword, category);
     }
 

@@ -1,8 +1,6 @@
 package com.panda.back.domain.item.repository;
 
-import com.panda.back.domain.item.dto.ItemResponseDto;
-import com.panda.back.domain.item.dto.ItemSearchCondition;
-import com.panda.back.domain.item.dto.QItemResponseDto;
+import com.panda.back.domain.item.dto.*;
 import com.panda.back.domain.member.entity.Member;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -25,9 +23,18 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
     }
 
     @Override
-    public List<ItemResponseDto> search(ItemSearchCondition condition) {
+    public List<ItemResDto> search(ItemSearchCondition condition) {
         return queryFactory
-                .select(new QItemResponseDto(item))
+                .select(new QItemResDto(
+                        item.id,
+                        item.title,
+                        item.content,
+                        item.presentPrice,
+                        item.minBidPrice,
+                        item.auctionEndTime,
+                        item.images,
+                        item.bidCount,
+                        item.member.membername))
                 .from(item)
                 .where( auctionIng(condition.getAuctionIng()),
                         keywordEq(condition.getKeyword()),

@@ -2,7 +2,6 @@ package com.panda.back.domain.item.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.panda.back.domain.bid.entity.Bid;
-import com.panda.back.domain.chat.entity.BidChatRoom;
 import com.panda.back.domain.item.dto.ItemRequestDto;
 import com.panda.back.domain.member.entity.Member;
 import com.panda.back.global.entity.Timestamped;
@@ -10,7 +9,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +46,10 @@ public class Item extends Timestamped {
     @Column(nullable = false)
     private String category;
 
+    @Getter
     @Column(nullable = false)
     @ElementCollection
-    private List<URL> images = new ArrayList<>();
+    private List<String> images = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
@@ -74,7 +73,7 @@ public class Item extends Timestamped {
         this.member = member;
     }
 
-    public void addImages(URL imageUrl) {
+    public void addImages(String imageUrl) {
         this.images.add(imageUrl);
     }
 

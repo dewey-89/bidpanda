@@ -1,8 +1,6 @@
 package com.panda.back.domain.item.service;
 
-import com.panda.back.domain.item.dto.ItemRequestDto;
-import com.panda.back.domain.item.dto.ItemResponseDto;
-import com.panda.back.domain.item.dto.ItemSearchCondition;
+import com.panda.back.domain.item.dto.*;
 import com.panda.back.domain.item.entity.Item;
 import com.panda.back.domain.item.repository.ItemRepository;
 import com.panda.back.domain.member.entity.Member;
@@ -43,8 +41,8 @@ public class ItemService {
             throw new CustomException(ErrorCode.NOT_FOUND_IMAGE);
         }
         for (MultipartFile image : images) {
-            String fileName = s3Uploader.upload(image, "image");
-            URL imageUrl = new URL(fileName);
+            String imageUrl = s3Uploader.upload(image, "image");
+//            URL imageUrl = new URL(fileName);
             item.addImages(imageUrl);
         }
 
@@ -90,8 +88,8 @@ public class ItemService {
         if (images != null && !images.isEmpty()) {
             item.clearImages();
             for (MultipartFile image : images) {
-                String fileName = s3Uploader.upload(image, "image");
-                URL imageUrl = new URL(fileName);
+                String imageUrl = s3Uploader.upload(image, "image");
+//                URL imageUrl = new URL(fileName);
                 item.addImages(imageUrl);
             }
         }
@@ -179,7 +177,7 @@ public class ItemService {
     }
 
 
-    public List<ItemResponseDto> querydslTest(Boolean auctionIng, String keyword, String category) {
+    public List<ItemResDto> querydslTest(Boolean auctionIng, String keyword, String category) {
 
         return itemRepository.search(new ItemSearchCondition(auctionIng, keyword, category));
     }

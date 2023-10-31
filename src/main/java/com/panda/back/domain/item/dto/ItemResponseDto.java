@@ -16,7 +16,7 @@ public class ItemResponseDto {
     private Long presentPrice;
     private Long minBidPrice;
     private LocalDateTime auctionEndTime;
-    private List<URL> itemImages;
+    private List<String> itemImages;
     private Integer bidCount;
     private String nickname;
 
