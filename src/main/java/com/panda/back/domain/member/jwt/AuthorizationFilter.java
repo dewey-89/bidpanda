@@ -51,7 +51,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                 accessToken = tokenProvider.createToken(membername,nickname);
                 res.addHeader(TokenProvider.AUTHORIZATION_HEADER, accessToken);
                 accessToken = tokenProvider.substringToken(accessToken);
-                log.info("refreshToken 재생성");
+                log.info("accessToken 재생성");
             }
 
             Claims info = tokenProvider.getUserInfoFromToken(accessToken);
