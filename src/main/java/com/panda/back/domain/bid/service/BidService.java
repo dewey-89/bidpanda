@@ -53,7 +53,14 @@ public class BidService {
         if(item.getBidCount()!=0) {
             Member previousBidder = memberRepository.findById(item.getWinnerId()).orElseThrow(
                     () -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
-            notifyService.send(previousBidder, NotificationType.BID, item.getTitle() + "에 " + member.getNickname() + "님이 더 높은 가격으로 입찰을 하였습니다.");
+
+            // 전 입찰자에게 보내는 알림메시지
+            String content = item.getTitle() + "에 " + member.getNickname() + "님이 더 높은 가격으로 입찰을 하였습니다.";
+
+            // 해당 상품으로 이동하는 url
+            String url = "https://bid-panda-frontend.vercel.app/items/detail/" + item.getId();
+
+            notifyService.send(previousBidder, NotificationType.BID, content, url);
         }
         item.addBid(bid);
         bidRepository.save(bid);
