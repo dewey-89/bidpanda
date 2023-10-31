@@ -58,7 +58,7 @@ public class BidService {
             String content = item.getTitle() + "에 " + member.getNickname() + "님이 더 높은 가격으로 입찰을 하였습니다.";
 
             // 해당 상품으로 이동하는 url
-            String url = "https://bid-panda-frontend.vercel.app/items/detail/" + item.getId();
+            String url = "https://bid-panda-frontend.vercel.app/items/detail/" + String.valueOf(item.getId());
 
             notifyService.send(previousBidder, NotificationType.BID, content, url);
         }
