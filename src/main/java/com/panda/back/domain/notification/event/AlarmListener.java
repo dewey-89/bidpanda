@@ -1,19 +1,25 @@
 package com.panda.back.domain.notification.event;
 
 import com.panda.back.domain.chat.event.ChatAlarmEvent;
+import com.panda.back.domain.job.dto.AuctionEndEvent;
 import com.panda.back.domain.notification.entity.NotificationType;
 import com.panda.back.domain.notification.service.NotifyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class ChatAlarmListener {
+public class AlarmListener {
     private final NotifyService notifyService;
+    private static final String URL_NOTI_CHAT_FORM = "https://bid-panda-frontend.vercel.app/chattingList/%s";
+    private static final String URL_NOTI_AUC_END_FORM = "https://bid-panda-frontend.vercel.app/auction/end/%s";
+
     @EventListener
+    @Transactional
     public void sendAlarm(ChatAlarmEvent chatAlarmEvent) throws InterruptedException {
         String content;
         switch (chatAlarmEvent.getMessage().getType()) {
@@ -24,6 +30,13 @@ public class ChatAlarmListener {
         String url = "https://bidpanda.app/chattingList/" + chatAlarmEvent.getReceiver();
         notifyService.send(chatAlarmEvent.getReceiver(), NotificationType.CHAT, content, url);
         log.info("alarm : {}", content);
-
+    }
+    @EventListener
+    public void sendAuctionEndAlarm(AuctionEndEvent auctionEndEvent) {
+        String url = String.format(URL_NOTI_AUC_END_FORM, auctionEndEvent.getItem().getId());
+        String content = auctionEndEvent.getItem().getTitle() +" 상품 경매가 종료되었습니다.";
+        notifyService.send(auctionEndEvent.getSeller(), NotificationType.BID, content, url);
+        notifyService.send(auctionEndEvent.getWinner(), NotificationType.BID, content, url);
+        log.info("{} auction end at {}", auctionEndEvent.getItem().getTitle(), auctionEndEvent.getItem().getAuctionEndTime());
     }
 }

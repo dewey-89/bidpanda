@@ -98,6 +98,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers("/api/members/**").permitAll() // '/api/members/'로 시작하는 요청 모두 접근 허가
                         .requestMatchers(HttpMethod.POST,"/api/members/email").permitAll() // '/api/members/email' POST 요청 허가
                         .requestMatchers("/ws/chat/**").permitAll() // socket 연결 요청
+                        .requestMatchers(HttpMethod.POST,"/event/webhook/auction-end/**").permitAll()
                         .requestMatchers(HttpMethod.GET).permitAll() // GET 요청 허가
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
