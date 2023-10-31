@@ -26,14 +26,14 @@ public class ChatRoomInfoResDto {
             this.title = bidChatRoom.getItem().getTitle();
             this.itemId = bidChatRoom.getItem().getId();
             this.item_image = bidChatRoom.getItem().getImages().get(0).toString();
-            this.recordId = bidChatRoom.getRecordId();
+            this.recordId = bidChatRoom.getId().toString();
             this.partner = bidChatRoom.getItem().getWinner().getNickname();
             this.partnerProfileUrl = bidChatRoom.getItem().getWinner().getProfileImageUrl();
         }else {// 내가 winner
             this.title = bidChatRoom.getItem().getTitle();
             this.itemId = bidChatRoom.getItem().getId();
             this.item_image = bidChatRoom.getItem().getImages().get(0).toString();
-            this.recordId = bidChatRoom.getRecordId();
+            this.recordId = bidChatRoom.getId().toString();
             this.partner = bidChatRoom.getItem().getMember().getNickname();
             this.partnerProfileUrl = bidChatRoom.getItem().getMember().getProfileImageUrl();
         }

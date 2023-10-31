@@ -4,7 +4,7 @@ import com.panda.back.domain.chat.dto.req.BidChatRoomOpenReqDto;
 import com.panda.back.domain.chat.dto.res.ChatHistoryResDto;
 import com.panda.back.domain.chat.dto.res.ChatRoomInfoResDto;
 import com.panda.back.domain.chat.dto.res.OpenChatRoomResDto;
-import com.panda.back.domain.chat.dto.res.MessageInfo;
+import com.panda.back.domain.chat.dto.res.MessageDto;
 import com.panda.back.domain.chat.service.BidChatRoomService;
 import com.panda.back.domain.member.jwt.MemberDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,13 +47,13 @@ public class BidChatRoomController {
     @Operation(summary = "채팅 최근 메시지 20개 조회",
             description = "recordId로 채팅 이력을 전송합니다."
     )
-    @GetMapping("/rooms/{recordId}/messages")
+    @GetMapping("/rooms/{roomId}/messages")
     public ResponseEntity<ChatHistoryResDto> getChatMessages(
-            @PathVariable String recordId,
+            @PathVariable Long roomId,
             @AuthenticationPrincipal MemberDetailsImpl memberDetails
     ) {
-        List<MessageInfo> history = bidChatRoomService.getRoomMessages(recordId, memberDetails.getMember());
-        String partnerUrl = bidChatRoomService.getPartnerProfileUrl(recordId, memberDetails.getMember());
+        List<MessageDto> history = bidChatRoomService.getRoomMessages(roomId, memberDetails.getMember());
+        String partnerUrl = bidChatRoomService.getPartnerProfileUrl(roomId, memberDetails.getMember());
         return ResponseEntity.ok()
                 .body(new ChatHistoryResDto(history, partnerUrl));
     }

@@ -34,7 +34,7 @@ public class ChatClientRepository {
         }
     }
 
-    public Set<String> findKeysByRecordId(String  recordId) {
+    public Set<String> findKeysByRecordId(Long recordId) {
         String keyword = String.format("chat:*:%s",recordId);
         return redisTemplate.keys(keyword);
     }

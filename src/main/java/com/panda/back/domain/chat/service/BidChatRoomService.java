@@ -3,11 +3,11 @@ package com.panda.back.domain.chat.service;
 import com.panda.back.domain.chat.dto.req.BidChatRoomOpenReqDto;
 import com.panda.back.domain.chat.dto.res.ChatRoomInfoResDto;
 import com.panda.back.domain.chat.dto.res.OpenChatRoomResDto;
-import com.panda.back.domain.chat.dto.res.MessageInfo;
+import com.panda.back.domain.chat.dto.res.MessageDto;
 import com.panda.back.domain.chat.entity.BidChatRoom;
-import com.panda.back.domain.chat.entity.ChatRecord;
+import com.panda.back.domain.chat.entity.ChatMessage;
 import com.panda.back.domain.chat.repository.BidChatRoomRepository;
-import com.panda.back.domain.chat.repository.ChatRecordRepository;
+import com.panda.back.domain.chat.repository.ChatMessageRepository;
 import com.panda.back.domain.chat.type.UserType;
 import com.panda.back.domain.item.entity.Item;
 import com.panda.back.domain.item.repository.ItemRepository;
@@ -27,12 +27,11 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class BidChatRoomService {
     private final BidChatRoomRepository bidChatRoomRepository;
-    private final ChatRecordRepository chatRecordRepository;
+    private final ChatMessageRepository chatMessageRepository;
     private final ItemRepository itemRepository;
     public List<ChatRoomInfoResDto> getMyChatRooms(Member member) {
         LocalDateTime now = LocalDateTime.now();
 
-        // 내가 낙찰한, 내가 판매한 item의 채팅룸 조회
         List<BidChatRoom> meSeller = bidChatRoomRepository.findBidChatRoomsByItem_MemberAndItem_AuctionEndTimeBefore(member, now);
         List<BidChatRoom> meWinner = bidChatRoomRepository.findBidChatRoomsByItem_WinnerAndItem_AuctionEndTimeBefore(member, now);
 
@@ -53,41 +52,30 @@ public class BidChatRoomService {
         Item bidItem = itemRepository.findById(requestDto.getItemId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ITEM));
 
-        UserType userType = UserType.seller;
-        if (!member.getId().equals(bidItem.getWinner().getId())
-                && !member.getId().equals(bidItem.getMember().getId())
-        ) {
-            throw new CustomException(ErrorCode.UNAUTHORIZED_BID_CHAT_MEMBER);
-        }
-        if(member.getId().equals(bidItem.getWinner().getId())) {
-            userType = UserType.winner;
-        }
+        UserType myType = bidItem.getMember().getId().equals(member.getId()) ? UserType.seller : UserType.winner;
 
         BidChatRoom bidChatRoom = bidChatRoomRepository.findBidChatRoomByItem(bidItem)
                 .orElseGet(() -> {
-                    ChatRecord chatRecord  = chatRecordRepository.save(new ChatRecord());
-                    return bidChatRoomRepository.save(new BidChatRoom(chatRecord.getId().toString() ,bidItem));
+                    return bidChatRoomRepository.save(new BidChatRoom(bidItem));
                 });
-        return new OpenChatRoomResDto(bidChatRoom.getRecordId(), userType);
+        return new OpenChatRoomResDto(bidChatRoom.getId(), myType);
     }
 
-    public List<MessageInfo> getRoomMessages(String recordId, Member member) {
-        ChatRecord chatRecord = chatRecordRepository.findById(recordId)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_CHATROOM));
+    public List<MessageDto> getRoomMessages(Long roomId, Member member) {
 
-        return chatRecord.getMessages().stream().map(MessageInfo::new).toList();
+        List<ChatMessage> messages = chatMessageRepository.findChatMessagesByBidChatRoom_IdOrderByCreatedAtDesc(roomId);
+        return messages.stream().map(MessageDto::new).toList();
     }
 
-    public String getPartnerProfileUrl(String recordId, Member member) {
-        BidChatRoom bidChatRoom = bidChatRoomRepository.findBidChatRoomByRecordId(recordId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ITEM));
+    public String getPartnerProfileUrl(Long roomId, Member member) {
+        BidChatRoom bidChatRoom = bidChatRoomRepository.findBidChatRoomById(roomId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_CHATROOM));
 
-        UserType myType = bidChatRoom.getItem().getWinner().equals(member)? UserType.winner : UserType.seller;
+        UserType myType = bidChatRoom.getItem().getMember().getId().equals(member.getId())?
+                UserType.seller : UserType.winner;
 
-        if (myType == UserType.winner) { // i am winner
-            return bidChatRoom.getItem().getWinner().getProfileImageUrl();
-        }
-        // i am seller
-        return bidChatRoom.getItem().getMember().getProfileImageUrl();
+        return myType == UserType.seller ?
+                bidChatRoom.getItem().getWinner().getProfileImageUrl() :
+                bidChatRoom.getItem().getMember().getProfileImageUrl();
     }
 }
