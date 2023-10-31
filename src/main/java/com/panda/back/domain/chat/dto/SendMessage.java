@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @ToString
 public class SendMessage {
     private MessageType type;
-    private LocalDateTime sentAt;
+    private String sentAt;
 
     private String sender;
     private String content;
@@ -28,21 +28,25 @@ public class SendMessage {
     @JsonProperty("imageURL")
     private String imageUrl;
 
+    @JsonProperty("isRead")
+    private boolean isRead;
+
     public SendMessage(ReceiveMessage message) {
         this.type = message.getType();
-        this.sentAt = LocalDateTime.now();
+        this.sentAt = LocalDateTime.now().toString();
     }
 
     public SendMessage(MessageType messageType, String memberEnter) {
         this.type = messageType;
-        this.sentAt = LocalDateTime.now();
+        this.sentAt = LocalDateTime.now().toString();
         this.content = memberEnter;
         this.sender = memberEnter;
         this.profileUrl = memberEnter;
     }
 
-    public static SendMessage from(ReceiveMessage message){
+    public static SendMessage from(ReceiveMessage message, boolean isRead){
         SendMessage toClient = new SendMessage(message);
+        toClient.isRead = isRead;
         switch (message.getType()) {
             case ENTER -> {
                 toClient.setSender(message.getNickname());

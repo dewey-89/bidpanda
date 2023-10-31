@@ -2,7 +2,6 @@ package com.panda.back.domain.chat.controller;
 
 import com.panda.back.domain.chat.dto.ReceiveMessage;
 import com.panda.back.domain.chat.dto.SendMessage;
-import com.panda.back.domain.chat.event.ChatAlarmPublisher;
 import com.panda.back.domain.chat.service.ChatRecordService;
 import com.panda.back.domain.chat.type.MessageType;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,7 @@ import org.springframework.stereotype.Controller;
 @Slf4j
 public class MessageController {
     private final ChatRecordService chatRecordService;
-    private final ChatAlarmPublisher chatAlarmPublisher;
+//    private final ChatAlarmPublisher chatAlarmPublisher;
     @SubscribeMapping("/topic/chat/room/{recordId}")
     @SendTo("/topic/chat/room/{recordId}")
     public SendMessage subscribeChatRoom(
@@ -30,18 +29,9 @@ public class MessageController {
     @MessageMapping("/chat/message/{recordId}")
     @SendTo("/topic/chat/room/{recordId}")
     public SendMessage publishChatMessage(
-            @Headers MessageHeaders headers,
-            @DestinationVariable("recordId") String recordId,
+            @DestinationVariable("recordId") Long recordId,
             @Payload ReceiveMessage message
     ) {
-        switch (message.getType()) {
-            case TEXT, MEDIA -> chatRecordService.recordMessage(recordId, message);
-        }
-//        TODO : OutBoundChannel 로직으로 이동
-        int chatMemberCount = chatRecordService.checkParticipantsCount(recordId);
-        if (chatMemberCount < 2) {
-            chatAlarmPublisher.publishChatAlarm(recordId, message);
-        }
-        return SendMessage.from(message);
+        return chatRecordService.recordMessage(recordId, message);
     }
 }

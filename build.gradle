@@ -51,7 +51,7 @@ dependencies {
 
     // chat관련
     implementation 'org.springframework.boot:spring-boot-starter-websocket:3.0.4'
-    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+//    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 
     // Spring boot 3.x이상에서 QueryDsl 패키지를 정의하는 방법
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'

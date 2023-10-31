@@ -20,8 +20,8 @@ public class OpenChatRoomResDto {
     @Schema(description = "채팅방에서 user의 역할", type = "String", example = "seller|winner")
     private String myRole;
 
-    public OpenChatRoomResDto(String recordId, UserType userType) {
-        this.recordId = recordId;
+    public OpenChatRoomResDto(Long recordId, UserType userType) {
+        this.recordId = recordId.toString();
         this.myRole = userType.name();
     }
 }
