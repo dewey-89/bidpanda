@@ -1,32 +1,33 @@
 package com.panda.back.global.S3;
 
-import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.UUID;
 
 @Slf4j
 @Service
+@Component
+@RequiredArgsConstructor
 public class S3Uploader {
 
-    private final AmazonS3 amazonS3;
-    private final String bucket;
+    private final AmazonS3Client amazonS3Client;
 
-    public S3Uploader(AmazonS3 amazonS3, @Value("${cloud.aws.s3.bucket}") String bucket) {
-        this.amazonS3 = amazonS3;
-        this.bucket = bucket;
-    }
-    public String upload(MultipartFile multipartFile, String dirName) throws IOException {
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
+
+    public String upload(MultipartFile multipartFile, String dirName) throws IOException {// 파일 업로드
         // 파일 이름에서 공백을 제거한 새로운 파일 이름 생성
         String originalFileName = multipartFile.getOriginalFilename();
 
@@ -43,7 +44,7 @@ public class S3Uploader {
         return uploadImageUrl;
     }
 
-    private File convert(MultipartFile file) throws IOException {
+    private File convert(MultipartFile file) throws IOException {// 파일 변환하기
         String originalFileName = file.getOriginalFilename();
         String uuid = UUID.randomUUID().toString();
         String uniqueFileName = uuid + "_" + originalFileName.replaceAll("\\s", "_");
@@ -61,13 +62,13 @@ public class S3Uploader {
         throw new IllegalArgumentException(String.format("파일 변환에 실패했습니다. %s", originalFileName));
     }
 
-    private String putS3(File uploadFile, String fileName) {
-        amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile)
+    private String putS3(File uploadFile, String fileName) {// S3로 파일 업로드하기
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
-        return amazonS3.getUrl(bucket, fileName).toString();
+        return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
-    private void removeNewFile(File targetFile) {
+    private void removeNewFile(File targetFile) {// 로컬에 생성된 File 삭제
         if (targetFile.delete()) {
             log.info("파일이 삭제되었습니다.");
         } else {
@@ -75,18 +76,11 @@ public class S3Uploader {
         }
     }
 
-    public void deleteFile(String fileName) {
-        try {
-            // URL 디코딩을 통해 원래의 파일 이름을 가져옴
-            String decodedFileName = URLDecoder.decode(fileName, "UTF-8");
-            log.info("Deleting file from S3: " + decodedFileName);
-            amazonS3.deleteObject(bucket, decodedFileName);
-        } catch (UnsupportedEncodingException e) {
-            log.error("Error while decoding the file name: {}", e.getMessage());
-        }
+    public void deleteFile(String fileName) {// S3에서 파일 삭제하기
+        amazonS3Client.deleteObject(bucket, fileName);
     }
 
-    public String updateFile(MultipartFile newFile, String oldFileName, String dirName) throws IOException {
+    public String updateFile(MultipartFile newFile, String oldFileName, String dirName) throws IOException {// S3에 파일 업로드하고 기존 파일 삭제하기
         // 기존 파일 삭제
         log.info("S3 oldFileName: " + oldFileName);
         deleteFile(oldFileName);

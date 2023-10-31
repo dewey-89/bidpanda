@@ -39,6 +39,7 @@ public enum ErrorCode {
 
     UNAUTHORIZED_READ_NOTIFICATION(HttpStatus.UNAUTHORIZED, "알림 조회 권한이 없습니다."),
     UNAUTHORIZED_BID_CHAT_MEMBER(HttpStatus.UNAUTHORIZED, "채팅 참여 권한이 없습니다."),
+    NOT_FOUND_CHATROOM(HttpStatus.NOT_FOUND, "채팅방을 찾을 수 없습니다."),
     INVALID_CHATROOM(HttpStatus.NOT_FOUND, "채팅방 기록이 없습니다");
 
     private final HttpStatus httpStatus;

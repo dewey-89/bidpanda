@@ -2,7 +2,6 @@ package com.panda.back.domain.item.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.panda.back.domain.bid.entity.Bid;
-import com.panda.back.domain.chat.entity.BidChatRoom;
 import com.panda.back.domain.item.dto.ItemRequestDto;
 import com.panda.back.domain.member.entity.Member;
 import com.panda.back.global.entity.Timestamped;
@@ -10,7 +9,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,24 +41,23 @@ public class Item extends Timestamped {
     private LocalDateTime auctionEndTime;
 
     @Column(nullable = false)
-    private Long winnerId = 0L;
-
-    @Column(nullable = false)
     private Integer bidCount = 0;
 
     @Column(nullable = false)
     private String category;
 
+    @Getter
     @Column(nullable = false)
     @ElementCollection
-    private List<URL> images = new ArrayList<>();
+    private List<String> images = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @OneToOne(mappedBy = "item",fetch = FetchType.LAZY)
-    private BidChatRoom bidChatRoom;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "winner_id", nullable = true)
+    private Member winner;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     private List<Bid> bids = new ArrayList<>();
@@ -76,8 +73,8 @@ public class Item extends Timestamped {
         this.member = member;
     }
 
-    public void addImages(URL imageUrl) {
-        this.images.add(imageUrl);
+    public void addImages(List<String> imageUrls) {
+        this.images.addAll(imageUrls);
     }
 
     public void clearImages() {
@@ -96,7 +93,7 @@ public class Item extends Timestamped {
     public void addBid(Bid bid) {
         bid.setItem(this);
         this.presentPrice = bid.getBidAmount();
-        this.winnerId = bid.getBidder().getId();
+        this.winner = bid.getBidder();
         this.bidCount++;
     }
 }

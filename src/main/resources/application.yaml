@@ -1,6 +1,6 @@
 spring:
   datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
@@ -16,9 +16,9 @@ spring:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
-    mongodb:
-      uri: ${MONGO_DB_URL}
-      database: bid_chat
+#    mongodb:
+#      uri: ${MONGO_DB_URL}
+#      database: bid_chat
   mail:
     host: smtp.gmail.com
     port: 587
@@ -30,7 +30,15 @@ spring:
           starttls:
             enable: true
           auth: true
-
+#logging:
+#  level:
+#    jdbc:
+#      connection: 'off'
+#      sqlonly: 'off'
+#      resultset: 'off'
+#      resultsettable: info
+#      sqltiming: info
+#      audit: 'off'
 
 jwt:
   secret:

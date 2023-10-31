@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -120,13 +121,21 @@ public class MemberService {
     @Transactional
     public BaseResponse deleteMember(Member member) {
        Member currentMember = findByMembername(member.getMembername());
+        if(!Objects.equals(member.getProfileImageUrl(), "https://bidpanda-bucket.s3.ap-northeast-2.amazonaws.com/defualt-image/IMG_0191.png")){
+            String fileName = member.getProfileImageUrl().substring(member.getProfileImageUrl().lastIndexOf("com") + 4);
+            s3Uploader.deleteFile(fileName);
+        }
         memberRepository.delete(currentMember);
         return BaseResponse.successMessage("회원 삭제 성공");
     }
 
     @Transactional
-    public BaseResponse uploadProfileImage(MultipartFile file, Member member) throws IOException {
+    public BaseResponse updateProfileImage(MultipartFile file, Member member) throws IOException {
         String url = s3Uploader.upload(file, "profile");
+        if(!Objects.equals(member.getProfileImageUrl(), "https://bidpanda-bucket.s3.ap-northeast-2.amazonaws.com/defualt-image/IMG_0191.png")){
+            String fileName = member.getProfileImageUrl().substring(member.getProfileImageUrl().lastIndexOf("com") + 4);
+            s3Uploader.deleteFile(fileName);
+        }
         member.profileImageUrlUpdate(url);
         memberRepository.save(member);
         return BaseResponse.successData(url);

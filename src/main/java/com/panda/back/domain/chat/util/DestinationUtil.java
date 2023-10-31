@@ -7,4 +7,6 @@ public class DestinationUtil {
     public String getRecordIdFromDestination(String destination) {
         return destination.split("/")[4];
     }
+
+
 }
