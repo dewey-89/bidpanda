@@ -30,6 +30,7 @@ public enum ErrorCode {
 
     NOT_VALID_BID_AMOUNT(HttpStatus.NOT_ACCEPTABLE,"입찰가가 현재가와 같거나 낮습니다."),
     NOT_VALID_MIN_BID_AMOUNT(HttpStatus.NOT_ACCEPTABLE, "최소 입찰 단위로 입찰해주세요."),
+    NOT_VALID_URL(HttpStatus.NOT_ACCEPTABLE, "허용할 수 없는 URL 입니다."),
 
     CLOSED_BIDDING_ITEM(HttpStatus.GONE, "경매가 종료된 상품입니다."),
     IS_NOT_CLOSED_BIDDING_ITEM(HttpStatus.GONE, "경매가 종료되지 않은 상품입니다."),

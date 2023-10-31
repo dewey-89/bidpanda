@@ -2,6 +2,7 @@ package com.panda.back.domain.notification.dto;
 
 import com.panda.back.domain.notification.entity.Notification;
 import com.panda.back.domain.notification.entity.NotificationType;
+import com.panda.back.domain.notification.entity.RelatedUrl;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,13 +13,16 @@ import java.util.List;
 public class NotificationResponseDto {
     private Long notificationId;
     private String content;
+    private String url;
     private NotificationType notificationType;
     private Boolean isRead;
 
     public NotificationResponseDto(Long notificationId, String content,
-                                   NotificationType notificationType, Boolean isRead) {
+                                   RelatedUrl url, NotificationType notificationType,
+                                   Boolean isRead) {
         this.notificationId = notificationId;
         this.content = content;
+        this.url = String.valueOf(url);
         this.notificationType = notificationType;
         this.isRead = isRead;
     }
@@ -27,6 +31,7 @@ public class NotificationResponseDto {
         return new NotificationResponseDto(
                 notification.getId(),
                 notification.getContent(),
+                notification.getUrl(),
                 notification.getNotificationType(),
                 notification.getIsRead()
         );

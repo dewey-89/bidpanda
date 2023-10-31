@@ -113,8 +113,8 @@ public class NotifyService {
 
     // [2] send()
     @Transactional
-    public void send(Member receiver, NotificationType notificationType, String content) {
-        Notification notification = notificationRepository.save(createNotification(receiver, notificationType, content));
+    public void send(Member receiver, NotificationType notificationType, String content, String url) {
+        Notification notification = notificationRepository.save(createNotification(receiver, notificationType, content, url));
 
         String receiverId = String.valueOf(receiver.getMembername());
         String eventId = receiverId + "_" + System.currentTimeMillis();
@@ -131,11 +131,12 @@ public class NotifyService {
         );
     }
 
-    private Notification createNotification(Member receiver, NotificationType notificationType, String content) {
+    private Notification createNotification(Member receiver, NotificationType notificationType, String content, String url) {
         return Notification.builder()
                 .receiver(receiver)
                 .notificationType(notificationType)
                 .content(content)
+                .url(url)
                 .isRead(false)
                 .build();
     }
