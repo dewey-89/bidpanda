@@ -51,18 +51,18 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         String nickname = ((MemberDetailsImpl) authResult.getPrincipal()).getMember().getNickname();
 
         String token = tokenProvider.createToken(membername, nickname);
-        response.addHeader("Authorization", token);
+        String refresh = tokenProvider.createRefreshToken(membername, nickname);
+
 
         RefreshToken refreshToken = refreshTokenRepository.findByMembername(membername).orElse(null);
-        String refresh = tokenProvider.createRefreshToken(membername,nickname);
-        if (refreshToken == null){
-            refreshToken = new RefreshToken(refresh,membername);
+        if (refreshToken == null) {
+            refreshToken = new RefreshToken(refresh, membername);
         } else {
             refreshToken.updateToken(refresh);
         }
-
         refreshTokenRepository.save(refreshToken);
-        response.addHeader(TokenProvider.REFRESH_HEADER, refreshToken.getRefreshtoken());
+        response.addHeader(TokenProvider.AUTHORIZATION_HEADER, token);
+        response.addHeader(TokenProvider.REFRESH_HEADER, refreshToken.getToken());
 
         response.setStatus(HttpServletResponse.SC_OK);
         writeResponse(response, "로그인 성공");
