@@ -1,6 +1,7 @@
 package com.panda.back.domain.notification.service;
 
 import com.panda.back.domain.member.entity.Member;
+import com.panda.back.domain.notification.controller.SubscribeDummyDto;
 import com.panda.back.domain.notification.dto.NotificationResponseDto;
 import com.panda.back.domain.notification.entity.Notification;
 import com.panda.back.domain.notification.entity.NotificationType;
@@ -52,7 +53,7 @@ public class NotifyService {
         // (1-5) 연결 직후, 데이터 전송이 없을 시 503 에러 발생하기 때문에 에러 방지 위한 더미 데이터 전달
         String eventId = makeTimeIncludeId(membername);
         //  수 많은 이벤트 들을 구분하기 위해 이벤트 ID에 시간을 통해 구분을 해줌
-        sendNotification(emitter, eventId, emitterId, "연결되었습니다. [membername=" + membername + "]");
+        sendNotification(emitter, eventId, emitterId, new SubscribeDummyDto(membername));
 
         // (1-6) 클라이언트가 미수신한 Event 목록이 존재할 경우 전송하여 Event 유실을 예방
         if (hasLostData(lastEventId)) {
