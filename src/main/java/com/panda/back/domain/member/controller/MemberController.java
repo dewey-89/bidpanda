@@ -68,10 +68,10 @@ public class MemberController {
 
     @Operation(summary = "회원정보 수정")
     @PutMapping
-    public BaseResponse updateProfile(
-            @RequestBody @Valid ProfileRequestDto requestDto,
+    public ResponseEntity<BaseResponse<String>> updateProfile(
+            @RequestBody @Valid ProfileRequestDto requestDto, BindingResult bindingResult,
             @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
-     return memberService.updateProfile(requestDto,memberDetails.getMember());
+     return memberService.updateProfile(requestDto,memberDetails.getMember(),bindingResult);
     }
 
     @Operation(summary = "비밀번호 수정")
