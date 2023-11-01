@@ -23,6 +23,8 @@ public interface ItemRepository extends JpaRepository<Item, Long> , ItemReposito
 
     List<Item> findAllByTitleContaining(String keyword);
 
+    boolean existsByMemberAndAuctionEndTimeAfter(Member currentMember, LocalDateTime currentTime);
+
     @Query("SELECT i FROM Item i WHERE i.auctionEndTime < :currentTime")
     List<Item> findAuctionEndTimeItems(LocalDateTime currentTime);
 
