@@ -12,11 +12,8 @@ import java.util.Optional;
 
 @Repository
 public interface BidChatRoomRepository extends JpaRepository<BidChatRoom, Long>, BidChatRoomRepositoryCustom {
-    Optional<BidChatRoom> findBidChatRoomByItem(Item item);
+
+    Optional<BidChatRoom> findBidChatRoomByItem_Id(Long id);
     
     Optional<BidChatRoom> findBidChatRoomById(Long id);
-
-    List<BidChatRoom> findBidChatRoomsByItem_MemberAndItem_AuctionEndTimeBefore(Member seller, LocalDateTime now);
-
-    List<BidChatRoom> findBidChatRoomsByItem_WinnerAndItem_AuctionEndTimeBefore(Member winner, LocalDateTime now);
 }

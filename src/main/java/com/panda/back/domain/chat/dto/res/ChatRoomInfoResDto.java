@@ -17,8 +17,9 @@ public class ChatRoomInfoResDto {
     private Long itemId;
     private String item_image;
     private String recordId;
-    private String partner; // 반대 입장 사람의 닉네임
-    private String partnerProfileUrl; // 반대 입장 사람의 프로필
+    private String partner; // 채팅 상대 닉네임
+    private String partnerProfileUrl; // 채팅 상대 프로필
+    private Integer unreadMessageCount;
 
     public ChatRoomInfoResDto(Optional<BidChatRoom> bidChatRoom, Item item, UserType userType) {
         this.title = item.getTitle();
