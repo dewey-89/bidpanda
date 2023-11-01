@@ -19,7 +19,6 @@ public class ReceiveMessage {
     // only MessageType.ENTER
     @JsonProperty("nickname")
     private String nickname;
-
     @JsonProperty("profileURL")
     private String profileUrl;
 

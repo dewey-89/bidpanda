@@ -1,11 +1,11 @@
 package com.panda.back.domain.chat.service;
 
 import com.panda.back.domain.chat.dto.req.BidChatRoomOpenReqDto;
+import com.panda.back.domain.chat.dto.res.ChatHistoryResDto;
 import com.panda.back.domain.chat.dto.res.ChatRoomInfoResDto;
 import com.panda.back.domain.chat.dto.res.OpenChatRoomResDto;
 import com.panda.back.domain.chat.dto.res.MessageDto;
 import com.panda.back.domain.chat.entity.BidChatRoom;
-import com.panda.back.domain.chat.entity.ChatMessage;
 import com.panda.back.domain.chat.repository.BidChatRoomRepository;
 import com.panda.back.domain.chat.repository.ChatMessageRepository;
 import com.panda.back.domain.chat.type.UserType;
@@ -14,13 +14,11 @@ import com.panda.back.domain.item.repository.ItemRepository;
 import com.panda.back.domain.member.entity.Member;
 import com.panda.back.global.exception.CustomException;
 import com.panda.back.global.exception.ErrorCode;
-import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -35,40 +33,36 @@ public class BidChatRoomService {
         LocalDateTime now = LocalDateTime.now();
         List<ChatRoomInfoResDto> meSeller = bidChatRoomRepository.getChatRoomsMeSeller(member, now);
         List<ChatRoomInfoResDto> meWinner = bidChatRoomRepository.getChatRoomsMeWinner(member, now);
-        return Stream
-                .concat(meSeller.stream(), meWinner.stream())
+
+        return Stream.concat(meSeller.stream(), meWinner.stream())
                 .toList();
     }
 
     @Transactional
     public OpenChatRoomResDto openChatRoom(BidChatRoomOpenReqDto requestDto, Member member) {
-        Item bidItem = itemRepository.findById(requestDto.getItemId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ITEM));
-
-        UserType myType = bidItem.getMember().getId().equals(member.getId()) ? UserType.seller : UserType.winner;
-
-        BidChatRoom bidChatRoom = bidChatRoomRepository.findBidChatRoomByItem(bidItem)
+       BidChatRoom bidChatRoom = bidChatRoomRepository.findBidChatRoomByItem_Id(requestDto.getItemId())
                 .orElseGet(() -> {
+                    Item bidItem = itemRepository.findById(requestDto.getItemId())
+                            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ITEM));
                     return bidChatRoomRepository.save(new BidChatRoom(bidItem));
                 });
+       UserType myType = member.getId().equals(bidChatRoom.getItem().getMember().getId()) ?
+               UserType.seller : UserType.winner;
         return new OpenChatRoomResDto(bidChatRoom.getId(), myType);
     }
 
-    public List<MessageDto> getRoomMessages(Long roomId, Member member) {
-
-        List<ChatMessage> messages = chatMessageRepository.findChatMessagesByBidChatRoom_IdOrderByCreatedAtDesc(roomId);
-        return messages.stream().map(MessageDto::new).toList();
-    }
-
-    public String getPartnerProfileUrl(Long roomId, Member member) {
+    public ChatHistoryResDto getRoomMessages(Long roomId, Member member) {
         BidChatRoom bidChatRoom = bidChatRoomRepository.findBidChatRoomById(roomId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_CHATROOM));
 
-        UserType myType = bidChatRoom.getItem().getMember().getId().equals(member.getId())?
-                UserType.seller : UserType.winner;
+        Member partner = member.getId().equals(bidChatRoom.getItem().getMember().getId())?
+                bidChatRoom.getItem().getWinner():
+                bidChatRoom.getItem().getMember();
 
-        return myType == UserType.seller ?
-                bidChatRoom.getItem().getWinner().getProfileImageUrl() :
-                bidChatRoom.getItem().getMember().getProfileImageUrl();
+        List<MessageDto> history = chatMessageRepository
+                .findTop20ChatMessagesByBidChatRoomOrderByCreatedAtDesc(bidChatRoom).stream()
+                .map(MessageDto::new)
+                .toList();
+        return new ChatHistoryResDto(history, partner);
     }
 }
