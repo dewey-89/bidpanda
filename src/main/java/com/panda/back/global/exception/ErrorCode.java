@@ -27,6 +27,7 @@ public enum ErrorCode {
     INVALID_INPUT_AUTHKEY(HttpStatus.UNAUTHORIZED, "인증키가 유효하지 않습니다."),
     EXPIRED_AUTHKEY(HttpStatus.UNAUTHORIZED,"만료된 인증키 입니다."),
     NOT_AUTHORIZED(HttpStatus.UNAUTHORIZED, "권한이 없습니다."),
+    EXIST_IS_NOT_CLOSED_ITEMS(HttpStatus.NOT_ACCEPTABLE,"경매진행중인 상품이 존재해 회원 탈퇴가 불가능합니다."),
 
     NOT_VALID_BID_AMOUNT(HttpStatus.NOT_ACCEPTABLE,"입찰가가 현재가와 같거나 낮습니다."),
     NOT_VALID_MIN_BID_AMOUNT(HttpStatus.NOT_ACCEPTABLE, "최소 입찰 단위로 입찰해주세요."),

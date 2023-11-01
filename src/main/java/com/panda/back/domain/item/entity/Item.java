@@ -54,7 +54,7 @@ public class Item extends Timestamped {
     private List<String> images = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id", nullable = true)
     private Member member;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -105,6 +105,10 @@ public class Item extends Timestamped {
         this.presentPrice = bid.getBidAmount();
         this.winner = bid.getBidder();
         this.bidCount++;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 }
 
