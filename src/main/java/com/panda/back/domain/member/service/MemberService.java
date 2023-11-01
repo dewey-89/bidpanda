@@ -37,14 +37,14 @@ public class MemberService {
     private final ItemRepository itemRepository;
 
     public BaseResponse membernameExists(String membername) {
-        if (memberRepository.findByMembername(membername).isPresent()){
+        if (memberRepository.findByMembername(membername).isPresent()) {
             throw new CustomException(ErrorCode.DUPLICATE_MEMBERNAME);
         }
         return BaseResponse.successMessage("중복 체크 완료");
     }
 
     public BaseResponse nicknameExists(String nickname) {
-        if (memberRepository.findByNickname(nickname).isPresent()){
+        if (memberRepository.findByNickname(nickname).isPresent()) {
             throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
         }
         return BaseResponse.successMessage("중복 체크 완료");
@@ -89,17 +89,17 @@ public class MemberService {
     }
 
     @Transactional
-    public BaseResponse updateProfile(ProfileRequestDto requestDto, Member member) {
-        try {
-            // 현재 로그인한 사용자의 정보를 가져옴
-            Member myprofile = findByMembername(member.getMembername());
-            myprofile.setNickname(requestDto.getNickname());
-            myprofile.setIntro(requestDto.getIntro());
-            memberRepository.save(myprofile);
-            return BaseResponse.successMessage("회원정보 수정 성공");
-        } catch (IllegalArgumentException e) {
-            return BaseResponse.error(e.getMessage());
+    public ResponseEntity<BaseResponse<String>> updateProfile(ProfileRequestDto requestDto, Member member, BindingResult bindingResult) {
+        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+        for (FieldError e : fieldErrors) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(BaseResponse.error(e.getDefaultMessage()));
         }
+        // 현재 로그인한 사용자의 정보를 가져옴
+        Member myprofile = findByMembername(member.getMembername());
+        myprofile.setNickname(requestDto.getNickname());
+        myprofile.setIntro(requestDto.getIntro());
+        memberRepository.save(myprofile);
+        return ResponseEntity.status(HttpStatus.OK).body(BaseResponse.successMessage("회원정보 수정 성공"));
     }
 
     @Transactional
@@ -127,7 +127,7 @@ public class MemberService {
         Member currentMember = findByMembername(member.getMembername());
 
         //멤버가 등록한 아이템 중 AuctionEndTime이 현재시간보다 이후이면 삭제 불가
-        if(itemRepository.existsByMemberAndAuctionEndTimeAfter(currentMember, LocalDateTime.now())){
+        if (itemRepository.existsByMemberAndAuctionEndTimeAfter(currentMember, LocalDateTime.now())) {
             throw new CustomException(ErrorCode.EXIST_IS_NOT_CLOSED_ITEMS);
         }
 
