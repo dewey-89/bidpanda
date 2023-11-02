@@ -3,8 +3,8 @@ package com.panda.back.domain.chat.service;
 import com.panda.back.domain.chat.dto.req.BidChatRoomOpenReqDto;
 import com.panda.back.domain.chat.dto.res.ChatHistoryResDto;
 import com.panda.back.domain.chat.dto.res.ChatRoomInfoResDto;
-import com.panda.back.domain.chat.dto.res.OpenChatRoomResDto;
 import com.panda.back.domain.chat.dto.res.MessageDto;
+import com.panda.back.domain.chat.dto.res.OpenChatRoomResDto;
 import com.panda.back.domain.chat.entity.BidChatRoom;
 import com.panda.back.domain.chat.repository.BidChatRoomRepository;
 import com.panda.back.domain.chat.repository.ChatMessageRepository;
@@ -19,8 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -61,12 +60,11 @@ public class BidChatRoomService {
                 bidChatRoom.getItem().getWinner():
                 bidChatRoom.getItem().getMember();
 
-        List<MessageDto> history = new ArrayList<>(chatMessageRepository
+        List<MessageDto> history = chatMessageRepository
                 .findTop20ChatMessagesByBidChatRoomOrderByCreatedAtDesc(bidChatRoom).stream()
                 .map(MessageDto::new)
-                .toList());
-
-        Collections.reverse(history);
+                .sorted(Comparator.comparing(MessageDto::getSentAt))
+                .toList();
         return new ChatHistoryResDto(history, partner);
     }
 }

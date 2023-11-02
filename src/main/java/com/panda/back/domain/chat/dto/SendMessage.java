@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.panda.back.domain.chat.type.MessageType;
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 
@@ -33,8 +32,8 @@ public class SendMessage {
 
     public SendMessage(ReceiveMessage message) {
         this.type = message.getType();
-        this.sender = message.getSender();
         this.sentAt = LocalDateTime.now().toString();
+        this.sender = message.getSender();
     }
 
     public SendMessage(MessageType messageType, String memberEnter) {
@@ -50,13 +49,13 @@ public class SendMessage {
         toClient.isRead = isRead;
         switch (message.getType()) {
             case ENTER -> {
-                toClient.profileUrl = message.getProfileUrl();
+                toClient.setProfileUrl(message.getProfileUrl());
             }
             case TEXT -> {
-                toClient.content = message.getContent();
+                toClient.setContent(message.getContent());
             }
             case MEDIA -> {
-                toClient.imageUrl = message.getContent();
+                toClient.setImageUrl(message.getContent());
             }
         }
         return toClient;
