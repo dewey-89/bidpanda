@@ -50,6 +50,7 @@ public class SendMessage {
         switch (message.getType()) {
             case ENTER -> {
                 toClient.setProfileUrl(message.getProfileUrl());
+                toClient.setSender(message.getSender());
             }
             case TEXT -> {
                 toClient.setContent(message.getContent());
