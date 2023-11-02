@@ -7,7 +7,6 @@ import com.panda.back.domain.job.dto.JobClientRequestDto;
 import com.panda.back.domain.job.dto.component.Job;
 import com.panda.back.domain.job.dto.component.Schedule;
 import com.panda.back.domain.job.entity.CronJob;
-import com.panda.back.domain.job.event.AuctionEndEventPublisher;
 import com.panda.back.domain.job.repository.CronJobRepository;
 import com.panda.back.global.exception.CustomException;
 import com.panda.back.global.exception.ErrorCode;
@@ -28,7 +27,6 @@ public class CronJobService {
     private final WebClient webClient;
     private final ItemRepository itemRepository;
     private final CronJobRepository cronJobRepository;
-    private final AuctionEndEventPublisher auctionEndEventPublisher;
 
     @Value("${api.key.cron-job}")
     public String CRONJOB_API_KEY;

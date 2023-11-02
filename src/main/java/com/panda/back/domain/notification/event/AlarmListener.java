@@ -31,12 +31,4 @@ public class AlarmListener {
         notifyService.send(chatAlarmEvent.getReceiver(), NotificationType.CHAT, content, url);
         log.info("alarm : {}", content);
     }
-    @EventListener
-    public void sendAuctionEndAlarm(AuctionEndEvent auctionEndEvent) {
-        String url = String.format(URL_NOTI_AUC_END_FORM, auctionEndEvent.getItem().getId());
-        String content = auctionEndEvent.getItem().getTitle() +" 상품 경매가 종료되었습니다.";
-        notifyService.send(auctionEndEvent.getSeller(), NotificationType.BID, content, url);
-        notifyService.send(auctionEndEvent.getWinner(), NotificationType.BID, content, url);
-        log.info("{} auction end at {}", auctionEndEvent.getItem().getTitle(), auctionEndEvent.getItem().getAuctionEndTime());
-    }
 }
