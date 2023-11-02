@@ -29,5 +29,4 @@ public interface ItemRepository extends JpaRepository<Item, Long> , ItemReposito
     List<Item> findAuctionEndTimeItems(LocalDateTime currentTime);
 
     List<Item> findAllByWinnerId(Long id);
-
 }

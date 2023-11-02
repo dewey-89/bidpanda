@@ -144,7 +144,7 @@ public class NotifyService {
 
     @Transactional
     public List<NotificationResponseDto> getNotifications(Member member) {
-      List<Notification> notificationList = notificationRepository.findAllByReceiver(member);
+        List<Notification> notificationList = notificationRepository.findAllByReceiverOrderByCreatedAtDesc(member);
         return NotificationResponseDto.createList(notificationList);
     }
 

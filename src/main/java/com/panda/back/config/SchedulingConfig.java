@@ -18,7 +18,7 @@ public class SchedulingConfig {
 
     @Scheduled(cron = "0 0 0 * * *") // 매일 0시 0분에 실행
     public void deleteReadNotifications() {
-        Duration duration = Duration.ofDays(7); // 생성된 지 7일이 지난 알림 삭제
+        Duration duration = Duration.ofDays(3); // 생성된 지 3일이 지난 알림 삭제
         notifyService.deleteReadNotifications(duration);
     }
 }

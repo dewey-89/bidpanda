@@ -179,7 +179,7 @@ public class ItemService {
                 () -> new CustomException(ErrorCode.NOT_FOUND_ITEM)
         );
 
-        String url = "https://bid-panda-frontend.vercel.app/items/detail/" + String.valueOf(item.getId());
+        String url = "https://bidpanda.app/items/detail/" + String.valueOf(item.getId());
 
         if (item.getAuctionEndTime().isAfter(LocalDateTime.now())) {
             throw new CustomException(ErrorCode.IS_NOT_CLOSED_BIDDING_ITEM);
