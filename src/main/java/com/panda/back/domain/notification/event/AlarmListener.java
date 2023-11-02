@@ -7,13 +7,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class ChatAlarmListener {
+public class AlarmListener {
     private final NotifyService notifyService;
     @EventListener
+    @Transactional
     public void sendAlarm(ChatAlarmEvent chatAlarmEvent) throws InterruptedException {
         String content;
         switch (chatAlarmEvent.getMessage().getType()) {
@@ -21,9 +23,8 @@ public class ChatAlarmListener {
             default -> content = String.format("%s : %-10s... ", chatAlarmEvent.getSender(), chatAlarmEvent.getMessage().getContent());
         }
 
-        String url = "https://bidpanda.app/chattingList/" + chatAlarmEvent.getReceiver();
+        String url = "https://bidpanda.app/chattingRoom/" + chatAlarmEvent.getChatRoomId();
         notifyService.send(chatAlarmEvent.getReceiver(), NotificationType.CHAT, content, url);
         log.info("alarm : {}", content);
-
     }
 }

@@ -5,7 +5,6 @@ import com.panda.back.domain.chat.dto.SendMessage;
 import com.panda.back.domain.chat.event.ChatAlarmPublisher;
 import com.panda.back.domain.chat.util.DestinationUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.ChannelInterceptor;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class ChatOutboundInterceptor implements ChannelInterceptor {
     private final ChatAlarmPublisher chatAlarmPublisher;
     private final DestinationUtil destinationUtil;
@@ -31,7 +29,7 @@ public class ChatOutboundInterceptor implements ChannelInterceptor {
             if (!sendMessage.isRead()) {
                 String destination = message.getHeaders().get("simpDestination").toString();
                 String roomId = destinationUtil.getRecordIdFromDestination(destination);
-                chatAlarmPublisher.publishChatAlarm(Long.valueOf(roomId),sendMessage);
+                chatAlarmPublisher.publishChatAlarm(Long.valueOf(roomId, 10), sendMessage);
             }
         }
     }

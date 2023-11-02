@@ -33,6 +33,7 @@ public class SendMessage {
 
     public SendMessage(ReceiveMessage message) {
         this.type = message.getType();
+        this.sender = message.getSender();
         this.sentAt = LocalDateTime.now().toString();
     }
 
@@ -49,16 +50,13 @@ public class SendMessage {
         toClient.isRead = isRead;
         switch (message.getType()) {
             case ENTER -> {
-                toClient.setSender(message.getNickname());
-                toClient.setProfileUrl(message.getProfileUrl());
+                toClient.profileUrl = message.getProfileUrl();
             }
             case TEXT -> {
-                toClient.setSender(message.getSender());
-                toClient.setContent(message.getContent());
+                toClient.content = message.getContent();
             }
             case MEDIA -> {
-                toClient.setSender(message.getSender());
-                toClient.setImageUrl(message.getContent());
+                toClient.imageUrl = message.getContent();
             }
         }
         return toClient;

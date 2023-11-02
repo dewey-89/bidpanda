@@ -6,6 +6,11 @@ import com.panda.back.domain.item.dto.ItemSearchCondition;
 import com.panda.back.domain.item.dto.ItemSearchForMemberCondition;
 import com.panda.back.domain.item.entity.Item;
 import com.panda.back.domain.item.repository.ItemRepository;
+import com.panda.back.domain.job.dto.ItemCUDEvent;
+import com.panda.back.domain.job.entity.CronJob;
+import com.panda.back.domain.job.repository.CronJobRepository;
+import com.panda.back.domain.job.service.CronJobService;
+import com.panda.back.domain.job.type.JobEventType;
 import com.panda.back.domain.member.entity.Member;
 import com.panda.back.domain.member.repository.MemberRepository;
 import com.panda.back.domain.notification.entity.NotificationType;
@@ -16,6 +21,7 @@ import com.panda.back.global.exception.CustomException;
 import com.panda.back.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -33,11 +39,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ItemService {
-    private final ItemRepository itemRepository;
+    private final ApplicationEventPublisher publisher;
     private final S3Uploader s3Uploader;
-    private final NotifyService notifyService;
     private final MemberRepository memberRepository;
-
+    private final ItemRepository itemRepository;
+    private final NotifyService notifyService;
     @Transactional
     public ItemResponseDto createItem(List<MultipartFile> images, ItemRequestDto itemRequestDto, Member member) throws IOException {
 
@@ -54,7 +60,7 @@ public class ItemService {
         item.addImages(imageUrls);
 
         itemRepository.save(item);
-
+        publisher.publishEvent(new ItemCUDEvent(item, JobEventType.create));
         return new ItemResponseDto(item);
     }
 
@@ -113,7 +119,7 @@ public class ItemService {
 
         item.update(itemRequestDto);
         itemRepository.save(item);
-
+        publisher.publishEvent(new ItemCUDEvent(item, JobEventType.update));
         return new ItemResponseDto(item);
     }
 
@@ -202,9 +208,8 @@ public class ItemService {
             // 판매자에게 본인의 상품 낙찰 알림
             String contents = "당신의 "+item.getTitle()+" 상품이 낙찰되었습니다.";
             notifyService.send(item.getMember(),NotificationType.BID, contents, url);
-
-
         }
+        publisher.publishEvent(new ItemCUDEvent(item, JobEventType.delete));
     }
 
 

@@ -7,6 +7,7 @@ import com.panda.back.domain.member.entity.Member;
 import com.panda.back.global.exception.CustomException;
 import com.panda.back.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class ChatAlarmPublisher {
     private final ApplicationEventPublisher publisher;
     private final BidChatRoomRepository bidChatRoomRepository;
@@ -27,7 +29,6 @@ public class ChatAlarmPublisher {
         Member receiver = senderNick.equals(bidChatRoom.getItem().getMember().getNickname()) ?
                 bidChatRoom.getItem().getWinner():
                 bidChatRoom.getItem().getMember();
-
-        publisher.publishEvent(new ChatAlarmEvent(senderNick, receiver, bidChatRoom.getItem().getTitle(), message));
+        publisher.publishEvent(new ChatAlarmEvent(senderNick, receiver, bidChatRoom.getItem().getTitle(), message, bidChatRoom.getId()));
     }
 }

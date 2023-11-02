@@ -10,10 +10,12 @@ public class ChatAlarmEvent {
     private Member receiver;
     private String itemTitle;
     private SendMessage message;
-    public ChatAlarmEvent(String sender, Member receiver,String item, SendMessage message) {
+    private Long chatRoomId;
+    public ChatAlarmEvent(String sender, Member receiver,String item, SendMessage message, Long chatRoomId) {
         this.sender = sender;
         this.receiver = receiver;
         this.itemTitle = item;
         this.message = message;
+        this.chatRoomId = chatRoomId;
     }
 }

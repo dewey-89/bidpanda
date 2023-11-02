@@ -1,5 +1,6 @@
 package com.panda.back.domain.notification.controller;
 
+import com.panda.back.domain.job.dto.AuctionEndEvent;
 import com.panda.back.domain.member.jwt.MemberDetailsImpl;
 import com.panda.back.domain.notification.dto.NotificationResponseDto;
 import com.panda.back.domain.notification.service.NotifyService;
@@ -7,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -46,4 +48,5 @@ public class NotificationController {
                                  @PathVariable Long notificationId) {
         return notifyService.readNotification(memberDetails.getMember(), notificationId);
     }
+
 }

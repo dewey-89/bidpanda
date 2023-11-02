@@ -52,3 +52,10 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
+
+api:
+  key:
+    cron-job: ${CRONJOB_KEY}
+
+bidpanda:
+  domain: ${BIDPANDA_BACK_DOMAIN}
