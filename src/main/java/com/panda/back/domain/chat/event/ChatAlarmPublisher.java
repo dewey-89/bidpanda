@@ -29,6 +29,6 @@ public class ChatAlarmPublisher {
         Member receiver = senderNick.equals(bidChatRoom.getItem().getMember().getNickname()) ?
                 bidChatRoom.getItem().getWinner():
                 bidChatRoom.getItem().getMember();
-        publisher.publishEvent(new ChatAlarmEvent(senderNick, receiver, bidChatRoom.getItem().getTitle(), message));
+        publisher.publishEvent(new ChatAlarmEvent(senderNick, receiver, bidChatRoom.getItem().getTitle(), message, bidChatRoom.getId()));
     }
 }

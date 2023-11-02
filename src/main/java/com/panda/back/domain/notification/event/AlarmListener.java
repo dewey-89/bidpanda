@@ -1,7 +1,6 @@
 package com.panda.back.domain.notification.event;
 
 import com.panda.back.domain.chat.event.ChatAlarmEvent;
-import com.panda.back.domain.job.dto.AuctionEndEvent;
 import com.panda.back.domain.notification.entity.NotificationType;
 import com.panda.back.domain.notification.service.NotifyService;
 import lombok.RequiredArgsConstructor;
@@ -15,9 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class AlarmListener {
     private final NotifyService notifyService;
-    private static final String URL_NOTI_CHAT_FORM = "https://bid-panda-frontend.vercel.app/chattingList/%s";
-    private static final String URL_NOTI_AUC_END_FORM = "https://bid-panda-frontend.vercel.app/auction/end/%s";
-
     @EventListener
     @Transactional
     public void sendAlarm(ChatAlarmEvent chatAlarmEvent) throws InterruptedException {
@@ -27,7 +23,7 @@ public class AlarmListener {
             default -> content = String.format("%s : %-10s... ", chatAlarmEvent.getSender(), chatAlarmEvent.getMessage().getContent());
         }
 
-        String url = "https://bidpanda.app/chattingList/" + chatAlarmEvent.getReceiver();
+        String url = "https://bidpanda.app/chattingRoom/" + chatAlarmEvent.getChatRoomId();
         notifyService.send(chatAlarmEvent.getReceiver(), NotificationType.CHAT, content, url);
         log.info("alarm : {}", content);
     }
