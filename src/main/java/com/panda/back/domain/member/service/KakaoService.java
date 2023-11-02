@@ -68,7 +68,7 @@ public class KakaoService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", "fbc4abc5fd980187c0270233cea954bc");
-        body.add("redirect_uri", "https://bid-panda-frontend.vercel.app/kakao");
+        body.add("redirect_uri", "https://bidpanda.app/kakao");
         body.add("code", code);
 
         RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity
