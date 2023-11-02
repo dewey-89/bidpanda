@@ -23,7 +23,7 @@ public class AlarmListener {
             default -> content = String.format("%s : %-10s... ", chatAlarmEvent.getSender(), chatAlarmEvent.getMessage().getContent());
         }
 
-        String url = "https://bidpanda.app/chattingRoom/" + chatAlarmEvent.getChatRoomId();
+        String url = "https://bidpanda.app/chattingList/" + chatAlarmEvent.getReceiver().getId();
         notifyService.send(chatAlarmEvent.getReceiver(), NotificationType.CHAT, content, url);
         log.info("alarm : {}", content);
     }
