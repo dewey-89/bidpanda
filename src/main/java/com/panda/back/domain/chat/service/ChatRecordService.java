@@ -33,9 +33,11 @@ public class ChatRecordService {
                         if (senderNick.equals(bidChatRoom.getItem().getMember().getNickname())) {
                             sender = bidChatRoom.getItem().getMember();
                             receiver = bidChatRoom.getItem().getWinner();
+                            log.info("seller {} send message", sender.getNickname());
                         }else {
                             sender = bidChatRoom.getItem().getWinner();
                             receiver = bidChatRoom.getItem().getMember();
+                            log.info("winner {} send message", sender.getNickname());
                         }
                         ChatMessage chatMessage = new ChatMessage(bidChatRoom, message, sender, receiver, isRead);
                         chatMessageRepository.save(chatMessage);

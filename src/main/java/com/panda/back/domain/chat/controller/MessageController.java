@@ -16,7 +16,6 @@ import org.springframework.stereotype.Controller;
 @Slf4j
 public class MessageController {
     private final ChatRecordService chatRecordService;
-//    private final ChatAlarmPublisher chatAlarmPublisher;
     @SubscribeMapping("/topic/chat/room/{recordId}")
     @SendTo("/topic/chat/room/{recordId}")
     public SendMessage subscribeChatRoom(

@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -63,8 +63,8 @@ public class BidChatRoomService {
         List<MessageDto> history = chatMessageRepository
                 .findTop20ChatMessagesByBidChatRoomOrderByCreatedAtDesc(bidChatRoom).stream()
                 .map(MessageDto::new)
+                .sorted(Comparator.comparing(MessageDto::getSentAt))
                 .toList();
-        Collections.reverse(history);
         return new ChatHistoryResDto(history, partner);
     }
 }

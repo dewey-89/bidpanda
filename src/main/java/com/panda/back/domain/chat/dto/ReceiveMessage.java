@@ -16,6 +16,7 @@ public class ReceiveMessage {
     private MessageType type;
     private String sender;
     private String content;
+
     // only MessageType.ENTER
     @JsonProperty("nickname")
     private String nickname;
