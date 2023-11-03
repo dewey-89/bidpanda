@@ -57,7 +57,7 @@ public class Item extends Timestamped {
     @JoinColumn(name = "member_id", nullable = true)
     private Member member;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "winner_id", nullable = true)
     private Member winner;
 
