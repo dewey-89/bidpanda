@@ -55,6 +55,7 @@ jobs:
           jwt.secret.key: ${{ secrets.JWT_SECRET_KEY }}
           api.key.cron-job: ${{secrets.CRONJOB_KEY}}
           bidpanda.domain: ${{secrets.BIDPANDA_BACK_DOMAIN}}
+          kakao.api.key: ${{secrets.KAKAO_API_KEY}}
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
