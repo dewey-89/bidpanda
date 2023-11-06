@@ -1,5 +1,7 @@
 package com.panda.back.domain.member.service;
 
+import com.panda.back.domain.bid.entity.Bid;
+import com.panda.back.domain.bid.repository.BidRepository;
 import com.panda.back.domain.item.entity.Item;
 import com.panda.back.domain.item.repository.ItemRepository;
 import com.panda.back.domain.member.dto.PasswordRequestDto;
@@ -35,6 +37,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final S3Uploader s3Uploader;
     private final ItemRepository itemRepository;
+    private final BidRepository bidRepository;
 
     public BaseResponse membernameExists(String membername) {
         if (memberRepository.findByMembername(membername).isPresent()) {
@@ -125,6 +128,8 @@ public class MemberService {
     @Transactional
     public BaseResponse deleteMember(Member member) {
         Member currentMember = findByMembername(member.getMembername());
+        List<Item> myItems = itemRepository.findAuctionEndTimeItems(LocalDateTime.now());
+        List<Bid> myBids = bidRepository.findAllByBidder(currentMember);
 
         //멤버가 등록한 아이템 중 AuctionEndTime이 현재시간보다 이후이면 삭제 불가
         if (itemRepository.existsByMemberAndAuctionEndTimeAfter(currentMember, LocalDateTime.now())) {
@@ -135,14 +140,20 @@ public class MemberService {
             String fileName = member.getProfileImageUrl().substring(member.getProfileImageUrl().lastIndexOf("com") + 4);
             s3Uploader.deleteFile(fileName);
         }
-        memberRepository.delete(currentMember);
 
-        List<Item> memberItems = itemRepository.findAllByMember(member);
-        for (Item item : memberItems) {
-            item.setMember(null);
-            itemRepository.save(item);
+        for(Item item : myItems){
+            if(item.getBidCount() == 0){
+                itemRepository.delete(item);
+            }
         }
-        return BaseResponse.successMessage("회원 삭제 성공");
+        for (Bid bid : myBids) {
+            bidRepository.delete(bid);
+        }
+
+        currentMember.setNickname("탈퇴한 회원"+currentMember.getId());
+        currentMember.setEmail(null);
+        currentMember.setIsDeleted(true);
+        return BaseResponse.successMessage("회원 탈퇴 성공");
     }
 
     @Transactional

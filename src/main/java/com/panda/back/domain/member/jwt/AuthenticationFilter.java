@@ -2,11 +2,14 @@ package com.panda.back.domain.member.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.panda.back.domain.member.dto.LoginRequestDto;
+import com.panda.back.domain.member.entity.Member;
 import com.panda.back.domain.member.entity.RefreshToken;
+import com.panda.back.domain.member.repository.MemberRepository;
 import com.panda.back.domain.member.repository.RefreshTokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,10 +23,12 @@ import java.io.PrintWriter;
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final MemberRepository memberRepository;
 
-    public AuthenticationFilter(TokenProvider tokenProvider,RefreshTokenRepository refreshTokenRepository){
+    public AuthenticationFilter(TokenProvider tokenProvider,RefreshTokenRepository refreshTokenRepository, MemberRepository memberRepository){
         this.tokenProvider = tokenProvider;
         this.refreshTokenRepository = refreshTokenRepository;
+        this.memberRepository = memberRepository;
         setFilterProcessesUrl("/api/members/login");
     }
 
@@ -32,13 +37,22 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         try {
             LoginRequestDto requestDto = new ObjectMapper().readValue(request.getInputStream(), LoginRequestDto.class);
 
-            return getAuthenticationManager().authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            requestDto.getMembername(),
-                            requestDto.getPassword(),
-                            null
-                    )
-            );
+            // 사용자를 데이터베이스에서 찾아올 때 isDeleted 필드를 함께 확인하여 탈퇴한 회원인지 확인
+            Member member = memberRepository.findByMembername(requestDto.getMembername()).orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
+            if(member != null && !member.getIsDeleted()){
+                return getAuthenticationManager().authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                                requestDto.getMembername(),
+                                requestDto.getPassword(),
+                                null
+                        )
+                );
+            }else {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                writeResponse(response, "존재하지 않는 회원입니다.");
+                return null;
+            }
+
         } catch (IOException e) {
             log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());

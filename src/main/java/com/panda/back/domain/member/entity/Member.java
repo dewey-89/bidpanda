@@ -22,7 +22,6 @@ public class Member {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
@@ -34,6 +33,8 @@ public class Member {
     private Long kakaoId;
 
     private String intro;
+
+    private Boolean isDeleted = false;
 
     public Member(String membername, String password, String email, String nickname) {
         this.membername = membername;
@@ -69,5 +70,13 @@ public class Member {
 
     public void setIntro(String intro) {
         this.intro = intro;
+    }
+
+    public void setIsDeleted(boolean delete) {
+        this.isDeleted = delete;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
