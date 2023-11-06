@@ -135,6 +135,9 @@ public class MemberService {
         if (itemRepository.existsByMemberAndAuctionEndTimeAfter(currentMember, LocalDateTime.now())) {
             throw new CustomException(ErrorCode.EXIST_IS_NOT_CLOSED_ITEMS);
         }
+        if(itemRepository.existsByWinner(currentMember)){
+            throw new CustomException(ErrorCode.EXIST_IS_NOT_CLOSED_ITEMS);
+        }
 
         if (!Objects.equals(member.getProfileImageUrl(), "https://bidpanda-bucket.s3.ap-northeast-2.amazonaws.com/defualt-image/IMG_0191.png")) {
             String fileName = member.getProfileImageUrl().substring(member.getProfileImageUrl().lastIndexOf("com") + 4);
