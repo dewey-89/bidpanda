@@ -59,3 +59,7 @@ api:
 
 bidpanda:
   domain: ${BIDPANDA_BACK_DOMAIN}
+
+kakao:
+ api:
+  key: ${KAKAO_API_KEY}

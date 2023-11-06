@@ -131,7 +131,7 @@ public class ItemService {
 
         // item의 auctionEndTime이 현재 시간보다 이전인 경우 수정 불가능하도록 체크
         if (item.getAuctionEndTime().isAfter(LocalDateTime.now())) {
-            throw new CustomException(ErrorCode.NOT_MODIFIED_BIDDING_ITEM);
+            throw new CustomException(ErrorCode.NOT_DELETED_BIDDING_ITEM);
         }
 
         // bidCount가 0이 아닌 경우 수정 불가

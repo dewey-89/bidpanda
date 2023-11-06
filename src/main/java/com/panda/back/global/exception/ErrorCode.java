@@ -19,6 +19,7 @@ public enum ErrorCode {
 
     NOT_MATCH_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
     NOT_MODIFIED_BIDDING_ITEM(HttpStatus.UNAUTHORIZED, "경매 진행중인 상품은 수정할 수 없습니다."),
+    NOT_DELETED_BIDDING_ITEM(HttpStatus.UNAUTHORIZED, "경매 진행중인 상품은 삭제할 수 없습니다."),
     NOT_MODIFIED_BIDDED_ITEM(HttpStatus.UNAUTHORIZED, "입찰이 된 상품은 수정할 수 없습니다."),
     INVALID_JWT_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
     EXPIRED_JWT_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 토큰 입니다."),
@@ -26,7 +27,7 @@ public enum ErrorCode {
     WRONG_JWT_TOKEN(HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다."),
     INVALID_INPUT_AUTHKEY(HttpStatus.UNAUTHORIZED, "인증키가 유효하지 않습니다."),
     EXPIRED_AUTHKEY(HttpStatus.UNAUTHORIZED,"만료된 인증키 입니다."),
-    NOT_AUTHORIZED(HttpStatus.UNAUTHORIZED, "권한이 없습니다."),
+    NOT_AUTHORIZED(HttpStatus.UNAUTHORIZED, "자신이 등록한 상품에 입찰할 수 없습니다."),
     EXIST_IS_NOT_CLOSED_ITEMS(HttpStatus.NOT_ACCEPTABLE,"경매진행중인 상품이 존재해 회원 탈퇴가 불가능합니다."),
 
     NOT_VALID_BID_AMOUNT(HttpStatus.NOT_ACCEPTABLE,"입찰가가 현재가와 같거나 낮습니다."),
