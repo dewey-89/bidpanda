@@ -30,5 +30,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> , ItemReposito
 
     List<Item> findAllByWinnerId(Long id);
 
-    boolean existsByWinner(Member currentMember);
+
+    boolean existsByWinnerAndAuctionEndTimeAfter(Member currentMember, LocalDateTime now);
 }

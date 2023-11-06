@@ -135,7 +135,7 @@ public class MemberService {
         if (itemRepository.existsByMemberAndAuctionEndTimeAfter(currentMember, LocalDateTime.now())) {
             throw new CustomException(ErrorCode.EXIST_IS_NOT_CLOSED_ITEMS);
         }
-        if(itemRepository.existsByWinner(currentMember)){
+        if(itemRepository.existsByWinnerAndAuctionEndTimeAfter(currentMember,LocalDateTime.now())){
             throw new CustomException(ErrorCode.EXIST_IS_NOT_CLOSED_ITEMS);
         }
 
