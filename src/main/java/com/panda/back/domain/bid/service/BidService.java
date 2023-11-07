@@ -53,14 +53,15 @@ public class BidService {
         if(item.getBidCount()!=0) {
             Member previousBidder = memberRepository.findById(item.getWinner().getId()).orElseThrow(
                     () -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
+            if(!previousBidder.getId().equals(member.getId())){
+                // 전 입찰자에게 보내는 알림메시지
+                String content = item.getTitle() + "에 " + member.getNickname() + "님이 더 높은 가격으로 입찰을 하였습니다.";
 
-            // 전 입찰자에게 보내는 알림메시지
-            String content = item.getTitle() + "에 " + member.getNickname() + "님이 더 높은 가격으로 입찰을 하였습니다.";
+                // 해당 상품으로 이동하는 url
+                String url = "https://bidpanda.app/items/detail/" + item.getId();
 
-            // 해당 상품으로 이동하는 url
-            String url = "https://bidpanda.app/items/detail/" + String.valueOf(item.getId());
-
-            notifyService.send(previousBidder, NotificationType.BID, content, url);
+                notifyService.send(previousBidder, NotificationType.BID, content, url);
+            }
         }
         item.addBid(bid);
         bidRepository.save(bid);
