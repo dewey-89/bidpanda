@@ -47,6 +47,7 @@ public class CronJobService {
                 CronJob job = cronJobRepository.findByItem(itemEvent.getItem())
                         .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_JOB));
                 Long jobId = job.getJobId();
+                // api 요청
                 this.requestDeleteCronJob(jobId);
                 cronJobRepository.delete(job);
             }
@@ -98,7 +99,8 @@ public class CronJobService {
                 .block();
     }
     private void requestDeleteCronJob(Long jobId) {
-        webClient.delete()
+        webClient
+                .delete()
                 .uri("/jobs/" + jobId)
                 .headers(httpHeaders -> {
                     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
