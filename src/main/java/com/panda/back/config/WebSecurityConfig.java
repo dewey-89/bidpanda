@@ -62,8 +62,8 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173","https://bid-panda-frontend.vercel.app","https://bidpanda.app"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type", "Access-Control-Allow-Origin","Authorization_Refresh"));
-        configuration.setExposedHeaders(Arrays.asList("Authorization","Authorization_Refresh"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type", "Access-Control-Allow-Origin","Refresh"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization","Refresh"));
         configuration.setMaxAge(1800L);
         configuration.setAllowCredentials(true);
 
