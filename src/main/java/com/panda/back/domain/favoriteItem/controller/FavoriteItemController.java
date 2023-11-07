@@ -32,4 +32,12 @@ public class FavoriteItemController {
         return favoriteItemService.getFavoriteItems(memberDetails.getMember());
     }
 
+    @Operation(summary = "해당 상품을 찜했는지 여부 조회 API")
+    @GetMapping("/{itemId}")
+    public Boolean isFavoriteItem(
+            @PathVariable Long itemId,
+            @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
+        return favoriteItemService.isFavoriteItem(itemId, memberDetails.getMember());
+    }
+
 }

@@ -12,4 +12,5 @@ public interface FavoriteItemRepository extends JpaRepository<FavoriteItem, Long
 
     FavoriteItem findByMemberAndItem(Member member, Item item);
 
+    Boolean existsByMemberAndItem_Id(Member member, Long itemId);
 }

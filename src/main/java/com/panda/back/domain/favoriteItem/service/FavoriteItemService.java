@@ -52,4 +52,9 @@ public class FavoriteItemService {
 
         return itemResponseDtos;
     }
+
+
+    public Boolean isFavoriteItem(Long itemId, Member member) {
+        return favoriteItemRepository.existsByMemberAndItem_Id(member, itemId);
+    }
 }
