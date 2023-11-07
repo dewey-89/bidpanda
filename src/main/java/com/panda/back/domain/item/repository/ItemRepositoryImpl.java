@@ -26,7 +26,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
     }
 
     @Override
-    public Page<ItemResponseDto> search(ItemSearchForMemberCondition condition, Pageable pageable) {
+    public Page<ItemResponseDto> getMyPageItems(ItemSearchForMemberCondition condition, Pageable pageable) {
         QueryResults<ItemResponseDto> results = queryFactory
                 .select(new QItemResponseDto(item))
                 .from(item)
@@ -44,15 +44,14 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
     }
 
     @Override
-    public Page<ItemResponseDto> searchItems(ItemSearchCondition condition, Pageable pageable) {
+    public Page<ItemResponseDto> getPublicPageItems(ItemSearchCondition condition, Pageable pageable) {
         QueryResults<ItemResponseDto> results = queryFactory
                 .select(new QItemResponseDto(item))
                 .from(item)
                 .where(auctionIng(condition.getAuctionIng()),
                         keywordEq(condition.getKeyword()),
                         categoryEq(condition.getCategory()))
-                .orderBy(orderByLatest(condition.getOrderByLatest()),
-                        orderByPrice(condition.getOrderByPrice()))
+                .orderBy(orderByCondition(condition))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
@@ -64,12 +63,29 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
 
     }
 
+    private OrderSpecifier<?> orderByCondition(ItemSearchCondition condition) {
+        if (condition.getOrderByPrice() != null) {
+            return orderByPrice(condition.getOrderByPrice());
+        }
+        if (condition.getOrderByLatest() != null) {
+            return orderByLatest(condition.getOrderByLatest());
+        }
+        if (condition.getOrderByEndTime() != null) {
+            return orderByEndTime(condition.getOrderByEndTime());
+        }
+        return item.createdAt.desc();
+    }
+
+    private OrderSpecifier<?> orderByEndTime(Boolean orderByEndTime) {
+        return orderByEndTime ? item.auctionEndTime.asc() : item.auctionEndTime.desc();
+    }
+
     private OrderSpecifier<?> orderByLatest(Boolean orderByLatest) {
-        return orderByLatest != null && orderByLatest ? item.modifiedAt.desc() : item.modifiedAt.asc();
+        return orderByLatest ? item.createdAt.desc() : item.createdAt.asc();
     }
 
     private OrderSpecifier<?> orderByPrice(Boolean orderByPrice) {
-        return orderByPrice != null && orderByPrice ? item.presentPrice.desc() : item.presentPrice.asc();
+        return orderByPrice ? item.presentPrice.desc() : item.presentPrice.asc();
     }
 
 
