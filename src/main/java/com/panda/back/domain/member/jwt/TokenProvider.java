@@ -85,18 +85,19 @@ public class TokenProvider {
             return true;
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
             log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
-            throw new CustomException(ErrorCode.INVALID_JWT_TOKEN);
+//            throw new CustomException(ErrorCode.INVALID_JWT_TOKEN);
         } catch (ExpiredJwtException e) {
             log.error("Expired JWT token, 만료된 JWT token 입니다.");
             //throw new CustomException(ErrorCode.EXPIRED_JWT_TOKEN);
-            return false;
+//            return false;
         } catch (UnsupportedJwtException e) {
             log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
-            throw new CustomException(ErrorCode.UNSUPPORTED_JWT_TOKEN);
+//            throw new CustomException(ErrorCode.UNSUPPORTED_JWT_TOKEN);
         } catch (IllegalArgumentException e) {
             log.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
-            throw new CustomException(ErrorCode.WRONG_JWT_TOKEN);
+//            throw new CustomException(ErrorCode.WRONG_JWT_TOKEN);
         }
+        return false;
     }
 
     public Claims getUserInfoFromToken(String token) {

@@ -37,6 +37,8 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
             if (!tokenProvider.validateToken(accessToken)) {
                 String refresh = req.getHeader(tokenProvider.REFRESH_HEADER);
+                log.info(refresh);
+                log.info(refreshToken);
                 if (!tokenProvider.validateToken(refreshToken) || !refreshTokenRepository.existsByToken(refresh)){
                     res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     log.info("Token이 만료 되었습니다.");
