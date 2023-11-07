@@ -1,7 +1,6 @@
 package com.panda.back.domain.job.service;
 
 import com.panda.back.domain.item.entity.Item;
-import com.panda.back.domain.item.repository.ItemRepository;
 import com.panda.back.domain.job.dto.ItemCUDEvent;
 import com.panda.back.domain.job.dto.JobClientRequestDto;
 import com.panda.back.domain.job.dto.component.Job;
@@ -25,7 +24,6 @@ import java.util.Map;
 @Slf4j
 public class CronJobService {
     private final WebClient webClient;
-    private final ItemRepository itemRepository;
     private final CronJobRepository cronJobRepository;
 
     @Value("${api.key.cron-job}")
@@ -55,11 +53,11 @@ public class CronJobService {
     }
 
     private void registerAuctionEndTimeJob(Item item){
-        Long jobId = requestRegisterCronJob(item);
+        Long jobId = requestCreateCronJob(item);
         cronJobRepository.save(new CronJob(item, jobId));
     }
 
-    private Long requestRegisterCronJob(Item item) {
+    private Long requestCreateCronJob(Item item) {
         String eventReceiveUrl = String.format((DOMAIN_URL + HOOK_RECEIVE_URI),item.getId().toString());
         Schedule schedule = new Schedule(item.getAuctionEndTime());
         Job job = new Job(eventReceiveUrl,item.getTitle(), schedule);
