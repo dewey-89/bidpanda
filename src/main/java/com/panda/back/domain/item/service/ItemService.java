@@ -58,7 +58,10 @@ public class ItemService {
         item.addImages(imageUrls);
 
         itemRepository.save(item);
+
         publisher.publishEvent(new ItemCUDEvent(item, JobEventType.create));
+        publisher.publishEvent(new ItemCUDEvent(item, JobEventType.remind));
+
         return new ItemResponseDto(item);
     }
 

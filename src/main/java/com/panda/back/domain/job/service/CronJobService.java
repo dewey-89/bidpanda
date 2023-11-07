@@ -32,6 +32,8 @@ public class CronJobService {
     @Value("${bidpanda.domain}")
     public String DOMAIN_URL;
     private static final String HOOK_RECEIVE_URI = "/api/items/%s/close-alarm";
+    private static final String HOOK_REMIND_URI="/api/items/%s/remind-alarm";
+
     @Transactional
     public void itemCUDEvent(ItemCUDEvent itemEvent) {
         switch (itemEvent.getType()) {
@@ -48,6 +50,9 @@ public class CronJobService {
                 // api 요청
                 this.requestDeleteCronJob(jobId);
                 cronJobRepository.delete(job);
+            }
+            case remind -> {
+                Long jobId = this.requestRemindCronJob(itemEvent.getItem());
             }
         }
     }
@@ -107,4 +112,25 @@ public class CronJobService {
                 .retrieve();
         log.info("cron-job {} : is deleted", jobId);
     }
+
+    private Long requestRemindCronJob(Item item) {
+        String eventReceiveUrl = String.format((DOMAIN_URL + HOOK_REMIND_URI),item.getId().toString());
+        Schedule schedule = new Schedule(item.getAuctionEndTime().minusMinutes(30));
+        Job job = new Job(eventReceiveUrl, "remind 30 before : " + item.getTitle(), schedule);
+
+        Map response = webClient
+                .put()
+                .uri("/jobs")
+                .headers(httpHeaders -> {
+                    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                    httpHeaders.setBearerAuth(CRONJOB_API_KEY);
+                })
+                .bodyValue(new JobClientRequestDto(job))
+                .retrieve()
+                .bodyToMono(Map.class)
+                .block();
+        log.info("{} request remind job to cron-job.org", item.getTitle());
+        return Long.parseLong(response.get("jobId").toString());
+    }
+
 }
