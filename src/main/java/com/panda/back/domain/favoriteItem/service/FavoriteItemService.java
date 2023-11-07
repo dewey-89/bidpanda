@@ -29,6 +29,8 @@ public class FavoriteItemService {
         Item item = itemRepository.findById(itemId).orElseThrow(
                 () -> new CustomException(ErrorCode.NOT_FOUND_ITEM));
 
+        String url = "https://bidpanda.app/items/detail/" + String.valueOf(item.getId());
+
         FavoriteItem favoriteItem = favoriteItemRepository.findByMemberAndItem(member, item);
 
         if (favoriteItem == null) {
@@ -39,12 +41,13 @@ public class FavoriteItemService {
 
             // 물품 판매자 = 알림 받는 사람
             // 찜 했을 때 물품 판매자에게 알림이 가게 구현
-            String url = "https://bidpanda.app/items/detail/" + String.valueOf(item.getId());
             String content = favoriteItem.getMember().getMembername()+ "님이 " +item.getTitle()+" 상품을 찜하였습니다.";
             notifyService.send(item.getMember(), NotificationType.BID, content, url);
             return BaseResponse.successMessage("관심 등록 완료");
         } else {
             favoriteItemRepository.delete(favoriteItem);
+            String content = favoriteItem.getMember().getMembername()+ "님이 " +item.getTitle()+" 상품 찜을 취소하였습니다.";
+            notifyService.send(item.getMember(), NotificationType.BID, content, url);
             return BaseResponse.successMessage("관심 등록 취소");
         }
     }
