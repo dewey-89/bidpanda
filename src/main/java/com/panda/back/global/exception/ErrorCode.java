@@ -21,6 +21,7 @@ public enum ErrorCode {
     NOT_MODIFIED_BIDDING_ITEM(HttpStatus.UNAUTHORIZED, "경매 진행중인 상품은 수정할 수 없습니다."),
     NOT_DELETED_BIDDING_ITEM(HttpStatus.UNAUTHORIZED, "경매 진행중인 상품은 삭제할 수 없습니다."),
     NOT_MODIFIED_BIDDED_ITEM(HttpStatus.UNAUTHORIZED, "입찰이 된 상품은 수정할 수 없습니다."),
+    NO_BIDDING_ITEM(HttpStatus.UNAUTHORIZED, "입찰이 안된 상품은 알람을 보낼 수 없습니다."),
     INVALID_JWT_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
     EXPIRED_JWT_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 토큰 입니다."),
     UNSUPPORTED_JWT_TOKEN(HttpStatus.UNAUTHORIZED, "지원되지 않는 토큰입니다."),
