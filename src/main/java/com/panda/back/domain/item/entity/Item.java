@@ -110,5 +110,13 @@ public class Item extends Timestamped {
     public void setMember(Member member) {
         this.member = member;
     }
+
+    public Set<String> getPreviousBidders() {
+        Set<String> previousBidders = new HashSet<>();
+        for (Bid bid : bids) {
+            previousBidders.add(bid.getBidder().getNickname());
+        }
+        return previousBidders;
+    }
 }
 

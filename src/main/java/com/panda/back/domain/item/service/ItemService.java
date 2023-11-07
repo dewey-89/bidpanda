@@ -30,6 +30,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -57,7 +58,10 @@ public class ItemService {
         item.addImages(imageUrls);
 
         itemRepository.save(item);
+
         publisher.publishEvent(new ItemCUDEvent(item, JobEventType.create));
+        publisher.publishEvent(new ItemCUDEvent(item, JobEventType.remind));
+
         return new ItemResponseDto(item);
     }
 
@@ -217,5 +221,26 @@ public class ItemService {
 
     public Page<ItemResponseDto> getPublicPageItems(Boolean auctionIng, String keyword, String category, Boolean orderByPrice, Boolean orderByLatest,Boolean orderByEndTime ,int page, int size) {
         return itemRepository.getPublicPageItems(new ItemSearchCondition(auctionIng, keyword, category, orderByPrice, orderByLatest, orderByEndTime), Pageable.ofSize(size).withPage(page - 1));
+    }
+
+    public void itemEarlyClosedAlarm(Long itemId) {
+        Item item = itemRepository.findById(itemId).orElseThrow(
+                () -> new CustomException(ErrorCode.NOT_FOUND_ITEM)
+        );
+
+        if (item.getBidCount() == 0) {
+            throw new CustomException(ErrorCode.NO_BIDDING_ITEM);
+        }
+
+        String url = "https://bidpanda.app/items/detail/" + String.valueOf(item.getId());
+        String content = item.getTitle()+" 상품의 경매시간이 30분 남았습니다.";
+
+        Set<String> previousBidders = item.getPreviousBidders();
+        for (String nickname : previousBidders) {
+            Optional<Member> member = memberRepository.findByNickname(nickname);
+            if (member.isPresent()) {
+                notifyService.send(member.get(), NotificationType.BID, content, url);
+            }
+        }
     }
 }

@@ -118,6 +118,12 @@ public class ItemController {
         return ItemService.getPublicPageItems(auctionIng, keyword, category, orderByPrice, orderByLatest,orderByEndTime, page, size);
     }
 
+    @Operation(summary = "경매 종료 30분 전 미리 알람 API")
+    @GetMapping("/{itemId}/remind-alarm")
+    public void itemEarlyClosedAlarm(@PathVariable Long itemId) {
+        ItemService.itemEarlyClosedAlarm(itemId);
+    }
+
 
 }
 

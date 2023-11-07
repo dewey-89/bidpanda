@@ -20,6 +20,7 @@ public class ItemResponseDto {
     private Integer bidCount;
     private String nickname;
     private Set<String> bidderProfileImageUrls;
+    private Set<String> previousBidders;
     private int bidderCount;
     private String winnerNickname;
 
@@ -35,6 +36,7 @@ public class ItemResponseDto {
         this.bidCount = item.getBidCount();
         this.nickname = item.getMember().getNickname();
         this.bidderProfileImageUrls = item.getBidderProfileImageUrls();
+        this.previousBidders = item.getPreviousBidders();
         this.bidderCount = bidderProfileImageUrls.size();
         if(item.getWinner() != null){
             this.winnerNickname = item.getWinner().getNickname();
