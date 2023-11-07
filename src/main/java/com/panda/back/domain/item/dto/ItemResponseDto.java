@@ -20,6 +20,7 @@ public class ItemResponseDto {
     private Integer bidCount;
     private String nickname;
     private Set<String> bidderProfileImageUrls;
+    private String winnerNickname;
 
     @QueryProjection
     public ItemResponseDto(Item item) {
@@ -33,6 +34,9 @@ public class ItemResponseDto {
         this.bidCount = item.getBidCount();
         this.nickname = item.getMember().getNickname();
         this.bidderProfileImageUrls = item.getBidderProfileImageUrls();
+        if(item.getWinner() != null){
+            this.winnerNickname = item.getWinner().getNickname();
+        }
     }
 
 
