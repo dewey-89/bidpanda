@@ -110,12 +110,10 @@ public class ItemController {
     public Page<ItemResponseDto> getPublicPageItems(@RequestParam(required = false) Boolean auctionIng,
                                                     @RequestParam(required = false) String keyword,
                                                     @RequestParam(required = false) String category,
-                                                    @RequestParam(required = false) Boolean orderByPrice,
-                                                    @RequestParam(required = false) Boolean orderByLatest,
-                                                    @RequestParam(required = false) Boolean orderByEndTime,
+                                                    @RequestParam(required = false) String order,
                                                     @RequestParam(value = "page", defaultValue = "1") int page,
                                                     @RequestParam(value = "size", defaultValue = "10") int size) {
-        return ItemService.getPublicPageItems(auctionIng, keyword, category, orderByPrice, orderByLatest,orderByEndTime, page, size);
+        return ItemService.getPublicPageItems(auctionIng, keyword, category, order, page, size);
     }
 
     @Operation(summary = "경매 종료 30분 전 미리 알람 API")

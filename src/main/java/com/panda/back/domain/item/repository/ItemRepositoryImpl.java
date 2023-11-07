@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import static com.panda.back.domain.item.entity.QItem.item;
 
@@ -51,7 +52,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
                 .where(auctionIng(condition.getAuctionIng()),
                         keywordEq(condition.getKeyword()),
                         categoryEq(condition.getCategory()))
-                .orderBy(orderByCondition(condition))
+                .orderBy(orderByCondition(condition.getOrder()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
@@ -63,29 +64,26 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
 
     }
 
-    private OrderSpecifier<?> orderByCondition(ItemSearchCondition condition) {
-        if (condition.getOrderByPrice() != null) {
-            return orderByPrice(condition.getOrderByPrice());
+    private OrderSpecifier<?> orderByCondition(String order) {
+        if (Objects.equals(order, "price_desc")) { // 가격 내림차순
+            return item.presentPrice.desc();
         }
-        if (condition.getOrderByLatest() != null) {
-            return orderByLatest(condition.getOrderByLatest());
+        if (Objects.equals(order, "price_asc")) { // 가격 오름차순
+            return item.presentPrice.asc();
         }
-        if (condition.getOrderByEndTime() != null) {
-            return orderByEndTime(condition.getOrderByEndTime());
+        if (Objects.equals(order, "date")) { // 최신순
+            return item.createdAt.desc();
+        }
+        if (Objects.equals(order, "end_time_asc")) { // 남은시간 짧은순
+            return item.auctionEndTime.asc();
+        }
+        if (Objects.equals(order, "end_time_desc")) { // 남은시간 긴순
+            return item.auctionEndTime.desc();
+        }
+        if (Objects.equals(order, "bid_count_desc")) { // 입찰자 많은순
+            return item.bidCount.desc();
         }
         return item.createdAt.desc();
-    }
-
-    private OrderSpecifier<?> orderByEndTime(Boolean orderByEndTime) {
-        return orderByEndTime ? item.auctionEndTime.asc() : item.auctionEndTime.desc();
-    }
-
-    private OrderSpecifier<?> orderByLatest(Boolean orderByLatest) {
-        return orderByLatest ? item.createdAt.desc() : item.createdAt.asc();
-    }
-
-    private OrderSpecifier<?> orderByPrice(Boolean orderByPrice) {
-        return orderByPrice ? item.presentPrice.desc() : item.presentPrice.asc();
     }
 
 

@@ -219,8 +219,8 @@ public class ItemService {
                 memberId, myItems, myWinItems), Pageable.ofSize(size).withPage(page - 1));
     }
 
-    public Page<ItemResponseDto> getPublicPageItems(Boolean auctionIng, String keyword, String category, Boolean orderByPrice, Boolean orderByLatest,Boolean orderByEndTime ,int page, int size) {
-        return itemRepository.getPublicPageItems(new ItemSearchCondition(auctionIng, keyword, category, orderByPrice, orderByLatest, orderByEndTime), Pageable.ofSize(size).withPage(page - 1));
+    public Page<ItemResponseDto> getPublicPageItems(Boolean auctionIng, String keyword, String category, String order,int page, int size) {
+        return itemRepository.getPublicPageItems(new ItemSearchCondition(auctionIng, keyword, category, order), Pageable.ofSize(size).withPage(page - 1));
     }
 
     public void itemEarlyClosedAlarm(Long itemId) {
