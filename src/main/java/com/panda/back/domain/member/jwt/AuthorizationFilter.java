@@ -30,8 +30,8 @@ public class AuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
 
-        String accessToken = tokenProvider.getJwtFromHeader(req,TokenProvider.AUTHORIZATION_HEADER);
-        String refreshToken = tokenProvider.getJwtFromHeader(req,TokenProvider.REFRESH_HEADER);
+        String accessToken = tokenProvider.getJwtFromHeader(req,"Authorization");
+        String refreshToken = tokenProvider.getJwtFromHeader(req,"Authorization_Refresh");
         log.info(accessToken);
         log.info(refreshToken);
 
