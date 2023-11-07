@@ -6,6 +6,8 @@ import com.panda.back.domain.item.dto.ItemResponseDto;
 import com.panda.back.domain.item.entity.Item;
 import com.panda.back.domain.item.repository.ItemRepository;
 import com.panda.back.domain.member.entity.Member;
+import com.panda.back.domain.notification.entity.NotificationType;
+import com.panda.back.domain.notification.service.NotifyService;
 import com.panda.back.global.dto.BaseResponse;
 import com.panda.back.global.exception.CustomException;
 import com.panda.back.global.exception.ErrorCode;
@@ -19,11 +21,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FavoriteItemService {
 
+    private final NotifyService notifyService;
     private final ItemRepository itemRepository;
     private final FavoriteItemRepository favoriteItemRepository;
 
     public BaseResponse favoriteItem(Long itemId, Member member) {
-
         Item item = itemRepository.findById(itemId).orElseThrow(
                 () -> new CustomException(ErrorCode.NOT_FOUND_ITEM));
 
@@ -34,6 +36,12 @@ public class FavoriteItemService {
             favoriteItem.setItem(item);
             favoriteItem.setMember(member);
             favoriteItemRepository.save(favoriteItem);
+
+            // 물품 판매자 = 알림 받는 사람
+            // 찜 했을 때 물품 판매자에게 알림이 가게 구현
+            String url = "https://bidpanda.app/items/detail/" + String.valueOf(item.getId());
+            String content = favoriteItem.getMember().getMembername()+ "님이 " +item.getTitle()+" 상품을 찜하였습니다.";
+            notifyService.send(item.getMember(), NotificationType.BID, content, url);
             return BaseResponse.successMessage("관심 등록 완료");
         } else {
             favoriteItemRepository.delete(favoriteItem);
