@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 public class Schedule {
-    private String timeZone;
+    private String timezone;
     private double expiresAt;
     private List<Integer> months;
     private List<Integer> mdays;
@@ -18,7 +18,7 @@ public class Schedule {
     private List<Integer> wdays;
 
     public Schedule(LocalDateTime endDateTime) {
-        this.timeZone = "Asia/Seoul";
+        this.timezone = "Asia/Seoul";
         this.expiresAt = makeExpiresAt(endDateTime);
         this.months = new ArrayList<>(Arrays.asList(endDateTime.getMonthValue()));
         this.mdays = new ArrayList<>(Arrays.asList(endDateTime.getDayOfMonth()));
@@ -41,6 +41,7 @@ public class Schedule {
                 + (hour * Math.pow(10, 4))
                 + (minute * Math.pow(10, 2))
                 + seconds;
+
         return expiredAt;
     }
 }
