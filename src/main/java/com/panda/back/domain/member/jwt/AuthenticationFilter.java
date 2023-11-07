@@ -63,6 +63,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         refreshTokenRepository.save(refreshToken);
         response.addHeader(TokenProvider.AUTHORIZATION_HEADER, token);
         response.addHeader(TokenProvider.REFRESH_HEADER, refreshToken.getToken());
+        response.setContentType("application/json; charset=UTF-8");
 
         response.setStatus(HttpServletResponse.SC_OK);
         writeResponse(response, "로그인 성공");
