@@ -72,11 +72,13 @@ public class Member {
         this.intro = intro;
     }
 
-    public void setIsDeleted(boolean delete) {
-        this.isDeleted = delete;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void deactiveMember(){
+        if(this.kakaoId!=null){
+            this.kakaoId = null;
+            this.membername = null;
+        }
+        this.nickname = "탈퇴한 회원" + this.id;
+        this.email = null;
+        this.isDeleted = true;
     }
 }

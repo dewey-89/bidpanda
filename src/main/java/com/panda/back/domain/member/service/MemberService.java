@@ -135,7 +135,7 @@ public class MemberService {
         if (itemRepository.existsByMemberAndAuctionEndTimeAfter(currentMember, LocalDateTime.now())) {
             throw new CustomException(ErrorCode.EXIST_IS_NOT_CLOSED_ITEMS);
         }
-        if(itemRepository.existsByWinnerAndAuctionEndTimeAfter(currentMember,LocalDateTime.now())){
+        if (itemRepository.existsByWinnerAndAuctionEndTimeAfter(currentMember, LocalDateTime.now())) {
             throw new CustomException(ErrorCode.EXIST_IS_NOT_CLOSED_ITEMS);
         }
 
@@ -144,8 +144,8 @@ public class MemberService {
             s3Uploader.deleteFile(fileName);
         }
 
-        for(Item item : myItems){
-            if(item.getBidCount() == 0){
+        for (Item item : myItems) {
+            if (item.getBidCount() == 0) {
                 itemRepository.delete(item);
             }
         }
@@ -153,9 +153,7 @@ public class MemberService {
             bidRepository.delete(bid);
         }
 
-        currentMember.setNickname("탈퇴한 회원"+currentMember.getId());
-        currentMember.setEmail(null);
-        currentMember.setIsDeleted(true);
+        currentMember.deactiveMember();
         return BaseResponse.successMessage("회원 탈퇴 성공");
     }
 
