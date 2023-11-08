@@ -67,18 +67,6 @@ public class TokenProvider {
                         .compact();
     }
 
-    // JWT 헤더로 전달
-    public void addJwtToHeader(String header, String token, HttpServletResponse res) {
-        try {
-            token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20");
-
-            res.addHeader(header,token);
-
-        } catch (UnsupportedEncodingException e) {
-            log.error(e.getMessage()+"헤더로 토큰 전달");
-        }
-    }
-
     public String getJwtFromHeader(HttpServletRequest request, String token) {
         String bearerToken = request.getHeader(token);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {

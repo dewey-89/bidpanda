@@ -5,11 +5,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.panda.back.domain.member.dto.KakaoUserInfoDto;
 import com.panda.back.domain.member.entity.Member;
+import com.panda.back.domain.member.entity.RefreshToken;
 import com.panda.back.domain.member.jwt.TokenProvider;
 import com.panda.back.domain.member.repository.MemberRepository;
+import com.panda.back.domain.member.repository.RefreshTokenRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.antlr.v4.runtime.Token;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
@@ -22,8 +25,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 @Slf4j(topic = "KAKAO Login")
@@ -35,6 +36,7 @@ public class KakaoService {
     private final MemberRepository memberRepository;
     private final RestTemplate restTemplate;
     private final TokenProvider tokenProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Value("${kakao.api.key}")
     private String kakaoApiKey;
@@ -50,11 +52,19 @@ public class KakaoService {
         Member kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
 
         // 4. JWT 토큰 반환
-        tokenProvider.addJwtToHeader(tokenProvider.AUTHORIZATION_HEADER,
-                tokenProvider.createToken(kakaoUser.getMembername(),kakaoUser.getNickname()),response);
+        String createToken = tokenProvider.createToken(kakaoUser.getMembername(), kakaoUser.getNickname());
+        String refresh = tokenProvider.createRefreshToken(kakaoUser.getMembername(), kakaoUser.getNickname());
 
-        tokenProvider.addJwtToHeader(tokenProvider.REFRESH_HEADER,
-                tokenProvider.createRefreshToken(kakaoUser.getMembername(),kakaoUser.getNickname()),response);
+        RefreshToken refreshToken = refreshTokenRepository.findByMembername(kakaoUser.getMembername()).orElse(null);
+        if (refreshToken == null) {
+            refreshToken = new RefreshToken(refresh, kakaoUser.getMembername());
+        } else {
+            refreshToken.updateToken(refresh);
+        }
+        refreshTokenRepository.save(refreshToken);
+
+        response.addHeader(TokenProvider.AUTHORIZATION_HEADER, createToken);
+        response.addHeader(TokenProvider.REFRESH_HEADER, refresh);
 
         return "redirect:/";
     }
