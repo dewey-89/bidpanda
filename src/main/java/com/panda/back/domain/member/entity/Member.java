@@ -43,12 +43,12 @@ public class Member {
         this.nickname = nickname;
     }
 
-    public Member(String membername, String password, String email, Long kakaoId) {
-        this.membername = membername;
+    public Member(String nickname, String password, String email, Long kakaoId) {
+        this.membername = "kakao" + kakaoId;
         this.password = password;
         this.email = email;
         this.kakaoId = kakaoId;
-        this.nickname = "kakao" + kakaoId;
+        this.nickname = nickname;
     }
 
     public Member kakaoIdUpdate(Long kakaoId) {

@@ -107,12 +107,13 @@ public class ItemController {
 
     @Operation(summary = "공용페이지 : 상품 검색 API", description = "경매진행여부, 키워드, 카테고리, 가격순, 최신순 조건 검색 가능")
     @GetMapping("/public-search")
-    public Page<ItemResponseDto> getPublicPageItems(@RequestParam(required = false) Boolean auctionIng,
-                                                    @RequestParam(required = false) String keyword,
-                                                    @RequestParam(required = false) String category,
-                                                    @RequestParam(required = false) String order,
-                                                    @RequestParam(value = "page", defaultValue = "1") int page,
-                                                    @RequestParam(value = "size", defaultValue = "10") int size) {
+    public Page<ItemResponseDto> getPublicPageItems(
+            @RequestParam(required = false) Boolean auctionIng,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String order,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
         return ItemService.getPublicPageItems(auctionIng, keyword, category, order, page, size);
     }
 
