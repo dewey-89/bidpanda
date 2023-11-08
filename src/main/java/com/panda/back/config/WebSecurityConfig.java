@@ -4,6 +4,7 @@ import com.panda.back.domain.member.jwt.AuthenticationFilter;
 import com.panda.back.domain.member.jwt.AuthorizationFilter;
 import com.panda.back.domain.member.jwt.MemberDetailsServiceImpl;
 import com.panda.back.domain.member.jwt.TokenProvider;
+import com.panda.back.domain.member.repository.MemberRepository;
 import com.panda.back.domain.member.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -37,6 +38,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     private final MemberDetailsServiceImpl memberDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final MemberRepository memberRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -50,7 +52,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
     @Bean
     public AuthenticationFilter authenticationFilter() throws Exception {
-        AuthenticationFilter filter = new AuthenticationFilter(tokenProvider,refreshTokenRepository);
+        AuthenticationFilter filter = new AuthenticationFilter(tokenProvider,refreshTokenRepository,memberRepository);
         filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
         return filter;
     }

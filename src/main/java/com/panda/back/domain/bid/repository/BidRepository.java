@@ -12,4 +12,5 @@ public interface BidRepository extends JpaRepository<Bid, Long> {
     @Query("SELECT DISTINCT b.item FROM Bid b WHERE b.bidder = :member")
     List<Item> findDistinctItemByBidder(Member member);
 
+    List<Bid> findAllByBidder(Member currentMember);
 }
