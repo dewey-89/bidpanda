@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.panda.back.domain.member.dto.KakaoUserInfoDto;
 import com.panda.back.domain.member.entity.Member;
+import com.panda.back.domain.member.entity.RefreshToken;
 import com.panda.back.domain.member.jwt.TokenProvider;
 import com.panda.back.domain.member.repository.MemberRepository;
+import com.panda.back.domain.member.repository.RefreshTokenRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +35,7 @@ public class KakaoService {
     private final MemberRepository memberRepository;
     private final RestTemplate restTemplate;
     private final TokenProvider tokenProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Value("${kakao.api.key}")
     private String kakaoApiKey;
@@ -48,11 +51,20 @@ public class KakaoService {
         Member kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
 
         // 4. JWT 토큰 반환
+        String refresh = tokenProvider.createRefreshToken(kakaoUser.getMembername(), kakaoUser.getNickname());
+        RefreshToken refreshToken = refreshTokenRepository.findByMembername(kakaoUser.getMembername()).orElse(null);
+        if (refreshToken == null) {
+            refreshToken = new RefreshToken(refresh, kakaoUser.getMembername());
+        } else {
+            refreshToken.updateToken(refresh);
+        }
+        refreshTokenRepository.save(refreshToken);
+
         String createToken = tokenProvider.createToken(kakaoUser.getMembername(), kakaoUser.getNickname());
-        String RefreshToken = tokenProvider.createRefreshToken(kakaoUser.getMembername(), kakaoUser.getNickname());
 
         response.addHeader(TokenProvider.AUTHORIZATION_HEADER, createToken);
-        response.addHeader(TokenProvider.REFRESH_HEADER, RefreshToken);
+        response.addHeader(TokenProvider.REFRESH_HEADER, refreshToken.getToken());
+
         return "redirect:/";
     }
 
