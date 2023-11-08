@@ -7,6 +7,7 @@ import com.panda.back.domain.member.dto.KakaoUserInfoDto;
 import com.panda.back.domain.member.entity.Member;
 import com.panda.back.domain.member.jwt.TokenProvider;
 import com.panda.back.domain.member.repository.MemberRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j(topic = "KAKAO Login")
@@ -36,7 +39,7 @@ public class KakaoService {
     @Value("${kakao.api.key}")
     private String kakaoApiKey;
 
-    public String kakaoLogin(String code) throws JsonProcessingException {
+    public String kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getToken(code);
 
@@ -47,9 +50,13 @@ public class KakaoService {
         Member kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
 
         // 4. JWT 토큰 반환
-        String createToken = tokenProvider.createToken(kakaoUser.getMembername(), kakaoUser.getNickname());
+        tokenProvider.addJwtToHeader(tokenProvider.AUTHORIZATION_HEADER,
+                tokenProvider.createToken(kakaoUser.getMembername(),kakaoUser.getNickname()),response);
 
-        return createToken;
+        tokenProvider.addJwtToHeader(tokenProvider.REFRESH_HEADER,
+                tokenProvider.createRefreshToken(kakaoUser.getMembername(),kakaoUser.getNickname()),response);
+
+        return "redirect:/";
     }
 
     private String getToken(String code) throws JsonProcessingException {

@@ -95,10 +95,7 @@ public class MemberController {
     @GetMapping("/kakao/callback")
     public String kakaoLogin(
             @RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
-        String token = kakaoService.kakaoLogin(code);
-        response.addHeader(TokenProvider.AUTHORIZATION_HEADER, token);
-
-        return "redirect:/";
+        return kakaoService.kakaoLogin(code,response);
     }
 
     @Operation(summary = "프로필 이미지 업로드")
