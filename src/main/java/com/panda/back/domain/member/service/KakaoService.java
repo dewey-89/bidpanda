@@ -49,8 +49,10 @@ public class KakaoService {
 
         // 4. JWT 토큰 반환
         String createToken = tokenProvider.createToken(kakaoUser.getMembername(), kakaoUser.getNickname());
+        String RefreshToken = tokenProvider.createRefreshToken(kakaoUser.getMembername(), kakaoUser.getNickname());
 
         response.addHeader(TokenProvider.AUTHORIZATION_HEADER, createToken);
+        response.addHeader(TokenProvider.REFRESH_HEADER, RefreshToken);
         return "redirect:/";
     }
 

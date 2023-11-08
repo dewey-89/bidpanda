@@ -73,12 +73,13 @@ public class Member {
     }
 
     public void deactiveMember(){
-        if(this.kakaoId!=null){
-            this.kakaoId = null;
-            this.membername = null;
-        }
         this.nickname = "탈퇴한 회원" + this.id;
         this.email = null;
         this.isDeleted = true;
+    }
+
+    public void deactiveKakaoMember(){
+        this.kakaoId = null;
+        this.membername = null;
     }
 }
