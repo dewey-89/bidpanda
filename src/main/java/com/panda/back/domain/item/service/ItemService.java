@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,6 +43,7 @@ public class ItemService {
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
     private final NotifyService notifyService;
+
     @Transactional
     public ItemResponseDto createItem(List<MultipartFile> images, ItemRequestDto itemRequestDto, Member member) throws IOException, InterruptedException {
 
@@ -60,7 +62,7 @@ public class ItemService {
         itemRepository.save(item);
 
         publisher.publishEvent(new ItemCUDEvent(item, JobEventType.create));
-        Thread.sleep(1000);
+        oneSecondDelay();
         publisher.publishEvent(new ItemCUDEvent(item, JobEventType.remind));
 
         return new ItemResponseDto(item);
@@ -194,7 +196,7 @@ public class ItemService {
         }
 
         if (item.getBidCount() == 0) {
-            String content = "당신의 "+item.getTitle()+" 상품이 유찰되었습니다.";
+            String content = "당신의 " + item.getTitle() + " 상품이 유찰되었습니다.";
 
 
             // 입찰이 없는 경우 판매자에게 유찰 알림
@@ -202,14 +204,14 @@ public class ItemService {
 
         } else {
             // 낙찰자에게 낙찰 알림
-            String content = item.getTitle()+" 낙찰에 성공하셨습니다.";
+            String content = item.getTitle() + " 낙찰에 성공하셨습니다.";
 
             Optional<Member> winner = memberRepository.findById(item.getWinner().getId());
-            notifyService.send(winner.get(),NotificationType.BID, content, url);
+            notifyService.send(winner.get(), NotificationType.BID, content, url);
 
             // 판매자에게 본인의 상품 낙찰 알림
-            String contents = "당신의 "+item.getTitle()+" 상품이 낙찰되었습니다.";
-            notifyService.send(item.getMember(),NotificationType.BID, contents, url);
+            String contents = "당신의 " + item.getTitle() + " 상품이 낙찰되었습니다.";
+            notifyService.send(item.getMember(), NotificationType.BID, contents, url);
         }
         publisher.publishEvent(new ItemCUDEvent(item, JobEventType.delete));
     }
@@ -220,7 +222,7 @@ public class ItemService {
                 memberId, myItems, myWinItems), Pageable.ofSize(size).withPage(page - 1));
     }
 
-    public Page<ItemResponseDto> getPublicPageItems(Boolean auctionIng, String keyword, String category, String order,int page, int size) {
+    public Page<ItemResponseDto> getPublicPageItems(Boolean auctionIng, String keyword, String category, String order, int page, int size) {
         return itemRepository.getPublicPageItems(new ItemSearchCondition(auctionIng, keyword, category, order), Pageable.ofSize(size).withPage(page - 1));
     }
 
@@ -234,7 +236,7 @@ public class ItemService {
         }
 
         String url = "https://bidpanda.app/items/detail/" + String.valueOf(item.getId());
-        String content = item.getTitle()+" 상품의 경매시간이 30분 남았습니다.";
+        String content = item.getTitle() + " 상품의 경매시간이 30분 남았습니다.";
 
         Set<String> previousBidders = item.getPreviousBidders();
         for (String nickname : previousBidders) {
@@ -243,5 +245,10 @@ public class ItemService {
                 notifyService.send(member.get(), NotificationType.BID, content, url);
             }
         }
+    }
+
+    @Async
+    public void oneSecondDelay() throws InterruptedException {
+        Thread.sleep(1000);
     }
 }
