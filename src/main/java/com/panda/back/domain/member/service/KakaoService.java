@@ -5,11 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.panda.back.domain.member.dto.KakaoUserInfoDto;
 import com.panda.back.domain.member.entity.Member;
-import com.panda.back.domain.member.entity.RefreshToken;
 import com.panda.back.domain.member.jwt.TokenProvider;
 import com.panda.back.domain.member.repository.MemberRepository;
-import com.panda.back.domain.member.repository.RefreshTokenRepository;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,12 +32,11 @@ public class KakaoService {
     private final MemberRepository memberRepository;
     private final RestTemplate restTemplate;
     private final TokenProvider tokenProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
 
     @Value("${kakao.api.key}")
     private String kakaoApiKey;
 
-    public String kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+    public String kakaoLogin(String code) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getToken(code);
 
@@ -51,21 +47,9 @@ public class KakaoService {
         Member kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
 
         // 4. JWT 토큰 반환
-        String refresh = tokenProvider.createRefreshToken(kakaoUser.getMembername(), kakaoUser.getNickname());
-        RefreshToken refreshToken = refreshTokenRepository.findByMembername(kakaoUser.getMembername()).orElse(null);
-        if (refreshToken == null) {
-            refreshToken = new RefreshToken(refresh, kakaoUser.getMembername());
-        } else {
-            refreshToken.updateToken(refresh);
-        }
-        refreshTokenRepository.save(refreshToken);
-
         String createToken = tokenProvider.createToken(kakaoUser.getMembername(), kakaoUser.getNickname());
 
-        response.addHeader(TokenProvider.AUTHORIZATION_HEADER, createToken);
-        response.addHeader(TokenProvider.REFRESH_HEADER, refreshToken.getToken());
-
-        return "redirect:/";
+        return createToken;
     }
 
     private String getToken(String code) throws JsonProcessingException {

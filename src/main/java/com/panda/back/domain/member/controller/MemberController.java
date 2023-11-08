@@ -3,6 +3,7 @@ package com.panda.back.domain.member.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.panda.back.domain.member.dto.*;
 import com.panda.back.domain.member.jwt.MemberDetailsImpl;
+import com.panda.back.domain.member.jwt.TokenProvider;
 import com.panda.back.domain.member.service.KakaoService;
 import com.panda.back.domain.member.service.MailSerivce;
 import com.panda.back.domain.member.service.MemberService;
@@ -94,7 +95,10 @@ public class MemberController {
     @GetMapping("/kakao/callback")
     public String kakaoLogin(
             @RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
-        return kakaoService.kakaoLogin(code,response);
+        String token = kakaoService.kakaoLogin(code);
+        response.addHeader(TokenProvider.AUTHORIZATION_HEADER, token);
+
+        return "redirect:/";
     }
 
     @Operation(summary = "프로필 이미지 업로드")
