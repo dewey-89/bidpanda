@@ -39,15 +39,21 @@ public class FavoriteItemService {
             favoriteItem.setMember(member);
             favoriteItemRepository.save(favoriteItem);
 
-            // 물품 판매자 = 알림 받는 사람
-            // 찜 했을 때 물품 판매자에게 알림이 가게 구현
-            String content = favoriteItem.getMember().getNickname()+ "님이 " +item.getTitle()+" 상품을 찜하였습니다.";
-            notifyService.send(item.getMember(), NotificationType.FAVORITE, content, url);
+            if (!favoriteItem.getMember().equals(member)) {
+                // 물품 판매자 = 알림 받는 사람
+                // 찜 했을 때 물품 판매자에게 알림이 가게 구현
+                String content = favoriteItem.getMember().getNickname()+ "님이 " +item.getTitle()+" 상품을 찜하였습니다.";
+                notifyService.send(item.getMember(), NotificationType.FAVORITE, content, url);
+            }
             return BaseResponse.successMessage("관심 등록 완료");
+
         } else {
             favoriteItemRepository.delete(favoriteItem);
-            String content = favoriteItem.getMember().getNickname()+ "님이 " +item.getTitle()+" 상품 찜을 취소하였습니다.";
-            notifyService.send(item.getMember(), NotificationType.FAVORITE, content, url);
+
+            if (favoriteItem.getMember().equals(member)) {
+                String content = favoriteItem.getMember().getNickname()+ "님이 " +item.getTitle()+" 상품 찜을 취소하였습니다.";
+                notifyService.send(item.getMember(), NotificationType.FAVORITE, content, url);
+            }
             return BaseResponse.successMessage("관심 등록 취소");
         }
     }
