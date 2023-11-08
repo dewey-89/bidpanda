@@ -26,7 +26,7 @@ public class ItemController {
     public ItemResponseDto createItem(
             @RequestPart(value = "images", required = false) List<MultipartFile> images,
             @RequestPart ItemRequestDto itemRequestDto,
-            @AuthenticationPrincipal MemberDetailsImpl memberDetails) throws IOException {
+            @AuthenticationPrincipal MemberDetailsImpl memberDetails) throws IOException, InterruptedException {
         return ItemService.createItem(images, itemRequestDto, memberDetails.getMember());
     }
 

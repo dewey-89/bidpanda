@@ -43,7 +43,7 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final NotifyService notifyService;
     @Transactional
-    public ItemResponseDto createItem(List<MultipartFile> images, ItemRequestDto itemRequestDto, Member member) throws IOException {
+    public ItemResponseDto createItem(List<MultipartFile> images, ItemRequestDto itemRequestDto, Member member) throws IOException, InterruptedException {
 
         Item item = new Item(itemRequestDto, member);
         if (images.isEmpty()) {
@@ -60,6 +60,7 @@ public class ItemService {
         itemRepository.save(item);
 
         publisher.publishEvent(new ItemCUDEvent(item, JobEventType.create));
+        Thread.sleep(1000);
         publisher.publishEvent(new ItemCUDEvent(item, JobEventType.remind));
 
         return new ItemResponseDto(item);
