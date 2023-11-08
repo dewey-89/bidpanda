@@ -39,7 +39,7 @@ public class FavoriteItemService {
             favoriteItem.setMember(member);
             favoriteItemRepository.save(favoriteItem);
 
-            if (!favoriteItem.getMember().equals(member)) {
+            if ((!favoriteItem.getMember().getId().equals(item.getMember().getId()))) {
                 // 물품 판매자 = 알림 받는 사람
                 // 찜 했을 때 물품 판매자에게 알림이 가게 구현
                 String content = favoriteItem.getMember().getNickname()+ "님이 " +item.getTitle()+" 상품을 찜하였습니다.";
@@ -50,7 +50,7 @@ public class FavoriteItemService {
         } else {
             favoriteItemRepository.delete(favoriteItem);
 
-            if (favoriteItem.getMember().equals(member)) {
+            if ((!favoriteItem.getMember().getId().equals(item.getMember().getId()))) {
                 String content = favoriteItem.getMember().getNickname()+ "님이 " +item.getTitle()+" 상품 찜을 취소하였습니다.";
                 notifyService.send(item.getMember(), NotificationType.FAVORITE, content, url);
             }
