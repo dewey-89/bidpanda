@@ -152,9 +152,6 @@ public class MemberService {
         for (Bid bid : myBids) {
             bidRepository.delete(bid);
         }
-        if(currentMember.getKakaoId()!=null){
-            currentMember.deactiveKakaoMember();
-        }
 
         currentMember.deactiveMember();
         return BaseResponse.successMessage("회원 탈퇴 성공");
