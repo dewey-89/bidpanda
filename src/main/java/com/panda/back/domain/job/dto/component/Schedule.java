@@ -23,7 +23,7 @@ public class Schedule {
         this.months = new ArrayList<>(Arrays.asList(endDateTime.getMonthValue()));
         this.mdays = new ArrayList<>(Arrays.asList(endDateTime.getDayOfMonth()));
         this.hours = new ArrayList<>(Arrays.asList(endDateTime.getHour()));
-        this.minutes = new ArrayList<>(Arrays.asList(endDateTime.getMinute()));
+        this.minutes = new ArrayList<>(Arrays.asList(endDateTime.plusMinutes(1).getMinute()));
         this.wdays = new ArrayList<>(Arrays.asList((endDateTime.getDayOfWeek().getValue() % 7)));
     }
     private static double makeExpiresAt(LocalDateTime auctionEnd) {
