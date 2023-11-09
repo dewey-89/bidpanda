@@ -174,15 +174,7 @@ public class ItemService {
         Item item = itemRepository.findById(itemId).orElseThrow(
                 () -> new CustomException(ErrorCode.NOT_FOUND_ITEM)
         );
-
-        log.info("cron job : itemClosedAlarm 시작");
         String url = "https://bidpanda.app/items/detail/" + String.valueOf(item.getId());
-
-        if (item.getAuctionEndTime().isAfter(LocalDateTime.now())) {
-            throw new CustomException(ErrorCode.IS_NOT_CLOSED_BIDDING_ITEM);
-        }
-
-        log.info("cron job : itemClosedAlarm 시작1111");
 
         if (item.getBidCount() == 0) {
             String content = "당신의 " + item.getTitle() + " 상품이 유찰되었습니다.";
