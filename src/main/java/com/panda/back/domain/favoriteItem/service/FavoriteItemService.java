@@ -49,11 +49,6 @@ public class FavoriteItemService {
 
         } else {
             favoriteItemRepository.delete(favoriteItem);
-
-            if ((!favoriteItem.getMember().getId().equals(item.getMember().getId()))) {
-                String content = favoriteItem.getMember().getNickname()+ "님이 " +item.getTitle()+" 상품 찜을 취소하였습니다.";
-                notifyService.send(item.getMember(), NotificationType.FAVORITE, content, url);
-            }
             return BaseResponse.successMessage("관심 등록 취소");
         }
     }
