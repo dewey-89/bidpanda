@@ -3,7 +3,6 @@ package com.panda.back.domain.member.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.panda.back.domain.member.dto.*;
 import com.panda.back.domain.member.jwt.MemberDetailsImpl;
-import com.panda.back.domain.member.jwt.TokenProvider;
 import com.panda.back.domain.member.service.KakaoService;
 import com.panda.back.domain.member.service.MailSerivce;
 import com.panda.back.domain.member.service.MemberService;
