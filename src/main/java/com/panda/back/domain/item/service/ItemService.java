@@ -62,8 +62,8 @@ public class ItemService {
         itemRepository.save(item);
 
         publisher.publishEvent(new ItemCUDEvent(item, JobEventType.create));
-        oneSecondDelay();
-        publisher.publishEvent(new ItemCUDEvent(item, JobEventType.remind));
+//        oneSecondDelay();
+//        publisher.publishEvent(new ItemCUDEvent(item, JobEventType.remind));
 
         return new ItemResponseDto(item);
     }
