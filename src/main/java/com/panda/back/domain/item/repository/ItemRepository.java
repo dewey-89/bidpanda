@@ -13,15 +13,7 @@ import java.util.List;
 public interface ItemRepository extends JpaRepository<Item, Long> , ItemRepositoryCustom {
     List<Item> findTop10ByOrderByPresentPriceDesc();
 
-    @Query("SELECT i FROM Item i WHERE i.auctionEndTime > :currentTime ORDER BY i.presentPrice DESC")
-    Page<Item> findAllByOrderByModifiedAtDesc(Pageable pageable, LocalDateTime currentTime);
-
-    @Query("SELECT i FROM Item i WHERE i.category = :category AND i.auctionEndTime > :currentTime ORDER BY i.modifiedAt DESC")
-    Page<Item> findAllByCategoryOrderByModifiedAtDesc(String category, LocalDateTime currentTime, Pageable pageable);
-
     List<Item> findAllByMember(Member member);
-
-    List<Item> findAllByTitleContaining(String keyword);
 
     boolean existsByMemberAndAuctionEndTimeAfter(Member currentMember, LocalDateTime currentTime);
 
@@ -29,7 +21,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> , ItemReposito
     List<Item> findAuctionEndTimeItems(LocalDateTime currentTime);
 
     List<Item> findAllByWinnerId(Long id);
-
 
     boolean existsByWinnerAndAuctionEndTimeAfter(Member currentMember, LocalDateTime now);
 }

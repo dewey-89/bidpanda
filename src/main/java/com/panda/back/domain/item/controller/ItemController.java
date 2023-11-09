@@ -30,15 +30,6 @@ public class ItemController {
         return ItemService.createItem(images, itemRequestDto, memberDetails.getMember());
     }
 
-//    @Operation(summary = "전체 상품 조회 API")
-//    @GetMapping
-//    public Page<ItemResponseDto> getAllItems(
-//            @RequestParam(value = "page", defaultValue = "1") int page,
-//            @RequestParam(value = "size", defaultValue = "10") int size
-//    ) {
-//        return ItemService.getAllItems(page, size);
-//    }
-
     @Operation(summary = "단일 상품 조회 API")
     @GetMapping("/{itemId}")
     public ItemResponseDto getItemById(@PathVariable Long itemId) {
@@ -68,26 +59,12 @@ public class ItemController {
         return ItemService.getTopPriceItems();
     }
 
-//    @Operation(summary = "카테고리 별 상품 조회 API")
-//    @GetMapping("/category/{category}")
-//    public List<ItemResponseDto> getItemsByCategory(
-//            @PathVariable String category,
-//            @RequestParam(value = "page", defaultValue = "1") int page,
-//            @RequestParam(value = "size", defaultValue = "10") int size) {
-//        return ItemService.getItemsByCategory(category, page, size);
-//    }
 
     @Operation(summary = "내가 경매로 등록한 아이템 리스트 조회 API")
     @GetMapping("/my-items")
     public List<ItemResponseDto> getItemsByMember(@AuthenticationPrincipal MemberDetailsImpl memberDetails) {
         return ItemService.getItemsByMember(memberDetails.getMember());
     }
-
-//    @Operation(summary = "키워드 상품 검색 API")
-//    @GetMapping("/search")
-//    public List<ItemResponseDto> getItemsByKeyword(@RequestParam String keyword) {
-//        return ItemService.getItemsByKeyword(keyword);
-//    }
 
     @Operation(summary = "경매 종료 API")
     @GetMapping("/{itemId}/close-alarm")

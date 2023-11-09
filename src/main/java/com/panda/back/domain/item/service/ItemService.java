@@ -68,11 +68,6 @@ public class ItemService {
         return new ItemResponseDto(item);
     }
 
-    public Page<ItemResponseDto> getAllItems(int page, int size) {
-        Page<Item> items = itemRepository.findAllByOrderByModifiedAtDesc(Pageable.ofSize(size).withPage(page - 1), LocalDateTime.now());
-        return items.map(ItemResponseDto::new);
-    }
-
     public ItemResponseDto getItemById(Long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(
                 () -> new CustomException(ErrorCode.NOT_FOUND_ITEM)
@@ -138,7 +133,7 @@ public class ItemService {
             throw new CustomException(ErrorCode.NOT_DELETED_BIDDING_ITEM);
         }
 
-        // bidCount가 0이 아닌 경우 수정 불가
+        // bidCount가 0이 아닌 경우 삭제 불가
         if (item.getBidCount() > 0) {
             throw new CustomException(ErrorCode.NOT_MODIFIED_BIDDED_ITEM);
         }
@@ -165,10 +160,6 @@ public class ItemService {
         return ItemResponseDto.listOf(items);
     }
 
-    public List<ItemResponseDto> getItemsByCategory(String category, int page, int size) {
-        Page<Item> items = itemRepository.findAllByCategoryOrderByModifiedAtDesc(category, LocalDateTime.now(), Pageable.ofSize(size).withPage(page - 1));
-        return items.map(ItemResponseDto::new).toList();
-    }
 
     public List<ItemResponseDto> getItemsByMember(Member member) {
 
@@ -177,11 +168,6 @@ public class ItemService {
         return items.stream()
                 .map(ItemResponseDto::new)
                 .collect(Collectors.toList());
-    }
-
-    public List<ItemResponseDto> getItemsByKeyword(String keyword) {
-        List<Item> items = itemRepository.findAllByTitleContaining(keyword);
-        return ItemResponseDto.listOf(items);
     }
 
     public void itemClosedAlarm(Long itemId) {
