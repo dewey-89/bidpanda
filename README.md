@@ -74,11 +74,11 @@
 
 <!-- 여기에 이미지 -->
 
-<img src="" />
+<img src="./bidpanda_archt.png" />
 
 ### ERD
 
-<img src="" />
+<img src="./erd.png" />
 
 ### 사용 기술 스택
 
