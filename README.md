@@ -1,7 +1,7 @@
 # BidPanda 프로젝트
 [🐼 비드판다 사이트 이동하기](https://bidpanda.app/)
 
-
+<img src="./bidpanda.png" />
 
 ## 프로젝트 소개
 ### 서비스 개요
