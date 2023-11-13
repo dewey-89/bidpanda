@@ -1,7 +1,7 @@
 # BidPanda 프로젝트
 [🐼 비드판다 사이트 이동하기](https://bidpanda.app/)  
-[🎬 서비스 소개 영상 링크](https://www.youtube.com/watch?v=GZTTHxUITtM&feature=youtu.be&ab_channel=%EA%B9%80%EB%B3%91%EA%B4%80) 
-[📚 프로젝트 Notion 이동하기](https://www.notion.so/3-bb83dbd792fa49739c2a7c55f942be67?pvs=4)
+[🎬 서비스 소개 영상 링크](https://www.youtube.com/watch?v=GZTTHxUITtM&feature=youtu.be&ab_channel=%EA%B9%80%EB%B3%91%EA%B4%80)   
+[📚 프로젝트 Notion 이동하기](https://www.notion.so/3-bb83dbd792fa49739c2a7c55f942be67?pvs=4)   
 <img src="./main.png" />
 
 ## 프로젝트 소개
