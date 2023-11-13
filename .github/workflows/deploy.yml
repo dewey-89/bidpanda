@@ -1,0 +1,118 @@
+name: BankEnd - CI/CD
+
+on:
+  push:
+    branches: [ dev ]
+
+env:
+  BUCKET_NAME: bidpanda-app-bucket
+  CODE_DEPLOY_APP_NAME: bidpanda-app-deploy
+  DEPLOYMENT_GROUP_NAME: bidpanda-app-deploy
+  RESOURCE_PATH: ./src/main/resources/application.yaml
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+          # Gradle을 캐싱해둡니다 -> 빌드 속도가 증가하는 효과가 있습니다.
+      - name: Gradle 캐싱
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Update application.yml
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ${{ env.RESOURCE_PATH }}
+        env:
+          cloud.aws.credentials.accessKey: ${{ secrets.AWS_ACCESS_KEY }} #이미지 업로드용 S3
+          cloud.aws.credentials.secretKey: ${{ secrets.AWS_SECRET_KEY }} #이미지 업로드용 S3
+          cloud.aws.s3.bucket: ${{secrets.AWS_S3_BUCKET}} #이미지 업로드용 S3
+          spring.datasource.url: ${{ secrets.DB_URL }}
+          spring.datasource.username: ${{ secrets.DB_USERNAME }}
+          spring.datasource.password: ${{ secrets.DB_PASSWORD }}
+          spring.data.redis.host: ${{ secrets.REDIS_HOST }}
+          spring.data.redis.port: ${{ secrets.REDIS_PORT }}
+          spring.data.mongodb.uri: ${{ secrets.MONGO_DB_URL}}
+          spring.mail.username: ${{ secrets.MAIL_USERNAME }}
+          spring.mail.password: ${{ secrets.MAIL_PASSWORD }}
+          jwt.secret.key: ${{ secrets.JWT_SECRET_KEY }}
+          api.key.cron-job: ${{secrets.CRONJOB_KEY}}
+          bidpanda.domain: ${{secrets.BIDPANDA_BACK_DOMAIN}}
+          kakao.api.key: ${{secrets.KAKAO_API_KEY}}
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
+        with:
+          arguments: clean bootJar
+
+        # 배포에 필요한 여러 설정 파일과 프로젝트 빌드파일을 zip 파일로 모아줍니다.
+      - name: Make zip file
+        run: |
+          mkdir -p deploy
+          cp ./docker/docker-compose.blue.yml ./deploy/
+          cp ./docker/docker-compose.green.yml ./deploy/
+          cp ./appspec.yml ./deploy/
+          cp ./docker/Dockerfile ./deploy/
+          cp ./scripts/*.sh ./deploy/
+          cp ./build/libs/bidpanda-0.0.1-SNAPSHOT.jar ./deploy/
+          zip -r -qq -j ./bidpanda.zip ./deploy
+
+        # AWS에 연결해줍니다.
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_CI_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_CI_SECRET_KEY }}
+          aws-region: ap-northeast-2
+
+        # S3에 프로젝트를 업로드 합니다.
+      - name: Upload to S3
+        run: |
+          aws s3 cp \
+          --region ap-northeast-2 \
+          ./bidpanda.zip s3://$BUCKET_NAME
+
+      # CodeDelploy에 배포를 요청합니다.
+      - name: Deploy
+        run: aws deploy create-deployment
+          --application-name $CODE_DEPLOY_APP_NAME
+          --deployment-group-name $DEPLOYMENT_GROUP_NAME
+          --deployment-config-name CodeDeployDefault.AllAtOnce
+          --file-exists-behavior OVERWRITE
+          --s3-location bucket=$BUCKET_NAME,bundleType=zip,key=bidpanda.zip
+          --region ap-northeast-2
+
+      # 빌드 성공 & 실패 여부를 Slack 알람으로 발송합니다.
+      - name: Notify Slack
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: general
+          SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+          SLACK_ICON: https://github.com/rtCamp.png?size=48
+          SLACK_MESSAGE: 배포 결과 => ${{ job.status }}
+          SLACK_TITLE: 배포 결과 알람
+          SLACK_USERNAME: Notification-Bot
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+          # 이 구문을 추가해야 빌드 성공 실패와 상관없이 동작합니다.
+        if: always()

@@ -9,10 +9,57 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        show_sql: true
-        format_sql: true
+        show_sql: false
+        format_sql: false
         use_sql_comments: true
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+#logging:
+#  level:
+#    jdbc:
+#      connection: 'off'
+#      sqlonly: 'off'
+#      resultset: 'off'
+#      resultsettable: info
+#      sqltiming: info
+#      audit: 'off'
 
 jwt:
   secret:
     key: ${JWT_SECRET_KEY}
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${AWS_ACCESS_KEY}
+      secretKey: ${AWS_SECRET_KEY}
+    s3:
+      bucket: ${AWS_S3_BUCKET}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+api:
+  key:
+    cron-job: ${CRONJOB_KEY}
+
+bidpanda:
+  domain: ${BIDPANDA_BACK_DOMAIN}
+
+kakao:
+ api:
+  key: ${KAKAO_API_KEY}
