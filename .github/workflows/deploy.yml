@@ -2,7 +2,7 @@ name: BankEnd - CI/CD
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ main ]
 
 env:
   BUCKET_NAME: bidpanda-app-bucket
