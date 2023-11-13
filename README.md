@@ -1,23 +1,21 @@
 # BidPanda 프로젝트
-[🐼 비드판다 사이트 이동하기](https://bidpanda.app/)
-
-<img src="./bidpanda.png" />
+[🐼 비드판다 사이트 이동하기](https://bidpanda.app/)  
+[🎬 서비스 소개 영상 링크](https://www.youtube.com/watch?v=GZTTHxUITtM&feature=youtu.be&ab_channel=%EA%B9%80%EB%B3%91%EA%B4%80) 
+[📚 프로젝트 Notion 이동하기](https://www.notion.so/3-bb83dbd792fa49739c2a7c55f942be67?pvs=4)
+<img src="./main.png" />
 
 ## 프로젝트 소개
 ### 서비스 개요
-```
-    BidPanda 서비스는 판매자와 구매자간 커뮤니케이션 리소스를 최소화 하기 위해
-    경매 방식 거래 서비스를 도입하는게 어떨까?라는 아이디어에서 시작된 서비스입니다.
+<!-- 여기에 배너 이미지 -->
+    BidPanda 서비스는 판매자와 구매자간 커뮤니케이션 리소스를 최소화 하기 위해서 '경매 방식 거래 서비스를 도입하는게 어떨까?'라는 아이디어에서 시작된 서비스 입니다.
 
-    사이트에 가입된 유저은 팔고자하는 물건을 지정한 기한을 정해서 경매 방식으로 판매 가능합니다.
+    회원은 팔고자하는 물건을 지정한 기한을 정해서 경매 방식으로 판매 가능합니다.
+    
     판매물건이 낙찰 확정되면, 판매자-낙찰자간 알림을 전송하고, 채팅을 할 수 있습니다.
-```
+
 
 #### 프로젝트 기간
 2023.10.04 ~ 2023.11.15
-
-#### 프로젝트 팀원
-프론트엔드 2명 백엔드 4명
 
 ### 구현 기능
 
@@ -74,11 +72,11 @@
 
 <!-- 여기에 이미지 -->
 
-<img src="./bidpanda_archt.png" />
+<img src="" />
 
 ### ERD
 
-<img src="./erd.png" />
+<img src="" />
 
 ### 사용 기술 스택
 
@@ -96,15 +94,14 @@
 
 |사용 기술|적용부분|사용 이유|
 |:-------|:-------|:-------|
-|Redis| 인증, 인가 | 인증 토큰 저장 및 캐싱 작업에서 성능 향상을 위해|
-|GitHub Action| CI/CD |프로젝트 레포지토리 특정 브런치에서 배포 |
-|Docker| CI/CD | 컨테이너화된 애플리케이션으로 환경 간에 일관성을 유지하고 배포를 간편하게 하기 위해서|
-|Nginx| Server |무중단 배포 구현을 위해서, 리버스 프록시 적용|
-|SSE| 알림 기능 | 서버 -> Client 단방향 알림을 주기 위해서|
-|STOMP| 채팅 기능 | STOMP특유의 정형화된 부분 -> 채팅 메시지 전달에 좋을 것 같음, 채팅 참여자 추적에 용이|
-|Cron-Job| 마감 스케쥴링 기능 | 이미 잘 만들어진 외부 API를 이용 하자|
-|Google Cloud| Database | 비용 절감 효과|
-
+|Redis| 인증, 인가 | Redis의 TTL(Time-To-Live), 이를 통해 서버에 저장할 Refresh Token과 Email 인증 번호 만료 시간을 쉽게 설정할 수 있게 된다. 만료된 값들은 자동으로 삭제할 수 있기 때문에 적합하다고 판단<br>Redis의 장점인 빠른 엑세스 속도로 Refresh Token을 저장하여 로그인 시 병목 현상을 방지하기 위해서 사용을 결정했습니다.|
+|GitHub Action| CI/CD |jenkins를 염두에 두고 시작했지만, 학습에 필요한 시간이 제약되고<br> 정해진 시간내에 프로젝트를 완성해야 하는 문제로 인해<br>비교적 사용이 쉬운 github actions으로 선회하여 사용하기로 결정했습니다. |
+|Docker| CI/CD |컨테이너화된 애플리케이션으로 환경 간에 일관성을 유지, 배포를 간편하게 하기 위해서 입니다.|
+|Nginx| Server |Nginx를 선택함으로써 비용 효율성, 더 큰 제어권, 유연성 및 효율적인 애플리케이션 관리를 달성할 수 있었고, <br>Nginx 배포 중에서도 Bule-green 방식을 선택했습니다.|
+|SSE| 알림 기능 | 프론트앤드에서 채팅 관련 컴포넌트를 전역적으로 가지고 있음,<br>한번 서버와 연결을 생성하면 Client 측에서 연결을 끊을 때 까지 서버 → 클라이언트로 수신 가능<br>프론트, 백엔드 둘 다 HTTP를 이용한  API 개발 방법을 알면 간편하게 구현 가능<br>SSE는 HTTP 연결을 재사용, 여러 연결을 열고 유지하는 WebSocket과 달리 서버 부담이 상대적으로 적기 때문에 선택했습니다.|
+|STOMP| 채팅 기능 | Spring 공식문서, API Documentation, Reference가 최신화 되어있었다.<br>Spring 기본제공 라이브러리에서 STOMP지원이 충분하다고 판단되서 채택|
+|Cron-Job| 마감 스케쥴링 기능| 배포 서버에서 CronTab을 실행하는 방법은 서버 리소스를 소비하기 때문에 좋은 선택인 아니라고 생각되었다.<br>따라서 이미 CronTab 서비스를 하고 있는 솔루션의 Open API를 사용하기로 결정했습니다.|
+|Google Cloud Service| 데이터베이스(MySQL) |AWS서비스 사용법과 크게 다르지 않았고, AWS RDS보다 구글 클라우드에서 기본적으로 제공해주는<br> 무료 크레딧 제공량이 많아서 사용을 결정하게 되었습니다.|
 
 
 ### 프로젝트 팀원 소개
@@ -420,4 +417,5 @@ public void deactiveMember() {
 ## 부록 
 
 ### BidPanda API Documentation
-[**🔗 Documentation Link**]()
+**🔗 Documentation Link**  
+[📗Swagger-UI](https://bidpanda-server.dewey-89.com/swagger-ui/index.html)
